@@ -37,18 +37,18 @@ const paths = [
     attrs: { to: "/" },
     label: "Map",
   },
-  {
-    attrs: { to: "/charts" },
-    label: "Charts",
-  },
-  {
-    attrs: { to: "/selections" },
-    label: "Selections",
-  },
-  {
-    attrs: { to: "/api" },
-    label: "API",
-  },
+  // {
+  //   attrs: { to: "/charts" },
+  //   label: "Charts",
+  // },
+  // {
+  //   attrs: { to: "/selections" },
+  //   label: "Selections",
+  // },
+  // {
+  //   attrs: { to: "/api" },
+  //   label: "API",
+  // },
   {
     attrs: { to: "/about" },
     label: "About",

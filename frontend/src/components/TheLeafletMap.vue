@@ -103,7 +103,7 @@ onMounted(() => {
     lakesFeatures.on("click", function (e) {
         console.log(e.layer.feature.properties)
         const popup = L.popup({
-            maxHeight: 100,
+            maxHeight: 300,
             closeOnClick: false,
             keepInView: true
         });

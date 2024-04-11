@@ -3,10 +3,10 @@
     <div class="d-flex w-100 align-center">
       <ThemeButton />
       <div class="text-center w-100">
-        {{ new Date().getFullYear() }} — <strong>Swot-Data-Viewer</strong>
+        {{ new Date().getFullYear() }} — <strong>HYDROPROCESS-DB</strong>
       </div>
       <v-spacer></v-spacer>
-      <v-switch v-model="switchValue" @click.stop="toggleSwitch" :label="`${switchValue ? 'Faking Data' : 'Using Real Data'}`"></v-switch>
+      <!-- <v-switch v-model="switchValue" @click.stop="toggleSwitch" :label="`${switchValue ? 'Faking Data' : 'Using Real Data'}`"></v-switch> -->
     </div>
   </v-footer>
 </template>
@@ -20,10 +20,10 @@ const featureStore = useFeaturesStore()
 
 let switchValue = ref(featureStore.shouldFakeData)
 
-const toggleSwitch = () => {
-  featureStore.shouldFakeData = !featureStore.shouldFakeData
-  switchValue.value = !switchValue.value
-}
+// const toggleSwitch = () => {
+//   featureStore.shouldFakeData = !featureStore.shouldFakeData
+//   switchValue.value = !switchValue.value
+// }
 
 </script>
 

@@ -38,6 +38,12 @@
 
 const members = [
   {
+    name: 'Scott Black',
+    image: 'https://www.cuahsi.org/uploads/team/img/_headshot/black-scott.jpg',
+    position: 'Senior Software Specialist',
+    org: 'CUAHSI'
+  },
+  {
     name: 'Devin Cowan',
     image: 'https://www.cuahsi.org/uploads/team/img/_headshot/Devin-Cowan.jpg',
     position: 'Research Programmer',
@@ -47,12 +53,6 @@ const members = [
     name: 'Irene Garousi-Nejad',
     image: 'https://www.cuahsi.org/uploads/team/img/_headshot/Irene_headshot03.jpg',
     position: 'Research Scientist',
-    org: 'CUAHSI'
-  },
-  {
-    name: 'Martin Seul',
-    image: 'https://www.cuahsi.org/uploads/team/img/_headshot/Martin.jpg',
-    position: 'Technical Director',
     org: 'CUAHSI'
   },
   {
