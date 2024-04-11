@@ -104,7 +104,7 @@ onMounted(() => {
         console.log(e.layer.feature.properties)
         const popup = L.popup({
             maxHeight: 300,
-            closeOnClick: false,
+            closeOnClick: true,
             keepInView: true
         });
         console.log(e.layer.feature.properties)
