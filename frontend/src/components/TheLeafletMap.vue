@@ -30,8 +30,8 @@ onUpdated(() => {
 
 onMounted(() => {
     // TODO revert to zoom 3
-    // let leaflet = L.map('mapContainer').setView([0, 11], 3);
-    let leaflet = L.map('mapContainer').setView([0, 11], 7);
+    let leaflet = L.map('mapContainer').setView([0, 11], 3);
+    // let leaflet = L.map('mapContainer').setView([0, 11], 7);
     Map.leaflet = leaflet;
     Map.hucbounds = [];
     Map.popups = [];
@@ -90,29 +90,40 @@ onMounted(() => {
 
 
     // add lakes features layer to map
-    let url = 'https://arcgis.cuahsi.org/arcgis/rest/services/SWOT/world_swot_lakes/FeatureServer/0'
+    let url = 'https://services1.arcgis.com/SIYkiqjmENweC50g/arcgis/rest/services/alltype_models_v1/FeatureServer/0/'
     const lakesFeatures = esriLeaflet.featureLayer({
         url: url,
-        simplifyFactor: 0.35,
-        precision: 5,
-        minZoom: 9,
-        maxZoom: 18,
+        // simplifyFactor: 0.35,
+        // precision: 5,
+        // minZoom: 9,
+        // maxZoom: 18,
         // fields: ["FID", "ZIP", "PO_NAME"],
     }).addTo(leaflet);
 
     lakesFeatures.on("click", function (e) {
         console.log(e.layer.feature.properties)
-        const popup = L.popup();
-        const content = `
-        <h3>${e.layer.feature.properties.names}</h3>
-        <h4>Lake ID: ${e.layer.feature.properties.lake_id}</h4>
-        <p>
-            <ul>
-                <li>SWORD Max Area: ${e.layer.feature.properties.max_area}</li>
-                <li>SWORD Basin: ${e.layer.feature.properties.basin_id}</li>
-            </ul>
-        </p>
-        `;
+        const popup = L.popup({
+            maxHeight: 100,
+            closeOnClick: false,
+            keepInView: true
+        });
+        console.log(e.layer.feature.properties)
+        let content = `<h3>${e.layer.feature.properties.citation}</h3><p><ul>`
+        for (const [key, value] of Object.entries(e.layer.feature.properties)) {
+            content += `<li>${key}: ${value}</li>`;
+        }
+        content += '</ul></p>'
+        // content += '<h3>' + JSON.stringify(e.layer.feature.properties) + '</h3>'
+        // const content = `
+        // <h3>${e.layer.feature.properties.names}</h3>
+        // <h4>Lake ID: ${e.layer.feature.properties.lake_id}</h4>
+        // <p>
+        //     <ul>
+        //         <li>SWORD Max Area: ${e.layer.feature.properties.max_area}</li>
+        //         <li>SWORD Basin: ${e.layer.feature.properties.basin_id}</li>
+        //     </ul>
+        // </p>
+        // `;
         popup.setLatLng(e.latlng).setContent(content).openOn(leaflet);
 
         lakesFeatures.setFeatureStyle(e.layer.feature.id, {
@@ -149,7 +160,7 @@ onMounted(() => {
         maxZoom: 18,
         color: "blue",
         // fields: ["FID", "ZIP", "PO_NAME"],
-    }).addTo(leaflet);
+    })
 
     Map.reachesFeatures = reachesFeatures
 
