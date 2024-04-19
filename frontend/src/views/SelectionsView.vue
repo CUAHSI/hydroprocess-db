@@ -155,7 +155,6 @@ import { RouterLink } from 'vue-router';
 import { ref } from 'vue'
 import { mdiSatelliteVariant, mdiSword, mdiCodeJson, mdiFileDelimited } from '@mdi/js'
 import { computed } from 'vue';
-import { queryHydroCron } from "../_helpers/hydroCron";
 
 const featureStore = useFeaturesStore();
 
@@ -196,20 +195,6 @@ async function downloadJson(feature) {
   const link = document.createElement('a');
   link.href = url;
   link.download = `${getLongFilename(feature)}.json`;
-
-  link.click();
-
-  URL.revokeObjectURL(url);
-}
-
-async function downloadCsv(feature) {
-  const csvData = await queryHydroCron(feature, 'csv')
-  const blob = new Blob([csvData], { type: 'text/csv' });
-  const url = URL.createObjectURL(blob);
-
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `${getLongFilename(feature)}.csv`;
 
   link.click();
 

@@ -28,9 +28,7 @@ onUpdated(() => {
 })
 
 onMounted(() => {
-    // TODO revert to zoom 3
-    let leaflet = L.map('mapContainer').setView([34.2, -117.78], 13);
-    // let leaflet = L.map('mapContainer').setView([0, 11], 7);
+    let leaflet = L.map('mapContainer').setView([0, 11], 3);
     Map.leaflet = leaflet;
     Map.hucbounds = [];
     Map.popups = [];
@@ -69,20 +67,24 @@ onMounted(() => {
         // fields: ["FID", "ZIP", "PO_NAME"],
     }).addTo(leaflet);
 
-    modelFeatures.on("click", function (e) {
-        console.log(e.layer.feature.properties)
-        const popup = L.popup({
-            maxHeight: 300,
-            closeOnClick: true,
-            keepInView: true
-        });
-        console.log(e.layer.feature.properties)
-        let content = `<h3>${e.layer.feature.properties.citation}</h3><p><ul>`
-        for (const [key, value] of Object.entries(e.layer.feature.properties)) {
+    function featurePopup(feature) {
+        let content = `<h3>${feature.properties.citation}</h3><p><ul>`
+        for (const [key, value] of Object.entries(feature.properties)) {
             content += `<li>${key}: ${value}</li>`;
         }
         content += '</ul></p>'
-        popup.setLatLng(e.latlng).setContent(content).openOn(leaflet);
+        const leafFeat = modelFeatures.getFeature(feature.id)
+        console.log(leafFeat)
+        L.popup({
+            maxHeight: 300,
+            closeOnClick: true,
+            keepInView: true
+        }).setLatLng(leafFeat.getLatLng()).setContent(content).openOn(leaflet);
+    }
+
+    modelFeatures.on("click", function (e) {
+        featurePopup(e.layer.feature);
+
     });
 
     // layer toggling
@@ -90,38 +92,64 @@ onMounted(() => {
         "Models": modelFeatures,
     };
 
+    const geoProvider = esriLeafletGeocoder.featureLayerProvider({
+        url:
+            "https://services1.arcgis.com/SIYkiqjmENweC50g/arcgis/rest/services/alltype_models_v1/FeatureServer/0/",
+        searchFields: ["textmodel_snipped", "citation"],
+        label: "Perceptual models",
+        bufferRadius: 5000,
+        formatSuggestion: function (feature) {
+            return `${feature.properties.watershed_name} (${feature.properties.model_type}) - ${feature.properties.id}`;
+        }
+    });
+
+    const addressProvider = esriLeafletGeocoder.arcgisOnlineProvider({
+        apikey: ARCGIS_API_KEY,
+        nearby: {
+            lat: -33.8688,
+            lng: 151.2093
+        }
+    });
+
+    const addressSearchControl = esriLeafletGeocoder.geosearch({
+        position: "bottomleft",
+        placeholder: "Search for an address",
+        useMapBounds: false,
+        providers: [
+            addressProvider,
+        ]
+    }).addTo(leaflet);
+
     const searchControl = esriLeafletGeocoder.geosearch({
         position: "topright",
-        placeholder: "Enter an address or place e.g. 1 York St",
+        placeholder: "Search for a model",
         useMapBounds: false,
+        expanded: true,
+        title: "Model search",
 
         providers: [
-            esriLeafletGeocoder.arcgisOnlineProvider({
-            apikey: ARCGIS_API_KEY,
-            nearby: {
-              lat: -33.8688,
-              lng: 151.2093
-            }
-          })
+            geoProvider,
         ]
-      }).addTo(leaflet);
+    }).addTo(leaflet);
 
-      const results = L.layerGroup().addTo(leaflet);
-      searchControl.on("results", (data) => {
-        results.clearLayers();
+    searchControl.on("results", (data) => {
 
         for (let i = data.results.length - 1; i >= 0; i--) {
-          const marker = L.marker(data.results[i].latlng);
+            console.log(data.results[i])
 
-          const lngLatString = `${Math.round(data.results[i].latlng.lng * 100000) / 100000}, ${
-            Math.round(data.results[i].latlng.lat * 100000) / 100000
-          }`;
-          marker.bindPopup(`<b>${lngLatString}</b><p>${data.results[i].properties.LongLabel}</p>`);
+            // open the popup of the existing marker
+            // const id = data.results[i].properties.id;
+            // const feature = modelFeatures.getFeature(id);
+            modelFeatures.setWhere(`id = ${data.results[i].properties.id}`);
 
-          results.addLayer(marker);
-          marker.openPopup();
+            // TODO: this doesn't work yet. Need to figure out how to get the feature from the layer
+            const feature = data.results[i].feature;
+            console.log(feature)
+            if (feature) {
+                featurePopup(feature);
+            }
         }
-      });
+    });
 
     // /*
     //  * LEAFLET BUTTONS
