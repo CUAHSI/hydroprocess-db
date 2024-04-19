@@ -137,10 +137,12 @@ onMounted(() => {
         for (let i = data.results.length - 1; i >= 0; i--) {
             console.log(data.results[i])
 
+            // filter to only show the one selected
+            // modelFeatures.setWhere(`id = ${data.results[i].properties.id}`);
+
             // open the popup of the existing marker
             // const id = data.results[i].properties.id;
             // const feature = modelFeatures.getFeature(id);
-            modelFeatures.setWhere(`id = ${data.results[i].properties.id}`);
 
             // TODO: this doesn't work yet. Need to figure out how to get the feature from the layer
             const feature = data.results[i].feature;
