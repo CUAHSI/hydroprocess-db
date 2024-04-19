@@ -12,8 +12,6 @@
       </v-card-item>
 
       <v-card-text>
-        <!-- TODO this linechart should only show single plot -->
-        <LineChart id="chart" :data="chartStore.chartData" />
         <v-expansion-panels>
           <v-expansion-panel>
             <v-expansion-panel-title>
@@ -59,14 +57,11 @@
   </v-bottom-sheet>
 </template>
 <script setup>
-import LineChart from "@/components/LineChart.vue";
 import { ref } from 'vue'
 import { useFeaturesStore } from '@/stores/features'
-import { useChartsStore } from '@/stores/charts'
 import { mdiSword, mdiTimelineClockOutline, mdiSatelliteVariant } from '@mdi/js'
 
 const featureStore = useFeaturesStore()
-const chartStore = useChartsStore()
 
 let showSheet = ref(false)
 

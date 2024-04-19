@@ -26,7 +26,7 @@
 <script setup>
 import { RouterLink } from 'vue-router'
 import { useDisplay } from 'vuetify'
-// import UserLogin from "@/components/UserLogin.vue";
+import UserLogin from "@/components/UserLogin.vue";
 import { useAuthStore } from '../stores/auth';
 defineProps(['paths'])
 defineEmits(['toggleMobileNav'])

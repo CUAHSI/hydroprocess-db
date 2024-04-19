@@ -6,6 +6,7 @@
 import "leaflet/dist/leaflet.css";
 import "leaflet-easybutton/src/easy-button.css";
 import L from 'leaflet'
+import * as esriLeafletGeocoder from "esri-leaflet-geocoder"
 import * as esriLeaflet from "esri-leaflet";
 // import * as esriLeafletVector from 'esri-leaflet-vector';
 import "leaflet-easybutton/src/easy-button";
@@ -13,14 +14,12 @@ import { onMounted, onUpdated, ref } from 'vue'
 import { useMapStore } from '@/stores/map'
 import { useAlertStore } from '@/stores/alerts'
 import { useFeaturesStore } from '@/stores/features'
-import { useChartsStore } from '@/stores/charts'
+import { ARCGIS_API_KEY } from "../constants";
 
 const mapStore = useMapStore()
 const alertStore = useAlertStore();
 const featureStore = useFeaturesStore();
-const chartStore = useChartsStore();
 
-import { queryHydroCron } from "../_helpers/hydroCron";
 
 const Map = mapStore.mapObject
 
@@ -30,7 +29,7 @@ onUpdated(() => {
 
 onMounted(() => {
     // TODO revert to zoom 3
-    let leaflet = L.map('mapContainer').setView([0, 11], 3);
+    let leaflet = L.map('mapContainer').setView([34.2, -117.78], 13);
     // let leaflet = L.map('mapContainer').setView([0, 11], 7);
     Map.leaflet = leaflet;
     Map.hucbounds = [];
@@ -46,44 +45,14 @@ onMounted(() => {
         -99999999];
 
     // Initial OSM tile layer
-    const CartoDB = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
-        subdomains: 'abcd',
-        maxZoom: 19
-    })
-
     var CartoDB_PositronNoLabels = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
         maxZoom: 20
     });
 
-    var CartoDB_DarkMatterNoLabels = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 20
-    });
-
-    const Stadia_StamenTonerLite = L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}{r}.{ext}', {
-        minZoom: 0,
-        maxZoom: 20,
-        attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        ext: 'png'
-    });
-
-    const Stadia_StamenTonerBackground = L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_toner_background/{z}/{x}/{y}{r}.{ext}', {
-        minZoom: 0,
-        maxZoom: 20,
-        attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        ext: 'png'
-    });
-
     const baselayers = {
-        CartoDB,
         CartoDB_PositronNoLabels,
-        CartoDB_DarkMatterNoLabels,
-        Stadia_StamenTonerLite,
-        Stadia_StamenTonerBackground
     };
 
     CartoDB_PositronNoLabels.addTo(leaflet);
@@ -91,7 +60,7 @@ onMounted(() => {
 
     // add lakes features layer to map
     let url = 'https://services1.arcgis.com/SIYkiqjmENweC50g/arcgis/rest/services/alltype_models_v1/FeatureServer/0/'
-    const lakesFeatures = esriLeaflet.featureLayer({
+    const modelFeatures = esriLeaflet.featureLayer({
         url: url,
         // simplifyFactor: 0.35,
         // precision: 5,
@@ -100,7 +69,7 @@ onMounted(() => {
         // fields: ["FID", "ZIP", "PO_NAME"],
     }).addTo(leaflet);
 
-    lakesFeatures.on("click", function (e) {
+    modelFeatures.on("click", function (e) {
         console.log(e.layer.feature.properties)
         const popup = L.popup({
             maxHeight: 300,
@@ -113,124 +82,46 @@ onMounted(() => {
             content += `<li>${key}: ${value}</li>`;
         }
         content += '</ul></p>'
-        // content += '<h3>' + JSON.stringify(e.layer.feature.properties) + '</h3>'
-        // const content = `
-        // <h3>${e.layer.feature.properties.names}</h3>
-        // <h4>Lake ID: ${e.layer.feature.properties.lake_id}</h4>
-        // <p>
-        //     <ul>
-        //         <li>SWORD Max Area: ${e.layer.feature.properties.max_area}</li>
-        //         <li>SWORD Basin: ${e.layer.feature.properties.basin_id}</li>
-        //     </ul>
-        // </p>
-        // `;
-        popup.setLatLng(e.latlng).setContent(content).openOn(leaflet);
-
-        lakesFeatures.setFeatureStyle(e.layer.feature.id, {
-            color: "#9D78D2",
-            weight: 3,
-            opacity: 1
-        });
-    });
-
-    url = 'https://arcgis.cuahsi.org/arcgis/services/SWOT/world_swot_lakes/MapServer/WmsServer?'
-    let lakes = L.tileLayer.wms(url, {
-        layers: 0,
-        transparent: 'true',
-        format: 'image/png',
-        minZoom: 0,
-        maxZoom: 9,
-    }).addTo(leaflet);
-
-    // add reaches layer to map
-    url = 'https://arcgis.cuahsi.org/arcgis/services/SWOT/world_SWORD_reaches_mercator/MapServer/WMSServer?'
-    let reaches = L.tileLayer.wms(url, {
-        layers: 0,
-        transparent: 'true',
-        format: 'image/png',
-        minZoom: 0,
-        maxZoom: 7,
-    }).addTo(leaflet);
-    url = url = 'https://arcgis.cuahsi.org/arcgis/rest/services/SWOT/world_SWORD_reaches_mercator/FeatureServer/0'
-    const reachesFeatures = esriLeaflet.featureLayer({
-        url: url,
-        simplifyFactor: 0.35,
-        precision: 5,
-        minZoom: 7,
-        maxZoom: 18,
-        color: "blue",
-        // fields: ["FID", "ZIP", "PO_NAME"],
-    })
-
-    Map.reachesFeatures = reachesFeatures
-
-    reachesFeatures.on("click", async function (e) {
-        const feature = e.layer.feature
-        if (featureStore.checkFeatureSelected(feature)) {
-            featureStore.deselectFeature(feature)
-        } else {
-            // TODO: set featurestyle base on the selected feature store
-            queryHydroCron(feature)
-        }
-    });
-
-    // add nodes layer to map
-    url = 'https://arcgis.cuahsi.org/arcgis/services/SWOT/world_SWORD_nodes_mercator/MapServer/WMSServer?'
-    let sword_nodes = L.tileLayer.wms(url, {
-        layers: 0,
-        transparent: 'true',
-        format: 'image/png',
-        minZoom: 12,
-        maxZoom: 13,
-    }).addTo(leaflet);
-
-    url = 'https://arcgis.cuahsi.org/arcgis/rest/services/SWOT/world_SWORD_nodes_mercator/FeatureServer/0'
-    const nodesFeatures = esriLeaflet.featureLayer({
-        url: url,
-        simplifyFactor: 0.35,
-        precision: 5,
-        minZoom: 13,
-        maxZoom: 18,
-    }).addTo(leaflet);
-
-    nodesFeatures.on("click", function (e) {
-        const popup = L.popup();
-        const content = `
-        <h3>${e.layer.feature.properties.river_name}</h3>
-        <h4>Node ID: ${e.layer.feature.properties.node_id}</h4>
-        <p>
-            <ul>
-                <li>SWORD Width: ${e.layer.feature.properties.width}</li>
-                <li>SWORD WSE: ${e.layer.feature.properties.wse}</li>
-                <li>SWORD Sinuosity: ${e.layer.feature.properties.sinuosity}</li>
-                <li>SWOT Dist_out: ${e.layer.feature.properties.dist_out}</li>
-            </ul>
-        </p>
-        `;
         popup.setLatLng(e.latlng).setContent(content).openOn(leaflet);
     });
-
-    // // add USGS gage layer to map
-    // url = 'http://arcgis.cuahsi.org/arcgis/services/NHD/usgs_gages/MapServer/WmsServer?';
-    // let gages = L.tileLayer.wms(url, {
-    //     layers: 0,
-    //     transparent: 'true',
-    //     format: 'image/png',
-    //     minZoom: 9,
-    //     maxZoom: 18,
-    // }).addTo(map);
-
 
     // layer toggling
     let mixed = {
-        // "USGS Gages": gages,
-        "Lakes": lakes,
-        "Lakes Features": lakesFeatures,
-        "SWORD Reaches": reaches,
-        "Reaches Features": reachesFeatures,
-        "SWORD Nodes": sword_nodes,
-        "Nodes Features": nodesFeatures,
+        "Models": modelFeatures,
     };
+
+    const searchControl = esriLeafletGeocoder.geosearch({
+        position: "topright",
+        placeholder: "Enter an address or place e.g. 1 York St",
+        useMapBounds: false,
+
+        providers: [
+            esriLeafletGeocoder.arcgisOnlineProvider({
+            apikey: ARCGIS_API_KEY,
+            nearby: {
+              lat: -33.8688,
+              lng: 151.2093
+            }
+          })
+        ]
+      }).addTo(leaflet);
+
+      const results = L.layerGroup().addTo(leaflet);
+      searchControl.on("results", (data) => {
+        results.clearLayers();
+
+        for (let i = data.results.length - 1; i >= 0; i--) {
+          const marker = L.marker(data.results[i].latlng);
+
+          const lngLatString = `${Math.round(data.results[i].latlng.lng * 100000) / 100000}, ${
+            Math.round(data.results[i].latlng.lat * 100000) / 100000
+          }`;
+          marker.bindPopup(`<b>${lngLatString}</b><p>${data.results[i].properties.LongLabel}</p>`);
+
+          results.addLayer(marker);
+          marker.openPopup();
+        }
+      });
 
     // /*
     //  * LEAFLET BUTTONS
@@ -256,51 +147,6 @@ onMounted(() => {
     validate_bbox_size()
 })
 
-
-async function getGageInfo(e) {
-
-    // TESTING GAGE INFO BOX
-    // quick and dirty buffer around cursor
-    // bbox = lon_min, lat_min, lon_max, lat_max
-    let buf = 0.001;
-
-    let buffered_bbox = (e.latlng.lat - buf) + ','
-        + (e.latlng.lng - buf) + ','
-        + (e.latlng.lat + buf) + ','
-        + (e.latlng.lng + buf);
-    let defaultParameters = {
-        service: 'WFS',
-        request: 'GetFeature',
-        bbox: buffered_bbox,
-        typeName: 'usgs_gages:usgs_gages_4326',
-        SrsName: 'EPSG:4326',
-        outputFormat: 'ESRIGEOJSON'
-    };
-    let root = 'https://arcgis.cuahsi.org/arcgis/services/NHD/usgs_gages/MapServer/WFSServer';
-    let parameters = L.Util.extend(defaultParameters);
-    let gageURL = root + L.Util.getParamString(parameters);
-
-    let gage_meta = {};
-    console.log(gageURL)
-    let resp = await fetch(gageURL)
-    if (resp.ok) {
-        try {
-            let response = await resp.json()
-            if (response.features.length > 0) {
-                let atts = response.features[0].attributes;
-                let geom = response.features[0].geometry;
-                gage_meta.name = atts.STATION_NM;
-                gage_meta.num = atts.SITE_NO;
-                gage_meta.x = geom.x;
-                gage_meta.y = geom.y;
-            }
-        } catch (e) {
-            console.error("Error attempting json parse", e)
-        }
-    }
-    return gage_meta;
-
-}
 
 /**
  * Handles the click event on the map.
@@ -345,79 +191,6 @@ async function mapClick(e) {
 }
 
 
-function traceUpstream(usgs_gage) {
-
-    console.log('traceUpstream --> selected gage = ' + usgs_gage);
-
-    // clear any existing reaches from the map
-    if (Map.reaches.obj != null) {
-        Map.reaches.obj.clearLayers();
-    }
-
-    // query the upstream reaches via NLDI
-    $.ajax({
-        url: '/nldi-trace',
-        type: 'GET',
-        contentType: "application/json",
-        data: {
-            'site_provider': 'nwis',
-            'site': usgs_gage
-        },
-        success: function (response) {
-
-
-            // add the reaches to the map and replace the global reaches
-            // object with the newly selected reaches.
-            let reaches = L.geoJSON(response.features, { style: { color: 'green' } });
-            Map.reaches.start_id = reaches._leaflet_id;
-            Map.reaches.count = response.features.length;
-            Map.reaches.obj = reaches;
-            reaches.addTo(Map.leaflet);
-
-
-            // a list to store a single coordinate for each reach
-            let centroids = [];
-
-
-            // generate a list of points for each of the reaches
-            response.features.forEach(function (reach) {
-
-                // select the middle geometry feature.
-                // This is a hack and should be replaced with something better
-                geom_idx = Math.ceil(reach.geometry.coordinates.length / 2);
-
-                geom_coord = reach.geometry.coordinates[geom_idx];
-                centroids.push(geom_coord);
-            })
-
-            console.log('Number of reaches found = ' + centroids.length);
-
-            // TODO: move this into a function since it's used in several places.
-            // query the HUC geometry for each of the reach coordinate points
-            // use this data to query ArcGIS WFS for the selected HUC object.
-            centroids.forEach(function (coord) {
-                let defaultParameters = {
-                    service: 'WFS',
-                    request: 'GetFeature',
-                    bbox: coord[0] + ',' + coord[1] + ',' + coord[0] + ',' + coord[1],
-                    typeName: 'HUC_WBD:HUC12_US',
-                    SrsName: 'EPSG:4326'
-                };
-                let root = 'https://arcgis.cuahsi.org/arcgis/services/US_WBD/HUC_WBD/MapServer/WFSServer';
-                let parameters = L.Util.extend(defaultParameters);
-                let URL = root + L.Util.getParamString(parameters);
-
-                //	   	// load the map and table elements async
-                // todo: highlight the unique set of HUCs, do not toggle.
-                //	   	toggleHucsAsync(URL, true, null);
-            })
-        },
-        error: function (error) {
-            console.log('error querying NLDI upstream: ' + error);
-        }
-    });
-}
-
 function clearSelection() {
     // TODO: update clear selection function
     // Clears the selected features on the map
@@ -436,7 +209,6 @@ function clearSelection() {
     }
 
     featureStore.clearSelectedFeatures()
-    chartStore.clearChartData()
 
     // update the map
     updateMapBBox();

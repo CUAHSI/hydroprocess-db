@@ -32,11 +32,6 @@ const router = createRouter({
       component: () => import('../views/SelectionsView.vue')
     },
     {
-      path: '/charts',
-      name: 'charts',
-      component: () => import('../views/ChartsView.vue')
-    },
-    {
       path: '/auth-redirect',
       name: 'auth-redirect',
       component: () => import('../views/AuthRedirectView.vue'),
