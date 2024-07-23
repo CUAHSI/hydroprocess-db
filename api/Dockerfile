@@ -13,6 +13,9 @@ RUN mv mc /usr/local/bin/mc
 
 COPY ./hydroprocess_db /hydroprocess_db
 
+# TODO: remove debugpy from production -- only for debugging
+RUN pip install debugpy -t /tmp
+
 ENV PYTHONPATH "/hydroprocess_db/:${PYTHONPATH}"
 
 EXPOSE 8000

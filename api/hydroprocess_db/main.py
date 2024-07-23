@@ -1,15 +1,9 @@
-import subprocess
-import httpx
-
-from beanie import init_beanie
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from hydroprocess_db.app.db import User, db
-from hydroprocess_db.app.schemas import UserRead, UserUpdate
-from hydroprocess_db.app.users import SECRET, auth_backend, cuahsi_oauth_client, fastapi_users
-from hydroprocess_db.config import get_settings
+from app.schemas import UserRead, UserUpdate
+from app.users import SECRET, auth_backend, cuahsi_oauth_client, fastapi_users
+from config import get_settings
 
 # TODO: get oauth working with swagger/redoc
 # Setting the base url for swagger docs
