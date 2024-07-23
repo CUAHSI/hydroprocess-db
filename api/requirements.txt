@@ -4,7 +4,6 @@ fastapi
 fastapi-users[beanie]
 uvicorn[standard]
 httpx_oauth
-minio
 pydantic-settings
 google-cloud-logging
 pyproj

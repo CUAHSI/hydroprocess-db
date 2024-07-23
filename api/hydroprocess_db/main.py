@@ -7,7 +7,6 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from hydroprocess_db.app.db import User, db
-from hydroprocess_db.app.routers.access_control import router as access_control_router
 from hydroprocess_db.app.schemas import UserRead, UserUpdate
 from hydroprocess_db.app.users import SECRET, auth_backend, cuahsi_oauth_client, fastapi_users
 from hydroprocess_db.config import get_settings
@@ -60,26 +59,3 @@ app.include_router(
     prefix="/users",
     tags=["users"],
 )
-
-
-@app.on_event("startup")
-async def on_startup():
-    await init_beanie(
-        database=db,
-        document_models=[
-            User,
-        ],
-    )
-    arguments = [
-        'mc',
-        'alias',
-        'set',
-        'cuahsi',
-        f"https://{get_settings().minio_api_url}",
-        get_settings().minio_access_key,
-        get_settings().minio_secret_key,
-    ]
-    try:
-        _output = subprocess.check_output(arguments)
-    except subprocess.CalledProcessError as e:
-        raise
