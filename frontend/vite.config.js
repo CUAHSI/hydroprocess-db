@@ -13,7 +13,7 @@ export default defineConfig(({ mode }) => {
     vuetify(),
   ],
   root: "./",
-  // for GH pages deployment, set VITE_APP_BASE=/swot-data-viewer/ in .env
+  // for GH pages deployment, set VITE_APP_BASE=/hydroprocess-db/ in .env
   base: env.VITE_APP_BASE || "/",
   envDir: "../",
   resolve: {
