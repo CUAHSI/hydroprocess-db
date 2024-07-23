@@ -8,7 +8,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from subsetter.app.db import User, db
 from subsetter.app.routers.access_control import router as access_control_router
-from subsetter.app.routers.argo import router as argo_router
 from subsetter.app.routers.storage import router as storage_router
 from subsetter.app.schemas import UserRead, UserUpdate
 from subsetter.app.users import SECRET, auth_backend, cuahsi_oauth_client, fastapi_users
@@ -36,12 +35,6 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)
-
-app.include_router(
-    argo_router,
-    # prefix="/auth/cuahsi",
-    tags=["argo"],
 )
 
 app.include_router(
