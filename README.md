@@ -4,8 +4,8 @@
 
 ### Clone the repo, checkout this branch
 ```console
-git clone https://github.com/CUAHSI/hydroprocess-db.git
-cd hydroprocess-db
+git clone https://github.com/CUAHSI/hydroprocess_db.git
+cd hydroprocess_db
 git checkout develop
 ```
 

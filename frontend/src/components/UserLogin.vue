@@ -21,7 +21,7 @@
                 <v-card-title>Log In</v-card-title>
                 <v-card-text>
                     <p class="text-body-1">
-                        User accounts for hydroprocess-db are managed using CUAHSI SSO.
+                        User accounts for hydroprocess_db are managed using CUAHSI SSO.
                         You will be redirected to CUAHSI SSO where you can login or create an account.
                     </p>
                 </v-card-text>

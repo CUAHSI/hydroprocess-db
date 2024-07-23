@@ -10,8 +10,8 @@ from fastapi_users.db import BeanieUserDatabase, ObjectIDIDMixin
 from httpx_oauth.errors import GetIdEmailError
 from httpx_oauth.oauth2 import OAuth2
 
-from subsetter.app.db import User, get_user_db
-from subsetter.config import get_settings, get_minio_client
+from hydroprocess_db.app.db import User, get_user_db
+from hydroprocess_db.config import get_settings, get_minio_client
 
 SECRET = "SECRET"
 

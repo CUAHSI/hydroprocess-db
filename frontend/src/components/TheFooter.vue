@@ -3,7 +3,7 @@
     <div class="d-flex w-100 align-center">
       <ThemeButton />
       <div class="text-center w-100">
-        {{ new Date().getFullYear() }} — <strong>HYDROPROCESS-DB</strong>
+        {{ new Date().getFullYear() }} — <strong>hydroprocess_db</strong>
       </div>
       <v-spacer></v-spacer>
       <!-- <v-switch v-model="switchValue" @click.stop="toggleSwitch" :label="`${switchValue ? 'Faking Data' : 'Using Real Data'}`"></v-switch> -->

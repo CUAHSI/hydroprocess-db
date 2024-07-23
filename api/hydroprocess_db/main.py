@@ -6,12 +6,11 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from subsetter.app.db import User, db
-from subsetter.app.routers.access_control import router as access_control_router
-from subsetter.app.routers.storage import router as storage_router
-from subsetter.app.schemas import UserRead, UserUpdate
-from subsetter.app.users import SECRET, auth_backend, cuahsi_oauth_client, fastapi_users
-from subsetter.config import get_settings
+from hydroprocess_db.app.db import User, db
+from hydroprocess_db.app.routers.access_control import router as access_control_router
+from hydroprocess_db.app.schemas import UserRead, UserUpdate
+from hydroprocess_db.app.users import SECRET, auth_backend, cuahsi_oauth_client, fastapi_users
+from hydroprocess_db.config import get_settings
 
 # TODO: get oauth working with swagger/redoc
 # Setting the base url for swagger docs
@@ -35,18 +34,6 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)
-
-app.include_router(
-    access_control_router,
-    # prefix="/auth/cuahsi",
-    tags=["minio"],
-)
-
-app.include_router(
-    storage_router,
-    # prefix="/auth/cuahsi",
-    tags=["minio"],
 )
 
 app.include_router(

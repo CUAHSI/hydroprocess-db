@@ -6,9 +6,9 @@ import tempfile
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
-from subsetter.app.db import Submission, User
-from subsetter.app.routers.access_control.policy_generation import minio_policy
-from subsetter.app.users import current_active_user
+from hydroprocess_db.app.db import Submission, User
+from hydroprocess_db.app.routers.access_control.policy_generation import minio_policy
+from hydroprocess_db.app.users import current_active_user
 
 router = APIRouter()
 
