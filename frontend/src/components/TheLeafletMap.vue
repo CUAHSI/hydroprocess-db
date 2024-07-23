@@ -13,12 +13,10 @@ import "leaflet-easybutton/src/easy-button";
 import { onMounted, onUpdated, ref } from 'vue'
 import { useMapStore } from '@/stores/map'
 import { useAlertStore } from '@/stores/alerts'
-import { useFeaturesStore } from '@/stores/features'
 import { ARCGIS_API_KEY } from "../constants";
 
 const mapStore = useMapStore()
 const alertStore = useAlertStore();
-const featureStore = useFeaturesStore();
 
 
 const Map = mapStore.mapObject
@@ -237,8 +235,6 @@ function clearSelection() {
         // clear the hucs in the html template
 
     }
-
-    featureStore.clearSelectedFeatures()
 
     // update the map
     updateMapBBox();

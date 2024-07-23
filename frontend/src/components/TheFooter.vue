@@ -13,17 +13,9 @@
 
 <script setup>
 import ThemeButton from './ThemeButton.vue';
-import { useFeaturesStore } from '@/stores/features'
 import { ref } from 'vue'
 
-const featureStore = useFeaturesStore()
-
-let switchValue = ref(featureStore.shouldFakeData)
-
-// const toggleSwitch = () => {
-//   featureStore.shouldFakeData = !featureStore.shouldFakeData
-//   switchValue.value = !switchValue.value
-// }
+let switchValue = ref(false)
 
 </script>
 

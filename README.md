@@ -1,12 +1,11 @@
-# SWOT-Data-Viewer
-Data viewing, discovery, and access interface for the Surface Water Open Topography mission.
+# Hydroprocess DB
 
 ## Getting Started
 
 ### Clone the repo, checkout this branch
 ```console
-git clone https://github.com/CUAHSI/SWOT-Data-Viewer.git
-cd SWOT-Data-Viewer
+git clone https://github.com/CUAHSI/hydroprocess-db.git
+cd hydroprocess-db
 git checkout develop
 ```
 
