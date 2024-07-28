@@ -15,7 +15,7 @@ from fastapi_users.db import SQLAlchemyBaseOAuthAccountTableUUID
 # https://github.com/fastapi-users/fastapi-users-db-sqlmodel
 # https://stackoverflow.com/questions/70694787/fastapi-fastapi-users-with-database-adapter-for-sqlmodel-users-table-is-not-crea
 # https://gist.github.com/juftin/91dee06998771f13788880d387d7022d
-from hydroprocess_db.config import get_settings
+from config import get_settings
 
 SQLITE_FILE = get_settings().sqlite_file_name
 DATABASE_URL = f"sqlite+aiosqlite:///./{SQLITE_FILE}"

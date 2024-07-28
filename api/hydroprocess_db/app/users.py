@@ -10,8 +10,8 @@ from fastapi_users_db_sqlmodel import SQLModelUserDatabaseAsync
 from httpx_oauth.exceptions import GetIdEmailError
 from httpx_oauth.oauth2 import OAuth2
 
-from hydroprocess_db.app.db import User, get_async_session
-from hydroprocess_db.config import get_settings
+from app.db import User, get_async_session
+from config import get_settings
 
 SECRET = "SECRET"
 

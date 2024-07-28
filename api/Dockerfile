@@ -20,4 +20,4 @@ ENV PYTHONPATH "/hydroprocess_db/:${PYTHONPATH}"
 
 EXPOSE 8000
 
-CMD uvicorn --host 0.0.0.0 --port 8000 --proxy-headers hydroprocess_db.main:app
+CMD uvicorn --host 0.0.0.0 --port 8000 --proxy-headers main:app

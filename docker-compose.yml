@@ -35,6 +35,7 @@ services:
     build:
       context: ./api/
       dockerfile: Dockerfile
-    command: python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 -m uvicorn --host 0.0.0.0 --port 8000 --proxy-headers main:app --reload
+    working_dir: /hydroprocess_db
+    command: python /tmp/debugpy --listen 0.0.0.0:5678 -m uvicorn --host 0.0.0.0 --port 8000 --proxy-headers main:app --reload
     env_file:
       - .env
