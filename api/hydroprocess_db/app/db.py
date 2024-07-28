@@ -1,10 +1,16 @@
-from enum import Enum
-from typing import List, Optional, Tuple
-
-import httpx
-from sqlmodel import Field, Session, SQLModel, create_engine
+# from typing import List, Optional
+# import httpx
+from typing import AsyncGenerator
 from fastapi import Depends
-from fastapi_users.db import SQLAlchemyBaseOAuthAccountTableUUID, SQLAlchemyBaseUserTableUUID, SQLAlchemyUserDatabase
+from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy.orm import sessionmaker
+# from sqlalchemy.orm import relationship, Mapped
+from sqlmodel import SQLModel
+# from sqlmodel import Field
+from sqlmodel.ext.asyncio.session import AsyncSession
+
+from fastapi_users_db_sqlmodel import SQLModelBaseUserDB, SQLModelUserDatabaseAsync
+from fastapi_users.db import SQLAlchemyBaseOAuthAccountTableUUID
 # https://github.com/fastapi-users/fastapi-users/discussions/861
 # https://github.com/fastapi-users/fastapi-users-db-sqlmodel
 # https://stackoverflow.com/questions/70694787/fastapi-fastapi-users-with-database-adapter-for-sqlmodel-users-table-is-not-crea
@@ -12,85 +18,61 @@ from fastapi_users.db import SQLAlchemyBaseOAuthAccountTableUUID, SQLAlchemyBase
 from hydroprocess_db.config import get_settings
 
 SQLITE_FILE = get_settings().sqlite_file_name
-sqlite_url = f"sqlite:///{SQLITE_FILE}"
+DATABASE_URL = f"sqlite+aiosqlite:///./{SQLITE_FILE}"
 
 connect_args = {"check_same_thread": False}
-engine = create_engine(sqlite_url, echo=True, connect_args=connect_args)
+engine = create_async_engine(DATABASE_URL, future=True, connect_args=connect_args)
+async_session_maker = sessionmaker(
+    engine,
+    class_=AsyncSession,
+    expire_on_commit=False,
+)
 
 
-def create_db_and_tables():
-    SQLModel.metadata.create_all(engine)
+async def create_db_and_tables():
+    async with engine.begin() as conn:
+        await conn.run_sync(SQLModel.metadata.create_all)
 
 
-def get_db_session():
-    with Session(engine) as session:
-        yield session
-
-
-class OAuthAccount(SQLAlchemyBaseOAuthAccountTableUUID, SQLModel):
+class OAuthAccount(SQLAlchemyBaseOAuthAccountTableUUID):
     # https://fastapi-users.github.io/fastapi-users/latest/configuration/oauth/?h=#configuration
     pass
 
 
-class PhaseEnum(str, Enum):
-    RUNNING = "Running"
-    SUCCEEDED = "Succeeded"
-    FAILED = "Failed"
-    PENDING = "Pending"
-    ERROR = "Error"
+class User(SQLModelBaseUserDB, table=True):
+    # TODO: add OAuthAccount to User
+    # oauth_accounts: List[OAuthAccount] = Field(default_factory=list)
+    # oauth_accounts: Mapped[List[OAuthAccount]] = relationship(
+    #     "OAuthAccount", lazy="joined"
+    # )
+
+    # name: Optional[str] = None
+    # username: Optional[str] = None
+    # given_name: Optional[str] = None
+    # family_name: Optional[str] = None
+
+    # async def update_profile(self):
+    #     async def get_profile(token: str) -> Tuple[str, str]:
+    #         async with httpx.AsyncClient() as client:
+    #             response = await client.get(
+    #                 get_settings().user_info_endpoint,
+    #                 headers={"Authorization": f"Bearer {token}"},
+    #             )
+    #             return response.json()
+
+    #     profile = await get_profile(self.oauth_accounts[0].access_token)
+    #     self.name = profile['name']
+    #     self.username = profile['preferred_username']
+    #     self.given_name = profile['given_name']
+    #     self.family_name = profile['family_name']
+    #     await self.save()
+    pass
 
 
-class Submission(SQLModel):
-    workflow_id: str
-    workflow_name: str
-    phase: Optional[PhaseEnum] = None
-    startedAt: Optional[str] = None
-    finishedAt: Optional[str] = None
-    estimatedDuration: Optional[int] = None
+async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
+    async with async_session_maker() as session:
+        yield session
 
 
-class User(SQLAlchemyBaseUserTableUUID, SQLModel):
-    oauth_accounts: List[OAuthAccount] = Field(default_factory=list)
-    submissions: List[Submission] = Field(default_factory=list)
-    name: Optional[str] = None
-    username: Optional[str] = None
-    given_name: Optional[str] = None
-    family_name: Optional[str] = None
-
-    async def update_profile(self):
-        async def get_profile(token: str) -> Tuple[str, str]:
-            async with httpx.AsyncClient() as client:
-                response = await client.get(
-                    get_settings().user_info_endpoint,
-                    headers={"Authorization": f"Bearer {token}"},
-                )
-                return response.json()
-
-        profile = await get_profile(self.oauth_accounts[0].access_token)
-        self.name = profile['name']
-        self.username = profile['preferred_username']
-        self.given_name = profile['given_name']
-        self.family_name = profile['family_name']
-        await self.save()
-
-    def get_submission(self, workflow_id: str) -> Submission:
-        try:
-            return next(submission for submission in self.submissions if submission.workflow_id == workflow_id)
-        except:
-            return None
-
-    def running_submissions(self) -> list[Submission]:
-        return [submission for submission in self.submissions if submission.phase == PhaseEnum.RUNNING]
-
-    async def update_submission(self, submission: Submission) -> None:
-        if self.get_submission(submission.workflow_id):
-            self.submissions = [
-                submission if submission.workflow_id == ws.workflow_id else ws for ws in self.submissions
-            ]
-        else:
-            self.submissions.append(submission)
-        await self.save()
-
-
-async def get_user_db(session: Session = Depends(get_db_session)):
-    yield SQLAlchemyUserDatabase(session, User, OAuthAccount)
+async def get_user_db(session: AsyncSession = Depends(get_async_session)):
+    yield SQLModelUserDatabaseAsync(session, User)

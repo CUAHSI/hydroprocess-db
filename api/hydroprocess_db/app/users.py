@@ -4,13 +4,13 @@ from typing import Any, Dict, Optional, Tuple, cast
 
 import httpx
 from fastapi import Depends, Request
-from fastapi_users import BaseUserManager, FastAPIUsers
+from fastapi_users import BaseUserManager, FastAPIUsers, UUIDIDMixin
 from fastapi_users.authentication import AuthenticationBackend, BearerTransport, JWTStrategy
-from fastapi_users.db import SQLAlchemyUserDatabase
+from fastapi_users_db_sqlmodel import SQLModelUserDatabaseAsync
 from httpx_oauth.exceptions import GetIdEmailError
 from httpx_oauth.oauth2 import OAuth2
 
-from hydroprocess_db.app.db import User, get_db_session
+from hydroprocess_db.app.db import User, get_async_session
 from hydroprocess_db.config import get_settings
 
 SECRET = "SECRET"
@@ -57,7 +57,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         print(f"Verification requested for user {user.id}. Verification token: {token}")
 
 
-async def get_user_manager(user_db: SQLAlchemyUserDatabase = Depends(get_db_session)):
+async def get_user_manager(user_db: SQLModelUserDatabaseAsync = Depends(get_async_session)):
     yield UserManager(user_db)
 
 bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
