@@ -9,8 +9,7 @@ load_dotenv()
 
 class Settings(BaseSettings):
 
-    mongo_url: str
-    mongo_database: str
+    sqlite_file_name: str
 
     oauth2_client_id: str
     oauth2_client_secret: str

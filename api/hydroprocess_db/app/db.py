@@ -2,19 +2,33 @@ from enum import Enum
 from typing import List, Optional, Tuple
 
 import httpx
-import motor.motor_asyncio
-from beanie import Document
-from fastapi_users.db import BaseOAuthAccount, BeanieBaseUser, BeanieUserDatabase
-from pydantic import BaseModel, Field
-
+from sqlmodel import Field, Session, SQLModel, create_engine
+from fastapi import Depends
+from fastapi_users.db import SQLAlchemyBaseOAuthAccountTableUUID, SQLAlchemyBaseUserTableUUID, SQLAlchemyUserDatabase
+# https://github.com/fastapi-users/fastapi-users/discussions/861
+# https://github.com/fastapi-users/fastapi-users-db-sqlmodel
+# https://stackoverflow.com/questions/70694787/fastapi-fastapi-users-with-database-adapter-for-sqlmodel-users-table-is-not-crea
+# https://gist.github.com/juftin/91dee06998771f13788880d387d7022d
 from hydroprocess_db.config import get_settings
 
-DATABASE_URL = get_settings().mongo_url
-client = motor.motor_asyncio.AsyncIOMotorClient(DATABASE_URL, uuidRepresentation="standard")
-db = client[get_settings().mongo_database]
+SQLITE_FILE = get_settings().sqlite_file_name
+sqlite_url = f"sqlite:///{SQLITE_FILE}"
+
+connect_args = {"check_same_thread": False}
+engine = create_engine(sqlite_url, echo=True, connect_args=connect_args)
 
 
-class OAuthAccount(BaseOAuthAccount):
+def create_db_and_tables():
+    SQLModel.metadata.create_all(engine)
+
+
+def get_db_session():
+    with Session(engine) as session:
+        yield session
+
+
+class OAuthAccount(SQLAlchemyBaseOAuthAccountTableUUID, SQLModel):
+    # https://fastapi-users.github.io/fastapi-users/latest/configuration/oauth/?h=#configuration
     pass
 
 
@@ -26,7 +40,7 @@ class PhaseEnum(str, Enum):
     ERROR = "Error"
 
 
-class Submission(BaseModel):
+class Submission(SQLModel):
     workflow_id: str
     workflow_name: str
     phase: Optional[PhaseEnum] = None
@@ -35,7 +49,7 @@ class Submission(BaseModel):
     estimatedDuration: Optional[int] = None
 
 
-class User(BeanieBaseUser, Document):
+class User(SQLAlchemyBaseUserTableUUID, SQLModel):
     oauth_accounts: List[OAuthAccount] = Field(default_factory=list)
     submissions: List[Submission] = Field(default_factory=list)
     name: Optional[str] = None
@@ -78,5 +92,5 @@ class User(BeanieBaseUser, Document):
         await self.save()
 
 
-async def get_user_db():
-    yield BeanieUserDatabase(User, OAuthAccount)
+async def get_user_db(session: Session = Depends(get_db_session)):
+    yield SQLAlchemyUserDatabase(session, User, OAuthAccount)

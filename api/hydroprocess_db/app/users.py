@@ -1,16 +1,16 @@
 import os
+import uuid
 from typing import Any, Dict, Optional, Tuple, cast
 
 import httpx
-from beanie import PydanticObjectId
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, FastAPIUsers
 from fastapi_users.authentication import AuthenticationBackend, BearerTransport, JWTStrategy
-from fastapi_users.db import BeanieUserDatabase, ObjectIDIDMixin
+from fastapi_users.db import SQLAlchemyUserDatabase
 from httpx_oauth.exceptions import GetIdEmailError
 from httpx_oauth.oauth2 import OAuth2
 
-from hydroprocess_db.app.db import User, get_user_db
+from hydroprocess_db.app.db import User, get_db_session
 from hydroprocess_db.config import get_settings
 
 SECRET = "SECRET"
@@ -46,7 +46,7 @@ client_params = dict(
 cuahsi_oauth_client = CUAHSIOAuth2(**client_params)
 
 
-class UserManager(ObjectIDIDMixin, BaseUserManager[User, PydanticObjectId]):
+class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     reset_password_token_secret = SECRET
     verification_token_secret = SECRET
 
@@ -57,7 +57,7 @@ class UserManager(ObjectIDIDMixin, BaseUserManager[User, PydanticObjectId]):
         print(f"Verification requested for user {user.id}. Verification token: {token}")
 
 
-async def get_user_manager(user_db: BeanieUserDatabase = Depends(get_user_db)):
+async def get_user_manager(user_db: SQLAlchemyUserDatabase = Depends(get_db_session)):
     yield UserManager(user_db)
 
 bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
@@ -73,7 +73,7 @@ auth_backend = AuthenticationBackend(
     get_strategy=get_jwt_strategy,
 )
 
-fastapi_users = FastAPIUsers[User, PydanticObjectId](get_user_manager, [auth_backend])
+fastapi_users = FastAPIUsers[User, uuid.UUID](get_user_manager, [auth_backend])
 
 current_active_fastapi_user = fastapi_users.current_user(active=True)
 
