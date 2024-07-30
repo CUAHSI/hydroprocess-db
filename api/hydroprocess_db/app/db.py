@@ -9,8 +9,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from fastapi_users_db_sqlmodel import SQLModelBaseUserDB, SQLModelUserDatabaseAsync
 from config import get_settings
 
-SQLITE_FILE = get_settings().sqlite_file_name
-DATABASE_URL = f"sqlite+aiosqlite:///./{SQLITE_FILE}"
+DATABASE_URL = get_settings().database_url
 
 
 class User(SQLModelBaseUserDB, table=True):

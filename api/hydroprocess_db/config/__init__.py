@@ -9,7 +9,7 @@ load_dotenv()
 
 class Settings(BaseSettings):
 
-    sqlite_file_name: str
+    database_url: str
 
     oauth2_client_id: str
     oauth2_client_secret: str

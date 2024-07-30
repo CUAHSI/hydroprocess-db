@@ -11,6 +11,7 @@ services:
     depends_on:
       - api
   
+  # Commented out here so that HMR can be used via Vite for frontend development
   # frontend:
   #   image: frontend
   #   env_file:
@@ -39,3 +40,19 @@ services:
     command: python /tmp/debugpy --listen 0.0.0.0:5678 -m uvicorn --host 0.0.0.0 --port 8000 --proxy-headers main:app --reload
     env_file:
       - .env
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16.3
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: hydroprocess
+  
+volumes:
+  postgres_data:
