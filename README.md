@@ -9,14 +9,13 @@ cd hydroprocess_db
 git checkout develop
 ```
 
-### Full stack running locally
+### API running locally
 ```console
 cp .env.template .env
 make build
 make up
 ```
 The API will be available at http://0.0.0.0:8001
-The Frontend will be available at https://localhost (you will have to add an exception for the self-signed cert)
 
 ### Frontend for local development
 ```console
