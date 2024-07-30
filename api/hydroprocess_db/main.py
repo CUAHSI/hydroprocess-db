@@ -2,10 +2,20 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.schemas import UserCreate, UserRead, UserUpdate
-from app.users import auth_backend, current_active_user, fastapi_users
+from app.users import auth_backend, fastapi_users
 from config import get_settings
 
-app = FastAPI(servers=[{"url": get_settings().vite_app_api_url}])
+from contextlib import asynccontextmanager
+from app.db import create_db_and_tables
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Not needed if you setup a migration system like Alembic
+    await create_db_and_tables()
+    yield
+
+app = FastAPI(servers=[{"url": get_settings().vite_app_api_url}], lifespan=lifespan)
 
 origins = [get_settings().allow_origins]
 
