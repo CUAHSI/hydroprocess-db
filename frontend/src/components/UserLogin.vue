@@ -17,23 +17,25 @@
             </template>
         </template>
         <template v-slot:default="{ isActive }">
-            <v-card class="cd-login">
-                <v-card-title>Log In</v-card-title>
-                <v-card-text>
-                    <p class="text-body-1">
-                        User accounts for hydroprocess_db are managed using CUAHSI SSO.
-                        You will be redirected to CUAHSI SSO where you can login or create an account.
-                    </p>
-                </v-card-text>
-                <v-divider></v-divider>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn text="Cancel" @click="isActive.value = false"></v-btn>
-                    <v-btn id="login_continue" @click="openLogInDialog()" color="primary">
-                        <span>Log In Using CUAHSI SSO</span>
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
+            <v-form @submit.prevent="submit">
+                <v-card class="cd-login">
+                    <v-card-title>Log In</v-card-title>
+                    <v-card-text>
+                        <v-text-field label="Email" v-model="email.value.value"
+                            :error-messages="email.errorMessage.value"></v-text-field>
+                        <v-text-field label="Password" v-model="password.value.value"
+                            :error-messages="password.errorMessage.value"></v-text-field>
+                    </v-card-text>
+                    <v-divider></v-divider>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn text="Cancel" @click="isActive.value = false"></v-btn>
+                        <v-btn type="submit" color="primary">
+                            <span>Log In</span>
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-form>
         </template>
     </v-dialog>
     <div v-else>
@@ -46,24 +48,44 @@
         </template>
         <template v-else>
             <v-card class="nav-items mr-2 d-flex mr-4" :elevation="2">
-            <v-btn @click="logOutUser" :prepend-icon="mdiAccountKey" :elevation="0">Log Out {{ auth.user.email }}</v-btn>
-        </v-card>
+                <v-btn @click="logOutUser" :prepend-icon="mdiAccountKey" :elevation="0">Log Out {{
+                    auth.user.email}}</v-btn>
+            </v-card>
         </template>
     </div>
 </template>
-  
+
 <script setup>
 import { mdiAccount, mdiAccountKey } from '@mdi/js'
 import { useAuthStore } from '../stores/auth';
 import { logIn, logOut } from '@/auth.js'
+import { useForm, useField } from 'vee-validate'
 defineProps(['mobile'])
 const emit = defineEmits(['loggedIn', 'loggedOut'])
 
 const auth = useAuthStore();
 
-async function openLogInDialog() {
-    logIn(onLoggedIn);
-}
+const { handleSubmit } = useForm({
+    validationSchema: {
+        password(value) {
+            if (value.length >= 6) return true
+
+            return 'Must be at least 6 characters.'
+        },
+        email(value) {
+            if (/^[a-z.-]+@[a-z.-]+\.[a-z]+$/i.test(value)) return true
+
+            return 'Must be a valid e-mail.'
+        },
+    },
+})
+
+const email = useField('email')
+const password = useField('password')
+
+const submit = handleSubmit(values => {
+    logIn(values.email, values.password, onLoggedIn)
+})
 
 async function logOutUser() {
     logOut(onLogOut);
@@ -76,7 +98,7 @@ function onLogOut() {
     emit("loggedOut");
 }
 </script>
-  
+
 <style lang="scss" scoped>
 .nav-items {
     border-radius: 2rem !important;
@@ -89,4 +111,3 @@ function onLogOut() {
     }
 }
 </style>
-  
