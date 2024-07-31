@@ -34,8 +34,7 @@ class Location(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
     huc_watershed_id: float | None = Field(default=None)
     long_name: str | None = Field(default=None)
-    # TODO: add geometry column
-    # pt: Any | None = Field(sa_column=Column(Geometry('POINT')), default=None)
+    pt: Any | None = Field(sa_column=Column(Geometry('POINT')), default=None)
 
     perceptual_models: list["PerceptualModel"] | None = Relationship(back_populates="location")
 
