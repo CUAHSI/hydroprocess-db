@@ -7,8 +7,6 @@ export const APP_API_URL = import.meta.env.VITE_APP_API_URL || "VITE_APP_API_URL
 export const ARCGIS_API_KEY = import.meta.env.VITE_ARCGIS_API_KEY || "VITE_ARCGIS_API_KEY_PLACEHOLDER";
 export const ENDPOINTS = {
   openapi: `${APP_API_URL}/openapi.json`,
-  authCuahsiAuthorize: `${APP_API_URL}/auth/front/authorize`,
-  authCuahsiCallback: `${APP_API_URL}/auth/front/callback`,
-  authenticatedRoute: `${APP_API_URL}/authenticated-route`,
+  authLogin: `${APP_API_URL}/auth/jwt/login`,
   userInfo: `${APP_API_URL}/users/me`,
 };
