@@ -12,7 +12,7 @@ class Citation(SQLModel, table=True):
     attribution: str | None = Field(default=None)
     attribution_url: str | None = Field(default=None)
 
-    perceptual_model: "PerceptualModel | None" = Relationship(back_populates="citation")
+    perceptual_model: "PerceptualModel" = Relationship(back_populates="citation")
 
 
 class FunctionType(SQLModel, table=True):
@@ -99,10 +99,10 @@ class PerceptualModel(SQLModel, table=True):
     citation_id: int | None = Field(default=None, foreign_key="citations.id")
     citation: Citation = Relationship(back_populates="perceptual_model")
 
-    spatialzone_id: int | None = Field(default=None)
+    spatialzone_id: int | None = Field(default=None, foreign_key="spatial_zone_type.id")
     spatial_zone_type: SpatialZoneType = Relationship(back_populates="perceptual_models")
 
-    temporalzone_id: int | None = Field(default=None)
+    temporalzone_id: int | None = Field(default=None, foreign_key="temporal_zone_type.id")
     temporal_zone_type: TemporalZoneType = Relationship(back_populates="perceptual_models")
 
     model_type_id: int | None = Field(default=None, foreign_key="model_type.id")
@@ -122,19 +122,17 @@ class ProcessTaxonomy(SQLModel, table=True):
     function_id: int | None = Field(default=None, foreign_key="function_type.id")
     function_type: FunctionType = Relationship(back_populates="process_taxonomy")
 
-    # TODO: should these processTaxonomies be linked to the ProcessAltNames table?
-    # process_alt_names_ids: list[int] | None = Field(default=[], foreign_key="process_alt_names.id")
-    # process_alt_names: list["ProcessAltNames"] = Relationship(back_populates="process_taxonomy")
+    process_alt_name_id: int | None = Field(default=[], foreign_key="process_alt_names.id")
+    process_alt_name: "ProcessAltName" = Relationship(back_populates="process_taxonomy")
     # function_type: FunctionType = Relationship(back_populates="process_taxonomy")
 
     # perceptual_models: list[PerceptualModel] | None = Relationship(back_populates="process_taxonomies", link_model=LinkProcessPerceptual)
 
 
-class ProcessAltNames(SQLModel, table=True):
+class ProcessAltName(SQLModel, table=True):
     __tablename__: str = "process_alt_names"
     alternative_names: str
     id: int = Field(default=None, primary_key=True)
     process_id: int | None = Field(default=None)
 
-    process_id: int | None = Field(default=None, foreign_key="process_taxonomy.id")
-    process_taxonomy: ProcessTaxonomy | None = Relationship(back_populates="process_alt_names")
+    process_taxonomy: ProcessTaxonomy | None = Relationship(back_populates="process_alt_name")
