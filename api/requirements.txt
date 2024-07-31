@@ -1,6 +1,6 @@
 asyncpg==0.29.0
 psycopg2-binary==2.9.9
-sqlalchemy[asyncio]
+sqlalchemy[asyncio]==2.0.31
 PyYAML==6.0.1
 requests==2.32.3
 fastapi==0.111.1
@@ -12,3 +12,4 @@ pydantic-settings==2.3.4
 google-cloud-logging==3.10.0
 pyproj==3.6.1
 wget==3.2
+geoalchemy2==0.15.2
