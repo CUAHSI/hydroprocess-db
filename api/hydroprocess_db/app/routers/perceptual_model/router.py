@@ -4,7 +4,15 @@ from fastapi import APIRouter, Depends
 from sqlmodel import select
 
 from app.db import get_async_session
-from app.models import Citation, PerceptualModel, ProcessTaxonomy, SpatialZoneType, Location, TemporalZoneType, ModelType
+from app.models import (
+    Citation,
+    Location,
+    ModelType,
+    PerceptualModel,
+    ProcessTaxonomy,
+    SpatialZoneType,
+    TemporalZoneType,
+)
 
 router = APIRouter()
 
@@ -46,6 +54,7 @@ async def get_perceptual_model_by_id(model_id: int, session=Depends(get_async_se
     """
     model = await session.get(PerceptualModel, model_id)
     return model
+
 
 @router.get(
     "/{model_id}/location",

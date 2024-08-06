@@ -2,8 +2,8 @@ from typing import Any
 
 from geoalchemy2 import Geometry
 from pydantic import ConfigDict
-from sqlmodel import Column, Field, Relationship, SQLModel
 from sqlalchemy.ext.asyncio import AsyncAttrs
+from sqlmodel import Column, Field, Relationship, SQLModel
 
 
 class Citation(SQLModel, AsyncAttrs, table=True):
