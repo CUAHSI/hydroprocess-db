@@ -9,12 +9,32 @@ from app.models import (
     Location,
     ModelType,
     PerceptualModel,
+    PerceptualModelRecursive,
     ProcessTaxonomy,
     SpatialZoneType,
     TemporalZoneType,
 )
 
 router = APIRouter()
+
+
+@router.get(
+    "/recursive",
+    description="Get all perceptual models along with their nested relations.",
+    response_model=List[PerceptualModelRecursive],
+)
+def get_perceptual_models_recursive(*, session=Depends(get_session)):
+    """
+    Get perceptual models from the database.
+
+    Parameters:
+    - session: The async session to use for database operations.
+
+    Returns:
+    - A list of perceptual models.
+    """
+    models = session.exec(select(PerceptualModel))
+    return models
 
 
 @router.get(

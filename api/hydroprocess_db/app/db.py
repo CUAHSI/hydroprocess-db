@@ -26,7 +26,7 @@ async_session_maker = sessionmaker(
 )
 
 SYNC_DATABASE_URL = DATABASE_URL.replace("asyncpg", "psycopg2")
-sync_engine = create_engine(SYNC_DATABASE_URL, echo=True)
+sync_engine = create_engine(SYNC_DATABASE_URL)
 
 
 async def create_db_and_tables():
