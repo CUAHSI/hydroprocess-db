@@ -1,1 +1,1 @@
-from app.routers.data.router import router
+from app.routers.perceptual_model.router import router

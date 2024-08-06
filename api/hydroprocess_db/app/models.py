@@ -3,9 +3,10 @@ from typing import Any
 from geoalchemy2 import Geometry
 from pydantic import ConfigDict
 from sqlmodel import Column, Field, Relationship, SQLModel
+from sqlalchemy.ext.asyncio import AsyncAttrs
 
 
-class Citation(SQLModel, table=True):
+class Citation(SQLModel, AsyncAttrs, table=True):
     __tablename__: str = "citations"
     id: int = Field(default=None, primary_key=True)
     citation: str | None = Field(default=None)
@@ -16,7 +17,7 @@ class Citation(SQLModel, table=True):
     perceptual_model: "PerceptualModel" = Relationship(back_populates="citation")
 
 
-class FunctionType(SQLModel, table=True):
+class FunctionType(SQLModel, AsyncAttrs, table=True):
     __tablename__: str = "function_type"
     name: str
     id: int = Field(default=None, primary_key=True)
@@ -24,7 +25,7 @@ class FunctionType(SQLModel, table=True):
     process_taxonomy: list["ProcessTaxonomy"] | None = Relationship(back_populates="function_type")
 
 
-class Location(SQLModel, table=True):
+class Location(SQLModel, AsyncAttrs, table=True):
     __tablename__: str = "locations"
 
     name: str
@@ -41,7 +42,7 @@ class Location(SQLModel, table=True):
     perceptual_models: list["PerceptualModel"] | None = Relationship(back_populates="location")
 
 
-class ModelType(SQLModel, table=True):
+class ModelType(SQLModel, AsyncAttrs, table=True):
     __tablename__: str = "model_type"
     name: str | None = Field(default=None)
     id: int = Field(default=None, primary_key=True)
@@ -49,7 +50,7 @@ class ModelType(SQLModel, table=True):
     perceptual_models: list["PerceptualModel"] | None = Relationship(back_populates="model_type")
 
 
-class SpatialZoneType(SQLModel, table=True):
+class SpatialZoneType(SQLModel, AsyncAttrs, table=True):
     __tablename__: str = "spatial_zone_type"
     spatial_property: str | None = Field(default=None)
     id: int = Field(default=None, primary_key=True)
@@ -57,7 +58,7 @@ class SpatialZoneType(SQLModel, table=True):
     perceptual_models: list["PerceptualModel"] | None = Relationship(back_populates="spatial_zone_type")
 
 
-class TemporalZoneType(SQLModel, table=True):
+class TemporalZoneType(SQLModel, AsyncAttrs, table=True):
     __tablename__: str = "temporal_zone_type"
     temporal_property: str | None = Field(default=None)
     id: int = Field(default=None, primary_key=True)
@@ -74,7 +75,7 @@ class LinkProcessPerceptual(SQLModel, table=True):
     process_id: int | None = Field(default=None, foreign_key="process_taxonomy.id")
 
 
-class PerceptualModel(SQLModel, table=True):
+class PerceptualModel(SQLModel, AsyncAttrs, table=True):
     __tablename__: str = "perceptual_model"
     model_config = ConfigDict(protected_namespaces=())
     id: int = Field(default=None, primary_key=True)
@@ -116,7 +117,7 @@ class PerceptualModel(SQLModel, table=True):
     )
 
 
-class ProcessTaxonomy(SQLModel, table=True):
+class ProcessTaxonomy(SQLModel, AsyncAttrs, table=True):
     __tablename__: str = "process_taxonomy"
     process: str | None = Field(default=None)
     identifier: str
@@ -136,7 +137,7 @@ class ProcessTaxonomy(SQLModel, table=True):
     )
 
 
-class ProcessAltName(SQLModel, table=True):
+class ProcessAltName(SQLModel, AsyncAttrs, table=True):
     __tablename__: str = "process_alt_names"
     alternative_names: str
     id: int = Field(default=None, primary_key=True)

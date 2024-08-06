@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.db import create_db_and_tables
-from app.routers.data.router import router as data_router
+from app.routers.perceptual_model.router import router as perceptual_model_router
 from app.schemas import UserCreate, UserRead, UserUpdate
 from app.users import auth_backend, fastapi_users
 from config import get_settings
@@ -51,7 +51,7 @@ app.include_router(
     tags=["users"],
 )
 app.include_router(
-    data_router,
-    prefix="/data",
-    tags=["data"],
+    perceptual_model_router,
+    prefix="/perceptual_model",
+    tags=["perceptual_model"],
 )
