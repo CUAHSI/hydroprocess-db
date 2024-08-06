@@ -2,10 +2,11 @@ from typing import Any
 
 from geoalchemy2 import Geometry
 from pydantic import ConfigDict
+from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlmodel import Column, Field, Relationship, SQLModel
 
 
-class Citation(SQLModel, table=True):
+class Citation(SQLModel, AsyncAttrs, table=True):
     __tablename__: str = "citations"
     id: int = Field(default=None, primary_key=True)
     citation: str | None = Field(default=None)
@@ -16,31 +17,32 @@ class Citation(SQLModel, table=True):
     perceptual_model: "PerceptualModel" = Relationship(back_populates="citation")
 
 
-class FunctionType(SQLModel, table=True):
+class FunctionType(SQLModel, AsyncAttrs, table=True):
     __tablename__: str = "function_type"
-    name: str | None = Field(default=None)
+    name: str
     id: int = Field(default=None, primary_key=True)
 
     process_taxonomy: list["ProcessTaxonomy"] | None = Relationship(back_populates="function_type")
 
 
-class Location(SQLModel, table=True):
+class Location(SQLModel, AsyncAttrs, table=True):
     __tablename__: str = "locations"
 
-    name: str | None = Field(default=None)
-    country: str | None = Field(default=None)
-    lat: float | None = Field(default=None)
-    lon: float | None = Field(default=None)
+    name: str
+    country: str
+    lat: float
+    lon: float
     area_km2: float | None = Field(default=None)
     id: int = Field(default=None, primary_key=True)
+    # huc watershed id non-nullable in their schema but db dump has null values
     huc_watershed_id: float | None = Field(default=None)
-    long_name: str | None = Field(default=None)
+    long_name: str
     pt: Any | None = Field(sa_column=Column(Geometry('POINT')), default=None)
 
     perceptual_models: list["PerceptualModel"] | None = Relationship(back_populates="location")
 
 
-class ModelType(SQLModel, table=True):
+class ModelType(SQLModel, AsyncAttrs, table=True):
     __tablename__: str = "model_type"
     name: str | None = Field(default=None)
     id: int = Field(default=None, primary_key=True)
@@ -48,7 +50,7 @@ class ModelType(SQLModel, table=True):
     perceptual_models: list["PerceptualModel"] | None = Relationship(back_populates="model_type")
 
 
-class SpatialZoneType(SQLModel, table=True):
+class SpatialZoneType(SQLModel, AsyncAttrs, table=True):
     __tablename__: str = "spatial_zone_type"
     spatial_property: str | None = Field(default=None)
     id: int = Field(default=None, primary_key=True)
@@ -56,7 +58,7 @@ class SpatialZoneType(SQLModel, table=True):
     perceptual_models: list["PerceptualModel"] | None = Relationship(back_populates="spatial_zone_type")
 
 
-class TemporalZoneType(SQLModel, table=True):
+class TemporalZoneType(SQLModel, AsyncAttrs, table=True):
     __tablename__: str = "temporal_zone_type"
     temporal_property: str | None = Field(default=None)
     id: int = Field(default=None, primary_key=True)
@@ -73,7 +75,7 @@ class LinkProcessPerceptual(SQLModel, table=True):
     process_id: int | None = Field(default=None, foreign_key="process_taxonomy.id")
 
 
-class PerceptualModel(SQLModel, table=True):
+class PerceptualModel(SQLModel, AsyncAttrs, table=True):
     __tablename__: str = "perceptual_model"
     model_config = ConfigDict(protected_namespaces=())
     id: int = Field(default=None, primary_key=True)
@@ -94,16 +96,16 @@ class PerceptualModel(SQLModel, table=True):
     uncertainty_info: str | None = Field(default=None)
     other_info: str | None = Field(default=None)
 
-    location_id: int | None = Field(default=None, foreign_key="locations.id")
+    location_id: int = Field(foreign_key="locations.id")
     location: Location = Relationship(back_populates="perceptual_models")
 
-    citation_id: int | None = Field(default=None, foreign_key="citations.id")
+    citation_id: int = Field(foreign_key="citations.id")
     citation: Citation = Relationship(back_populates="perceptual_model")
 
-    spatialzone_id: int | None = Field(default=None, foreign_key="spatial_zone_type.id")
+    spatialzone_id: int = Field(foreign_key="spatial_zone_type.id")
     spatial_zone_type: SpatialZoneType = Relationship(back_populates="perceptual_models")
 
-    temporalzone_id: int | None = Field(default=None, foreign_key="temporal_zone_type.id")
+    temporalzone_id: int = Field(foreign_key="temporal_zone_type.id")
     temporal_zone_type: TemporalZoneType = Relationship(back_populates="perceptual_models")
 
     model_type_id: int | None = Field(default=None, foreign_key="model_type.id")
@@ -115,10 +117,10 @@ class PerceptualModel(SQLModel, table=True):
     )
 
 
-class ProcessTaxonomy(SQLModel, table=True):
+class ProcessTaxonomy(SQLModel, AsyncAttrs, table=True):
     __tablename__: str = "process_taxonomy"
     process: str | None = Field(default=None)
-    identifier: str | None = Field(default=None)
+    identifier: str
     process_level: float | None = Field(default=None)
     id: int = Field(default=None, primary_key=True)
 
@@ -135,7 +137,7 @@ class ProcessTaxonomy(SQLModel, table=True):
     )
 
 
-class ProcessAltName(SQLModel, table=True):
+class ProcessAltName(SQLModel, AsyncAttrs, table=True):
     __tablename__: str = "process_alt_names"
     alternative_names: str
     id: int = Field(default=None, primary_key=True)
