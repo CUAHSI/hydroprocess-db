@@ -1,6 +1,7 @@
 .DEFAULT_GOAL := all
 isort = isort ./
 black = black -S -l 120 --target-version py310 ./
+loaddb = psql --username=postgres hydroprocess < /data/combined_imports.sql
 
 .PHONY: up
 up:
@@ -26,3 +27,7 @@ test:
 format:
 	docker-compose run api $(isort)
 	docker-compose run api $(black)
+
+.PHONY: loaddb
+loaddb:
+	docker-compose exec postgres $(loaddb)

@@ -49,6 +49,8 @@ services:
       - 5432:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      # - ./data/combined_imports.sql:/docker-entrypoint-initdb.d/combined_imports.sql
+      - ./data/combined_imports.sql:/data/combined_imports.sql
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
