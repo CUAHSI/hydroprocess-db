@@ -1,15 +1,15 @@
 from typing import AsyncGenerator
 
 from fastapi import Depends
+from fastapi_users_db_sqlmodel import SQLModelBaseUserDB, SQLModelUserDatabaseAsync
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from . import models
-
-from fastapi_users_db_sqlmodel import SQLModelBaseUserDB, SQLModelUserDatabaseAsync
 from config import get_settings
+
+from . import models
 
 DATABASE_URL = get_settings().database_url
 
