@@ -33,7 +33,8 @@ class Location(SQLModel, table=True):
     lon: float
     area_km2: float | None = Field(default=None)
     id: int = Field(default=None, primary_key=True)
-    huc_watershed_id: float
+    # huc watershed id non-nullable in their schema but db dump has null values
+    huc_watershed_id: float | None = Field(default=None)
     long_name: str
     pt: Any | None = Field(sa_column=Column(Geometry('POINT')), default=None)
 

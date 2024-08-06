@@ -1,5 +1,4 @@
 -- Turn off foreign key checks
-SET CONSTRAINTS ALL DEFERRED;
 SET session_replication_role TO replica;
 
 INSERT INTO "public"."citations" ("id", "citation", "url", "attribution", "attribution_url") VALUES
