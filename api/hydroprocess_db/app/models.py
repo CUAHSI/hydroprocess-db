@@ -1,7 +1,7 @@
 from typing import Any
 
-from geoalchemy2 import Geometry
-from pydantic import ConfigDict
+from geoalchemy2 import Geometry, WKTElement, shape
+from pydantic import ConfigDict, field_serializer
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlmodel import Column, Field, Relationship, SQLModel
 
@@ -40,6 +40,10 @@ class Location(SQLModel, AsyncAttrs, table=True):
     pt: Any | None = Field(sa_column=Column(Geometry('POINT')), default=None)
 
     perceptual_models: list["PerceptualModel"] | None = Relationship(back_populates="location")
+
+    @field_serializer("pt")
+    def serialize_pt(self, pt: WKTElement) -> str:
+        return shape.to_shape(pt).wkt
 
 
 class ModelType(SQLModel, AsyncAttrs, table=True):
