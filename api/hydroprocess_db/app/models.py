@@ -1,7 +1,8 @@
-from sqlmodel import Field, Relationship, SQLModel, Column
-from geoalchemy2 import Geometry
 from typing import Any
+
+from geoalchemy2 import Geometry
 from pydantic import ConfigDict
+from sqlmodel import Column, Field, Relationship, SQLModel
 
 
 class Citation(SQLModel, table=True):
@@ -109,7 +110,9 @@ class PerceptualModel(SQLModel, table=True):
     model_type: ModelType = Relationship(back_populates="perceptual_models")
 
     # many-to-many relationship between perceptual model and processTaxonomy
-    process_taxonomies: list["ProcessTaxonomy"] | None = Relationship(back_populates="perceptual_models", link_model=LinkProcessPerceptual)
+    process_taxonomies: list["ProcessTaxonomy"] | None = Relationship(
+        back_populates="perceptual_models", link_model=LinkProcessPerceptual
+    )
 
 
 class ProcessTaxonomy(SQLModel, table=True):
@@ -127,7 +130,9 @@ class ProcessTaxonomy(SQLModel, table=True):
     # function_type: FunctionType = Relationship(back_populates="process_taxonomy")
 
     # many-to-many relationship between perceptual model and processTaxonomy
-    perceptual_models: list[PerceptualModel] | None = Relationship(back_populates="process_taxonomies", link_model=LinkProcessPerceptual)
+    perceptual_models: list[PerceptualModel] | None = Relationship(
+        back_populates="process_taxonomies", link_model=LinkProcessPerceptual
+    )
 
 
 class ProcessAltName(SQLModel, table=True):
