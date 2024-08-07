@@ -9,7 +9,12 @@ load_dotenv()
 
 class Settings(BaseSettings):
 
-    database_url: str
+    pg_username: str
+    pg_password: str
+    pg_host: str
+    pg_port: str
+    pg_dbname: str
+
     vite_app_api_url: str
     allow_origins: str
 
