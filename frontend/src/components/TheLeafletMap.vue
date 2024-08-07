@@ -19,6 +19,8 @@ const perceptualModelStore = usePerceptualModelStore();
 
 const Map = mapStore.mapObject
 
+let modelFeatures = {}
+
 onUpdated(() => {
     Map.leaflet.invalidateSize()
 })
@@ -51,26 +53,21 @@ onMounted(() => {
 
     CartoDB_PositronNoLabels.addTo(leaflet);
 
+    function onEachFeature(feature, layer) {
+        let content = `<h3>${feature.properties.citation}</h3><p><ul>`
+        for (const [key, value] of Object.entries(feature.properties)) {
+            content += `<li>${key}: ${value}</li>`;
+        }
+        content += '</ul></p>'
+        layer.bindPopup(content);
+    }
     // query the api for the features
-    perceptualModelStore.fetchPerceptualModels().then((data) => {
-        console.log("perceptual_models", data)
-        // TODO: add features to map
+    perceptualModelStore.fetchPerceptualModels().then((perceptual_models) => {
+        modelFeatures = L.geoJSON(perceptual_models, {
+            onEachFeature: onEachFeature
+        }).addTo(leaflet);
+        console.log(modelFeatures)
     })
-
-    // function featurePopup(feature) {
-    //     let content = `<h3>${feature.properties.citation}</h3><p><ul>`
-    //     for (const [key, value] of Object.entries(feature.properties)) {
-    //         content += `<li>${key}: ${value}</li>`;
-    //     }
-    //     content += '</ul></p>'
-    //     const leafFeat = modelFeatures.getFeature(feature.id)
-    //     console.log(leafFeat)
-    //     L.popup({
-    //         maxHeight: 300,
-    //         closeOnClick: true,
-    //         keepInView: true
-    //     }).setLatLng(leafFeat.getLatLng()).setContent(content).openOn(leaflet);
-    // }
 
     // modelFeatures.on("click", function (e) {
     //     featurePopup(e.layer.feature);

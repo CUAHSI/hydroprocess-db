@@ -13,6 +13,7 @@ from app.models import (
     ProcessTaxonomy,
     SpatialZoneType,
     TemporalZoneType,
+    WKBToGeoJSON,
 )
 
 router = APIRouter()
@@ -35,6 +36,35 @@ def get_perceptual_models_recursive(*, session=Depends(get_session)):
     """
     models = session.exec(select(PerceptualModel))
     return models
+
+
+@router.get(
+    "/geojson",
+    description="Get all perceptual models along with their nested relations, as geojson.",
+)
+def get_perceptual_models_geojson(*, session=Depends(get_session)):
+    """
+    Get perceptual models from the database.
+
+    Parameters:
+    - session: The async session to use for database operations.
+
+    Returns:
+    - A list of perceptual models.
+    """
+    perceptual_models = session.exec(select(PerceptualModel)).all()
+    geojson = {"type": "FeatureCollection", "features": []}
+    for pmodel in perceptual_models:
+        geometry = WKBToGeoJSON.from_WKBElement(pmodel.location.pt)
+        feature = {"type": "Feature", "geometry": geometry, "properties": pmodel.model_dump()}
+
+        # add the citation to the properties
+        citation = pmodel.citation
+        if citation:
+            feature["properties"]["citation"] = citation.citation
+
+        geojson["features"].append(feature)
+    return geojson
 
 
 @router.get(

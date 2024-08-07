@@ -15,7 +15,7 @@ export const usePerceptualModelStore = defineStore('perceptual_model', () => {
   }
 
   const fetchPerceptualModels = async () => {
-    const response = await fetch(ENDPOINTS.perceptual_models_recursive)
+    const response = await fetch(ENDPOINTS.perceptual_models_geojson)
     const data = await response.json()
     setPerceptualModels(data)
     return data

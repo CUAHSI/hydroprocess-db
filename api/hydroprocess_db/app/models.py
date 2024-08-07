@@ -1,8 +1,9 @@
-from typing import Any
+import json
 
-from geoalchemy2 import Geometry, WKTElement, shape
+from geoalchemy2 import Geometry, WKBElement, shape
+from pydantic import ConfigDict, model_serializer
+from pydantic_extra_types.coordinate import Latitude, Longitude
 from shapely import to_geojson
-from pydantic import ConfigDict, field_serializer
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlmodel import Column, Field, Relationship, SQLModel
 
@@ -26,25 +27,39 @@ class FunctionType(SQLModel, AsyncAttrs, table=True):
     process_taxonomy: list["ProcessTaxonomy"] | None = Relationship(back_populates="function_type")
 
 
+class WKBToGeoJSON(SQLModel, WKBElement):
+    @classmethod
+    def validate(cls, value):
+        if not isinstance(value, WKBElement):
+            raise TypeError("value must be a WKBElement object")
+        shp = shape.to_shape(value)
+        return json.loads(to_geojson(shp))
+
+    @classmethod
+    def from_WKBElement(cls, element: WKBElement) -> str:
+        return cls.validate(element)
+
+    @model_serializer()
+    def ser_model(self) -> str:
+        shp = shape.to_shape(self)
+        return to_geojson(shp)
+
+
 class Location(SQLModel, AsyncAttrs, table=True):
     __tablename__: str = "locations"
 
     name: str
     country: str
-    lat: float
-    lon: float
+    lat: Latitude
+    lon: Longitude
     area_km2: float | None = Field(default=None)
     id: int = Field(default=None, primary_key=True)
     # huc watershed id non-nullable in their schema but db dump has null values
     huc_watershed_id: float | None = Field(default=None)
     long_name: str
-    pt: Any | None = Field(sa_column=Column(Geometry('POINT')), default=None)
+    pt: WKBToGeoJSON | None = Field(sa_column=Column(Geometry('POINT')), default=None)
 
     perceptual_models: list["PerceptualModel"] | None = Relationship(back_populates="location")
-
-    @field_serializer("pt")
-    def serialize_pt(self, pt: WKTElement) -> str:
-        return to_geojson(shape.to_shape(pt))
 
 
 class ModelType(SQLModel, AsyncAttrs, table=True):

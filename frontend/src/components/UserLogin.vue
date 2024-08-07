@@ -56,7 +56,6 @@
 </template>
 
 <script setup>
-import { mdiAccount, mdiAccountKey } from '@mdi/js'
 import { useAuthStore } from '../stores/auth';
 import { logIn, logOut } from '@/auth.js'
 import { useForm, useField } from 'vee-validate'
