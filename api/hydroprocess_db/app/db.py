@@ -4,7 +4,7 @@ from fastapi import Depends
 from fastapi_users_db_sqlmodel import SQLModelBaseUserDB, SQLModelUserDatabaseAsync
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
-from sqlmodel import SQLModel
+from sqlmodel import Session, SQLModel, create_engine
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from config import get_settings
@@ -25,6 +25,9 @@ async_session_maker = sessionmaker(
     expire_on_commit=False,
 )
 
+SYNC_DATABASE_URL = DATABASE_URL.replace("asyncpg", "psycopg2")
+sync_engine = create_engine(SYNC_DATABASE_URL)
+
 
 async def create_db_and_tables():
     async with engine.begin() as conn:
@@ -33,6 +36,11 @@ async def create_db_and_tables():
 
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
     async with async_session_maker() as session:
+        yield session
+
+
+def get_session():
+    with Session(sync_engine) as session:
         yield session
 
 

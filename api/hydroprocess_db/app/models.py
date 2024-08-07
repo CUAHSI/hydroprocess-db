@@ -1,7 +1,9 @@
-from typing import Any
+import json
 
-from geoalchemy2 import Geometry
-from pydantic import ConfigDict
+from geoalchemy2 import Geometry, WKBElement, shape
+from pydantic import ConfigDict, model_serializer
+from pydantic_extra_types.coordinate import Latitude, Longitude
+from shapely import to_geojson
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlmodel import Column, Field, Relationship, SQLModel
 
@@ -25,19 +27,37 @@ class FunctionType(SQLModel, AsyncAttrs, table=True):
     process_taxonomy: list["ProcessTaxonomy"] | None = Relationship(back_populates="function_type")
 
 
+class WKBToGeoJSON(SQLModel, WKBElement):
+    @classmethod
+    def validate(cls, value):
+        if not isinstance(value, WKBElement):
+            raise TypeError("value must be a WKBElement object")
+        shp = shape.to_shape(value)
+        return json.loads(to_geojson(shp))
+
+    @classmethod
+    def from_WKBElement(cls, element: WKBElement) -> str:
+        return cls.validate(element)
+
+    @model_serializer()
+    def ser_model(self) -> str:
+        shp = shape.to_shape(self)
+        return to_geojson(shp)
+
+
 class Location(SQLModel, AsyncAttrs, table=True):
     __tablename__: str = "locations"
 
     name: str
     country: str
-    lat: float
-    lon: float
+    lat: Latitude
+    lon: Longitude
     area_km2: float | None = Field(default=None)
     id: int = Field(default=None, primary_key=True)
     # huc watershed id non-nullable in their schema but db dump has null values
     huc_watershed_id: float | None = Field(default=None)
     long_name: str
-    pt: Any | None = Field(sa_column=Column(Geometry('POINT')), default=None)
+    pt: WKBToGeoJSON | None = Field(sa_column=Column(Geometry('POINT')), default=None)
 
     perceptual_models: list["PerceptualModel"] | None = Relationship(back_populates="location")
 
@@ -75,10 +95,10 @@ class LinkProcessPerceptual(SQLModel, table=True):
     process_id: int | None = Field(default=None, foreign_key="process_taxonomy.id")
 
 
-class PerceptualModel(SQLModel, AsyncAttrs, table=True):
-    __tablename__: str = "perceptual_model"
+class PerceptualModelBase(SQLModel, AsyncAttrs):
+    # https://sqlmodel.tiangolo.com/tutorial/fastapi/multiple-models/
+    # https://sqlmodel.tiangolo.com/tutorial/fastapi/relationships/#models-with-relationships
     model_config = ConfigDict(protected_namespaces=())
-    id: int = Field(default=None, primary_key=True)
     figure_num: str | None = Field(default=None)
     figure_url: str | None = Field(default=None)
     figure_caption: str | None = Field(default=None)
@@ -96,25 +116,39 @@ class PerceptualModel(SQLModel, AsyncAttrs, table=True):
     uncertainty_info: str | None = Field(default=None)
     other_info: str | None = Field(default=None)
 
+
+class PerceptualModel(PerceptualModelBase, table=True):
+    __tablename__: str = "perceptual_model"
+    id: int = Field(default=None, primary_key=True)
+
     location_id: int = Field(foreign_key="locations.id")
-    location: Location = Relationship(back_populates="perceptual_models")
 
     citation_id: int = Field(foreign_key="citations.id")
-    citation: Citation = Relationship(back_populates="perceptual_model")
 
     spatialzone_id: int = Field(foreign_key="spatial_zone_type.id")
-    spatial_zone_type: SpatialZoneType = Relationship(back_populates="perceptual_models")
 
     temporalzone_id: int = Field(foreign_key="temporal_zone_type.id")
-    temporal_zone_type: TemporalZoneType = Relationship(back_populates="perceptual_models")
 
     model_type_id: int | None = Field(default=None, foreign_key="model_type.id")
-    model_type: ModelType = Relationship(back_populates="perceptual_models")
 
     # many-to-many relationship between perceptual model and processTaxonomy
     process_taxonomies: list["ProcessTaxonomy"] | None = Relationship(
         back_populates="perceptual_models", link_model=LinkProcessPerceptual
     )
+    location: Location = Relationship(back_populates="perceptual_models")
+    citation: Citation = Relationship(back_populates="perceptual_model")
+    spatial_zone_type: SpatialZoneType = Relationship(back_populates="perceptual_models")
+    temporal_zone_type: TemporalZoneType = Relationship(back_populates="perceptual_models")
+    model_type: ModelType = Relationship(back_populates="perceptual_models")
+
+
+class PerceptualModelRecursive(PerceptualModelBase):
+    location: Location
+    citation: Citation
+    spatial_zone_type: SpatialZoneType
+    temporal_zone_type: TemporalZoneType
+    # TODO errors when including model_type
+    # model_type: ModelType
 
 
 class ProcessTaxonomy(SQLModel, AsyncAttrs, table=True):

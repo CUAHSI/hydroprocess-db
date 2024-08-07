@@ -6,20 +6,20 @@
 import "leaflet/dist/leaflet.css";
 import "leaflet-easybutton/src/easy-button.css";
 import L from 'leaflet'
-import * as esriLeafletGeocoder from "esri-leaflet-geocoder"
-import * as esriLeaflet from "esri-leaflet";
-// import * as esriLeafletVector from 'esri-leaflet-vector';
 import "leaflet-easybutton/src/easy-button";
 import { onMounted, onUpdated, ref } from 'vue'
 import { useMapStore } from '@/stores/map'
 import { useAlertStore } from '@/stores/alerts'
-import { ARCGIS_API_KEY } from "../constants";
+import { usePerceptualModelStore } from "@/stores/perceptual_models";
 
 const mapStore = useMapStore()
 const alertStore = useAlertStore();
+const perceptualModelStore = usePerceptualModelStore();
 
 
 const Map = mapStore.mapObject
+
+let modelFeatures = {}
 
 onUpdated(() => {
     Map.leaflet.invalidateSize()
@@ -53,103 +53,31 @@ onMounted(() => {
 
     CartoDB_PositronNoLabels.addTo(leaflet);
 
-
-    // add lakes features layer to map
-    let url = 'https://services1.arcgis.com/SIYkiqjmENweC50g/arcgis/rest/services/alltype_models_v1/FeatureServer/0/'
-    const modelFeatures = esriLeaflet.featureLayer({
-        url: url,
-        // simplifyFactor: 0.35,
-        // precision: 5,
-        // minZoom: 9,
-        // maxZoom: 18,
-        // fields: ["FID", "ZIP", "PO_NAME"],
-    }).addTo(leaflet);
-
-    function featurePopup(feature) {
+    function onEachFeature(feature, layer) {
         let content = `<h3>${feature.properties.citation}</h3><p><ul>`
         for (const [key, value] of Object.entries(feature.properties)) {
             content += `<li>${key}: ${value}</li>`;
         }
         content += '</ul></p>'
-        const leafFeat = modelFeatures.getFeature(feature.id)
-        console.log(leafFeat)
-        L.popup({
-            maxHeight: 300,
-            closeOnClick: true,
-            keepInView: true
-        }).setLatLng(leafFeat.getLatLng()).setContent(content).openOn(leaflet);
+        layer.bindPopup(content);
     }
+    // query the api for the features
+    perceptualModelStore.fetchPerceptualModels().then((perceptual_models) => {
+        modelFeatures = L.geoJSON(perceptual_models, {
+            onEachFeature: onEachFeature
+        }).addTo(leaflet);
+        console.log(modelFeatures)
+    })
 
-    modelFeatures.on("click", function (e) {
-        featurePopup(e.layer.feature);
+    // modelFeatures.on("click", function (e) {
+    //     featurePopup(e.layer.feature);
 
-    });
+    // });
 
     // layer toggling
     let mixed = {
-        "Models": modelFeatures,
+        // "Models": modelFeatures,
     };
-
-    const geoProvider = esriLeafletGeocoder.featureLayerProvider({
-        url:
-            "https://services1.arcgis.com/SIYkiqjmENweC50g/arcgis/rest/services/alltype_models_v1/FeatureServer/0/",
-        searchFields: ["textmodel_snipped", "citation"],
-        label: "Perceptual models",
-        bufferRadius: 5000,
-        formatSuggestion: function (feature) {
-            return `${feature.properties.watershed_name} (${feature.properties.model_type}) - ${feature.properties.id}`;
-        }
-    });
-
-    const addressProvider = esriLeafletGeocoder.arcgisOnlineProvider({
-        apikey: ARCGIS_API_KEY,
-        nearby: {
-            lat: -33.8688,
-            lng: 151.2093
-        }
-    });
-
-    const addressSearchControl = esriLeafletGeocoder.geosearch({
-        position: "bottomleft",
-        placeholder: "Search for an address",
-        useMapBounds: false,
-        providers: [
-            addressProvider,
-        ]
-    }).addTo(leaflet);
-
-    const searchControl = esriLeafletGeocoder.geosearch({
-        position: "topright",
-        placeholder: "Search for a model",
-        useMapBounds: false,
-        expanded: true,
-        title: "Model search",
-
-        providers: [
-            geoProvider,
-        ]
-    }).addTo(leaflet);
-
-    searchControl.on("results", (data) => {
-
-        for (let i = data.results.length - 1; i >= 0; i--) {
-            console.log(data.results[i])
-
-            // filter to only show the one selected
-            // modelFeatures.setWhere(`id = ${data.results[i].properties.id}`);
-
-            // open the popup of the existing marker
-            // const id = data.results[i].properties.id;
-            // const feature = modelFeatures.getFeature(id);
-
-            // TODO: this doesn't work yet. Need to figure out how to get the feature from the layer
-            const feature = data.results[i].feature;
-            console.log(feature)
-            if (feature) {
-                featurePopup(feature);
-            }
-        }
-    });
 
     // /*
     //  * LEAFLET BUTTONS
@@ -182,40 +110,8 @@ onMounted(() => {
  * @param {MouseEvent} e - The click event object.
  * @returns {Promise<void>} - A promise that resolves when the click event is handled.
  */
-async function mapClick(e) {
+async function mapClick() {
     return
-
-    // exit early if not zoomed in enough.
-    // this ensures that objects are not clicked until zoomed in
-    let zoom = e.target.getZoom();
-    if (zoom < Map.selectable_zoom) {
-        return
-    }
-
-
-    // check if gage was clicked
-    let gage = await getGageInfo(e);
-
-    // if a gage was selected, create a pop up and exit early.
-    // we don't want to toggle HUC selection if a gage was clicked
-    if (Object.keys(gage).length > 0) {
-        // create map info object here
-
-        // close all popups
-        if (Map.popups.length > 0) {
-            Map.leaflet.closePopup();
-        }
-
-        // create new popup containing gage info
-        L.popup().setLatLng([gage.y, gage.x])
-            .setContent('<b>ID:</b> ' + gage.num + '<br>'
-                + '<b>Name</b>: ' + gage.name + '<br>')
-            //		             + '<b>Select</b>: <a onClick=traceUpstream("'+gage.num+'")>upstream</a>')
-            .openOn(Map.leaflet);
-
-        // exit function without toggling HUC
-        return;
-    }
 }
 
 
