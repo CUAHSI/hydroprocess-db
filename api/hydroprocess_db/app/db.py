@@ -4,14 +4,31 @@ from fastapi import Depends
 from fastapi_users_db_sqlmodel import SQLModelBaseUserDB, SQLModelUserDatabaseAsync
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.engine import URL
 from sqlmodel import Session, SQLModel, create_engine
 from sqlmodel.ext.asyncio.session import AsyncSession
+from urllib.parse import quote_plus
 
 from config import get_settings
 
 from . import models
 
-DATABASE_URL = get_settings().database_url
+settings = get_settings()
+
+PG_USERNAME = settings.pg_username
+PG_PASSWORD = quote_plus(settings.pg_password)
+PG_HOST = settings.pg_host
+PG_PORT = int(settings.pg_port)
+PG_DBNAME = settings.pg_dbname
+
+DATABASE_URL = URL.create(
+    "postgresql+asyncpg",
+    username=PG_USERNAME,
+    password=PG_PASSWORD,
+    host=PG_HOST,
+    port=PG_PORT,
+    database=PG_DBNAME,
+)
 
 
 class User(SQLModelBaseUserDB, table=True):
@@ -25,7 +42,14 @@ async_session_maker = sessionmaker(
     expire_on_commit=False,
 )
 
-SYNC_DATABASE_URL = DATABASE_URL.replace("asyncpg", "psycopg2")
+SYNC_DATABASE_URL = URL.create(
+    "postgresql+psycopg2",
+    username=PG_USERNAME,
+    password=PG_PASSWORD,
+    host=PG_HOST,
+    port=PG_PORT,
+    database=PG_DBNAME,
+)
 sync_engine = create_engine(SYNC_DATABASE_URL)
 
 
