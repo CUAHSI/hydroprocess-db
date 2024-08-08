@@ -13,7 +13,10 @@ from config import get_settings
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Not needed if you setup a migration system like Alembic
-    await create_db_and_tables()
+    try:
+        await create_db_and_tables()
+    except Exception as e:
+        print(f"Error during DB creation: {e}")
     yield
 
 
