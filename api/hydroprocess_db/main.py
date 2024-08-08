@@ -16,7 +16,7 @@ async def lifespan(app: FastAPI):
     try:
         await create_db_and_tables()
     except Exception as e:
-        print(f"Error during DB creation: {e}")
+        print(f"Error during DB create: {e}")
     yield
 
 
