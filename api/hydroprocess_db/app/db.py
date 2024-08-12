@@ -1,13 +1,13 @@
 from typing import AsyncGenerator
+from urllib.parse import quote_plus
 
 from fastapi import Depends
 from fastapi_users_db_sqlmodel import SQLModelBaseUserDB, SQLModelUserDatabaseAsync
+from sqlalchemy.engine import URL
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.engine import URL
 from sqlmodel import Session, SQLModel, create_engine
 from sqlmodel.ext.asyncio.session import AsyncSession
-from urllib.parse import quote_plus
 
 from config import get_settings
 
