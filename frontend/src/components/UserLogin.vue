@@ -59,6 +59,7 @@
 import { useAuthStore } from '../stores/auth';
 import { logIn, logOut } from '@/auth.js'
 import { useForm, useField } from 'vee-validate'
+import { mdiAccount, mdiAccountKey } from '@mdi/js'
 defineProps(['mobile'])
 const emit = defineEmits(['loggedIn', 'loggedOut'])
 
