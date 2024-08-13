@@ -39,6 +39,26 @@ def get_perceptual_models_recursive(*, session=Depends(get_session)):
 
 
 @router.get(
+    "/recursive/{model_id}",
+    description="Get a perceptual model by ID along with its nested relations.",
+    response_model=PerceptualModelRecursive,
+)
+def get_perceptual_model_by_id_recursive(model_id: int, session=Depends(get_session)):
+    """
+    Get a perceptual model by ID along with its nested relations.
+
+    Parameters:
+    - model_id: The ID of the perceptual model to get.
+    - session: The async session to use for database operations.
+
+    Returns:
+    - The perceptual model with the specified ID.
+    """
+    model = session.get(PerceptualModel, model_id)
+    return model
+
+
+@router.get(
     "/geojson",
     description="Get all perceptual models along with their nested relations, as geojson.",
 )

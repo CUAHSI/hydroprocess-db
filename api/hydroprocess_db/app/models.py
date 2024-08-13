@@ -142,6 +142,7 @@ class PerceptualModel(PerceptualModelBase, table=True):
 
 
 class PerceptualModelRecursive(PerceptualModelBase):
+    process_taxonomies: list["ProcessTaxonomy"] | None
     location: Location
     citation: Citation
     spatial_zone_type: SpatialZoneType
