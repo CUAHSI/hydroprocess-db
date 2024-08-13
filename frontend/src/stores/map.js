@@ -31,6 +31,7 @@ export const useMapStore = defineStore('map', () => {
   }
 
   function filterFeatures(filterFunction) {
+    // TODO enable multiple filters at the same time
     // first remove all layers
     layerGroup.value.removeLayer(modelFeatures.value)
     // filter features
@@ -46,11 +47,22 @@ export const useMapStore = defineStore('map', () => {
     layerGroup.value.addLayer(modelFeatures.value)
   }
 
+  function resetFilter() {
+    layerGroup.value.removeLayer(modelFeatures.value)
+    modelFeatures.value = L.geoJSON(perceptualModelsGeojson.value, {
+      onEachFeature: (feature, layer) => {
+        onEachFeature(feature, layer)
+      }
+    })
+    layerGroup.value.addLayer(modelFeatures.value)
+  }
+
   return {
     leaflet,
     modelFeatures,
     layerGroup,
     fetchPerceptualModelsGeojson,
-    filterFeatures
+    filterFeatures,
+    resetFilter
   }
 })
