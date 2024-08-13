@@ -7,9 +7,10 @@
     <v-sheet class="mx-auto" elevation="8" :width="mdAndDown ? '100vw' : '20vw'">
       <h3 class="ma-2 text-center">Model Filters</h3>
       <v-divider></v-divider>
-      <!-- Filter by process name -->
-      <v-autocomplete v-model="selectedProcess" :items="process_taxonomies" item-title="process" item-value="id"
-        label="Process Taxonomy" @update:modelValue="filterProcess" clearable chips multiple></v-autocomplete>
+      <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
+        label="Process Taxonomies" @update:modelValue="filterProcess" clearable chips multiple></v-autocomplete>
+      <v-autocomplete v-model="selectedSpatialZones" :items="spatialZones" item-title="spatial_property" item-value="id"
+        label="Spatial Zones" @update:modelValue="filterSpatial" clearable chips multiple></v-autocomplete>
     </v-sheet>
   </v-navigation-drawer>
 </template>
@@ -36,11 +37,49 @@ perceptualModelStore.fetchPerceptualModels().then((perceptual_models) => {
 })
 
 const process_taxonomies = ref([])
-const selectedProcess = ref(null)
+const selectedProcesses = ref(null)
+const spatialZones = ref([])
+const selectedSpatialZones = ref(null)
+
 
 perceptualModelStore.fetchProcessTaxonomies().then((pt) => {
   process_taxonomies.value = pt
 })
+
+// TODO: combine the filter functions into one that filters based on a template
+const filterProcess = () => {
+  if (selectedProcesses.value.length === 0) {
+    // reset to show all features
+    mapStore.resetFilter()
+  }
+  const filterFunction = (feature) => {
+    // feature.properties.process_taxonomies is an array of objects, each contains an id
+    // filter for the matching id
+    // selectedProcess.value is an array of ids
+    // we want all of the features that have a process_taxonomy id that is in selectedProcess.value
+    return feature.properties.process_taxonomies.some((pt) => selectedProcesses.value.includes(pt.id))
+  }
+  mapStore.filterFeatures(filterFunction)
+}
+
+perceptualModelStore.fetchSpatialZones().then((sz) => {
+  spatialZones.value = sz
+})
+
+const filterSpatial = () => {
+  if (selectedSpatialZones.value.length === 0) {
+    // reset to show all features
+    mapStore.resetFilter()
+  }
+  const filterFunction = (feature) => {
+    // feature.properties.spatialzone_id is an id
+    // filter for the matching id
+    // selectedSpatialZones.value is an array of ids
+    // we want all of the features that have a spatial_zone id that is in selectedSpatialZones.value
+    return selectedSpatialZones.value.includes(feature.properties.spatialzone_id)
+  }
+  mapStore.filterFeatures(filterFunction)
+}
 
 
 const translate = () => {
@@ -49,18 +88,6 @@ const translate = () => {
   } else {
     return 'translate(150%, 0)'
   }
-}
-
-const filterProcess = () => {
-  console.log("filtering with ", selectedProcess.value)
-  const filterFunction = (feature) => {
-    // feature.properties.process_taxonomies is an array of objects, each contains an id
-    // filter for the matching id
-    // selectedProcess.value is an array of ids
-    // we want all of the features that have a process_taxonomy id that is in selectedProcess.value
-    return feature.properties.process_taxonomies.some((pt) => selectedProcess.value.includes(pt.id))
-  }
-  mapStore.filterFeatures(filterFunction)
 }
 </script>
 
