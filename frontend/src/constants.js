@@ -9,5 +9,6 @@ export const ENDPOINTS = {
   perceptual_models: `${APP_API_URL}/perceptual_model`,
   model_type_count: `${APP_API_URL}/statistics/model_type_count`,
   process_taxonomies: `${APP_API_URL}/process_taxonomy`,
-  spatial_zones: `${APP_API_URL}/spatial_zone`
+  spatial_zones: `${APP_API_URL}/spatial_zone`,
+  temporal_zones: `${APP_API_URL}/temporal_zone`
 }

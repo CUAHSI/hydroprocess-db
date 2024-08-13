@@ -35,6 +35,12 @@ export const usePerceptualModelStore = defineStore('perceptual_model', () => {
     return spatial_zones
   }
 
+  const fetchTemporalZones = async () => {
+    const response = await fetch(ENDPOINTS.temporal_zones)
+    const temporal_zones = await response.json()
+    return temporal_zones
+  }
+
   return {
     perceptualModels,
     selectedPerceptualModel,
@@ -42,6 +48,7 @@ export const usePerceptualModelStore = defineStore('perceptual_model', () => {
     setSelectedPerceptualModel,
     fetchPerceptualModels,
     fetchProcessTaxonomies,
-    fetchSpatialZones
+    fetchSpatialZones,
+    fetchTemporalZones
   }
 })

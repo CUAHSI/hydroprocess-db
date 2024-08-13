@@ -11,6 +11,9 @@
         label="Process Taxonomies" @update:modelValue="filterProcess" clearable chips multiple></v-autocomplete>
       <v-autocomplete v-model="selectedSpatialZones" :items="spatialZones" item-title="spatial_property" item-value="id"
         label="Spatial Zones" @update:modelValue="filterSpatial" clearable chips multiple></v-autocomplete>
+      <v-autocomplete v-model="selectedTemporalZones" :items="temporalZones" item-title="temporal_property"
+        item-value="id" label="Temporal Zones" @update:modelValue="filterTemporal" clearable chips
+        multiple></v-autocomplete>
     </v-sheet>
   </v-navigation-drawer>
 </template>
@@ -40,6 +43,8 @@ const process_taxonomies = ref([])
 const selectedProcesses = ref(null)
 const spatialZones = ref([])
 const selectedSpatialZones = ref(null)
+const temporalZones = ref([])
+const selectedTemporalZones = ref(null)
 
 
 perceptualModelStore.fetchProcessTaxonomies().then((pt) => {
@@ -77,6 +82,25 @@ const filterSpatial = () => {
     // selectedSpatialZones.value is an array of ids
     // we want all of the features that have a spatial_zone id that is in selectedSpatialZones.value
     return selectedSpatialZones.value.includes(feature.properties.spatialzone_id)
+  }
+  mapStore.filterFeatures(filterFunction)
+}
+
+perceptualModelStore.fetchTemporalZones().then((tz) => {
+  temporalZones.value = tz
+})
+
+const filterTemporal = () => {
+  if (selectedTemporalZones.value.length === 0) {
+    // reset to show all features
+    mapStore.resetFilter()
+  }
+  const filterFunction = (feature) => {
+    // feature.properties.temporalzone_id is an id
+    // filter for the matching id
+    // selectedTemporalZones.value is an array of ids
+    // we want all of the features that have a temporal_zone id that is in selectedTemporalZones.value
+    return selectedTemporalZones.value.includes(feature.properties.temporalzone_id)
   }
   mapStore.filterFeatures(filterFunction)
 }

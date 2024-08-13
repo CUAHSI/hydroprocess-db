@@ -6,8 +6,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.db import create_db_and_tables
 from app.routers.perceptual_model.router import router as perceptual_model_router
 from app.routers.process_taxonomy.router import router as process_taxonomy_router
-from app.routers.statistics.router import router as statistics_router
 from app.routers.spatial_zone.router import router as spatial_zone_router
+from app.routers.statistics.router import router as statistics_router
+from app.routers.temporal_zone.router import router as temporal_zone_router
 from app.schemas import UserCreate, UserRead, UserUpdate
 from app.users import auth_backend, fastapi_users
 from config import get_settings
@@ -67,6 +68,11 @@ app.include_router(
     spatial_zone_router,
     prefix="/spatial_zone",
     tags=["spatial_zone"],
+)
+app.include_router(
+    temporal_zone_router,
+    prefix="/temporal_zone",
+    tags=["temporal_zone"],
 )
 app.include_router(
     statistics_router,
