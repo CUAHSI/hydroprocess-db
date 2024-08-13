@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer location="left" width="auto" :model-value="show" temporary @update:modelValue="$emit('toggle')">
+  <v-navigation-drawer location="left" width="auto" :model-value="show" @update:modelValue="$emit('toggle')">
     <v-btn @click="show = !show" color="primary" location="right" order="0" postition="absolute"
       :style="{ bottom: '30%', transform: translate(), position: 'absolute' }"
       :icon="show ? mdiChevronLeft : mdiChevronRight">
