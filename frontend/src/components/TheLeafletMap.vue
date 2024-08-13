@@ -12,21 +12,18 @@ import { usePerceptualModelStore } from "@/stores/perceptual_models";
 const mapStore = useMapStore()
 const perceptualModelStore = usePerceptualModelStore();
 
-
-const Map = mapStore.mapObject
-
 let modelFeatures = {}
 
 onUpdated(() => {
-    Map.leaflet.invalidateSize()
+    mapStore.leaflet.invalidateSize()
 })
 
 onMounted(() => {
     let leaflet = L.map('mapContainer').setView([0, 11], 3);
+    mapStore.leaflet = leaflet;
     let layerGroup = new L.LayerGroup();
+    mapStore.layerGroup = layerGroup;
     layerGroup.addTo(leaflet);
-    Map.layerGroup = layerGroup;
-    Map.leaflet = leaflet;
 
     // Initial OSM tile layer
     var CartoDB_PositronNoLabels = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
@@ -41,22 +38,8 @@ onMounted(() => {
 
     CartoDB_PositronNoLabels.addTo(leaflet);
 
-    function onEachFeature(feature, layer) {
-        let content = `<h3>${feature.properties.citation.citation}</h3><p><ul>`
-        for (const [key, value] of Object.entries(feature.properties)) {
-            content += `<li>${key}: ${value}</li>`;
-        }
-        content += '</ul></p>'
-        layer.bindPopup(content);
-    }
     // query the api for the features
-    perceptualModelStore.fetchPerceptualModelsGeojson().then((perceptual_models) => {
-        modelFeatures = L.geoJSON(perceptual_models, {
-            onEachFeature: onEachFeature
-        })
-        layerGroup.addLayer(modelFeatures);
-        mapStore.modelFeatures.value = modelFeatures;
-    })
+    mapStore.fetchPerceptualModelsGeojson()
 
     // modelFeatures.on("click", function (e) {
     //     featurePopup(e.layer.feature);
@@ -65,7 +48,7 @@ onMounted(() => {
 
     // layer toggling
     let mixed = {
-        // "Models": modelFeatures,
+        "Perceptual Models": layerGroup,
     };
 
     // /*

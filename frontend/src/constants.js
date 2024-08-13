@@ -7,5 +7,6 @@ export const ENDPOINTS = {
   userInfo: `${APP_API_URL}/users/me`,
   perceptual_models_geojson: `${APP_API_URL}/perceptual_model/geojson`,
   perceptual_models: `${APP_API_URL}/perceptual_model`,
-  model_type_count: `${APP_API_URL}/statistics/model_type_count`
+  model_type_count: `${APP_API_URL}/statistics/model_type_count`,
+  process_taxonomies: `${APP_API_URL}/process_taxonomy`
 }

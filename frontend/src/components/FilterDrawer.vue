@@ -5,8 +5,11 @@
       :icon="show ? mdiChevronLeft : mdiChevronRight">
     </v-btn>
     <v-sheet class="mx-auto" elevation="8" :width="mdAndDown ? '100vw' : '20vw'">
-      <h3 class="ma-2 text-center">Filter</h3>
-      <v-btn @click="filter">filter</v-btn>
+      <h3 class="ma-2 text-center">Model Filters</h3>
+      <v-divider></v-divider>
+      <!-- Filter by process name -->
+      <v-autocomplete v-model="selectedProcess" :items="process_taxonomies" item-title="process" item-value="id"
+        label="Process Taxonomy" @update:modelValue="filterProcess" clearable chips multiple></v-autocomplete>
     </v-sheet>
   </v-navigation-drawer>
 </template>
@@ -32,6 +35,14 @@ perceptualModelStore.fetchPerceptualModels().then((perceptual_models) => {
   modelFeatures.value = perceptual_models
 })
 
+const process_taxonomies = ref([])
+const selectedProcess = ref(null)
+
+perceptualModelStore.fetchProcessTaxonomies().then((pt) => {
+  process_taxonomies.value = pt
+})
+
+
 const translate = () => {
   if (show.value) {
     return 'translate(50%, 0)'
@@ -40,8 +51,16 @@ const translate = () => {
   }
 }
 
-const filter = () => {
-  mapStore.filterFeatures()
+const filterProcess = () => {
+  console.log("filtering with ", selectedProcess.value)
+  const filterFunction = (feature) => {
+    // feature.properties.process_taxonomies is an array of objects, each contains an id
+    // filter for the matching id
+    // selectedProcess.value is an array of ids
+    // we want all of the features that have a process_taxonomy id that is in selectedProcess.value
+    return feature.properties.process_taxonomies.some((pt) => selectedProcess.value.includes(pt.id))
+  }
+  mapStore.filterFeatures(filterFunction)
 }
 </script>
 
