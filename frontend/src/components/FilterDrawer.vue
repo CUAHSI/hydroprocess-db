@@ -8,12 +8,11 @@
       <h3 class="ma-2 text-center">Model Filters</h3>
       <v-divider></v-divider>
       <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
-        label="Process Taxonomies" @update:modelValue="filterProcess" clearable chips multiple></v-autocomplete>
+        label="Process Taxonomies" @update:modelValue="filter" clearable chips multiple></v-autocomplete>
       <v-autocomplete v-model="selectedSpatialZones" :items="spatialZones" item-title="spatial_property" item-value="id"
-        label="Spatial Zones" @update:modelValue="filterSpatial" clearable chips multiple></v-autocomplete>
+        label="Spatial Zones" @update:modelValue="filter" clearable chips multiple></v-autocomplete>
       <v-autocomplete v-model="selectedTemporalZones" :items="temporalZones" item-title="temporal_property"
-        item-value="id" label="Temporal Zones" @update:modelValue="filterTemporal" clearable chips
-        multiple></v-autocomplete>
+        item-value="id" label="Temporal Zones" @update:modelValue="filter" clearable chips multiple></v-autocomplete>
     </v-sheet>
   </v-navigation-drawer>
 </template>
@@ -40,67 +39,30 @@ perceptualModelStore.fetchPerceptualModels().then((perceptual_models) => {
 })
 
 const process_taxonomies = ref([])
-const selectedProcesses = ref(null)
+const selectedProcesses = ref([])
 const spatialZones = ref([])
-const selectedSpatialZones = ref(null)
+const selectedSpatialZones = ref([])
 const temporalZones = ref([])
-const selectedTemporalZones = ref(null)
+const selectedTemporalZones = ref([])
 
-
+// Fetch the process taxonomies, spatial zones, and temporal zones
 perceptualModelStore.fetchProcessTaxonomies().then((pt) => {
   process_taxonomies.value = pt
 })
-
-// TODO: combine the filter functions into one that filters based on a template
-const filterProcess = () => {
-  if (selectedProcesses.value.length === 0) {
-    // reset to show all features
-    mapStore.resetFilter()
-  }
-  const filterFunction = (feature) => {
-    // feature.properties.process_taxonomies is an array of objects, each contains an id
-    // filter for the matching id
-    // selectedProcess.value is an array of ids
-    // we want all of the features that have a process_taxonomy id that is in selectedProcess.value
-    return feature.properties.process_taxonomies.some((pt) => selectedProcesses.value.includes(pt.id))
-  }
-  mapStore.filterFeatures(filterFunction)
-}
-
 perceptualModelStore.fetchSpatialZones().then((sz) => {
   spatialZones.value = sz
 })
-
-const filterSpatial = () => {
-  if (selectedSpatialZones.value.length === 0) {
-    // reset to show all features
-    mapStore.resetFilter()
-  }
-  const filterFunction = (feature) => {
-    // feature.properties.spatialzone_id is an id
-    // filter for the matching id
-    // selectedSpatialZones.value is an array of ids
-    // we want all of the features that have a spatial_zone id that is in selectedSpatialZones.value
-    return selectedSpatialZones.value.includes(feature.properties.spatialzone_id)
-  }
-  mapStore.filterFeatures(filterFunction)
-}
-
 perceptualModelStore.fetchTemporalZones().then((tz) => {
   temporalZones.value = tz
 })
 
-const filterTemporal = () => {
-  if (selectedTemporalZones.value.length === 0) {
-    // reset to show all features
-    mapStore.resetFilter()
-  }
+
+const filter = () => {
   const filterFunction = (feature) => {
-    // feature.properties.temporalzone_id is an id
-    // filter for the matching id
-    // selectedTemporalZones.value is an array of ids
-    // we want all of the features that have a temporal_zone id that is in selectedTemporalZones.value
-    return selectedTemporalZones.value.includes(feature.properties.temporalzone_id)
+    const process = selectedProcesses.value.length == 0 || feature.properties.process_taxonomies.some((pt) => selectedProcesses.value.includes(pt.id))
+    const spatial = selectedSpatialZones.value.length == 0 || selectedSpatialZones.value.includes(feature.properties.spatialzone_id)
+    const temporal = selectedTemporalZones.value.length == 0 || selectedTemporalZones.value.includes(feature.properties.temporalzone_id)
+    return process && spatial && temporal
   }
   mapStore.filterFeatures(filterFunction)
 }
