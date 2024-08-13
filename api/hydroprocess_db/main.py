@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.db import create_db_and_tables
 from app.routers.perceptual_model.router import router as perceptual_model_router
+from app.routers.process_taxonomy.router import router as process_taxonomy_router
 from app.routers.statistics.router import router as statistics_router
 from app.schemas import UserCreate, UserRead, UserUpdate
 from app.users import auth_backend, fastapi_users
@@ -55,6 +56,11 @@ app.include_router(
     perceptual_model_router,
     prefix="/perceptual_model",
     tags=["perceptual_model"],
+)
+app.include_router(
+    process_taxonomy_router,
+    prefix="/process_taxonomy",
+    tags=["process_taxonomy"],
 )
 app.include_router(
     statistics_router,

@@ -1,7 +1,7 @@
 <template>
   <v-navigation-drawer v-if="!querying" location="right" width="auto" v-model="show" order="1">
     <v-container>
-      <v-btn @click="show = !show" location="left" order="0" postition="absolute"
+      <v-btn @click="show = !show" color="primary" location="left" order="0" postition="absolute"
         :style="{ bottom: '30%', transform: translate(), position: 'absolute' }"
         :icon="show ? mdiChevronRight : mdiChevronLeft">
       </v-btn>
@@ -50,7 +50,7 @@ const translate = () => {
   if (show.value) {
     return 'translate(-50%, 0)'
   } else {
-    return 'translate(-180%, 0)'
+    return 'translate(-140%, 0)'
   }
 }
 

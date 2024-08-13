@@ -4,6 +4,7 @@ import { ENDPOINTS } from '@/constants'
 
 export const usePerceptualModelStore = defineStore('perceptual_model', () => {
   const perceptualModels = ref([])
+  const processTaxonomies = ref([])
   const selectedPerceptualModel = ref(null)
 
   const setPerceptualModels = (models) => {
@@ -15,11 +16,25 @@ export const usePerceptualModelStore = defineStore('perceptual_model', () => {
   }
 
   const fetchPerceptualModels = async () => {
-    const response = await fetch(ENDPOINTS.perceptual_models_geojson)
+    const response = await fetch(ENDPOINTS.perceptual_models)
     const data = await response.json()
     setPerceptualModels(data)
     return data
   }
 
-  return { perceptualModels, selectedPerceptualModel, setPerceptualModels, setSelectedPerceptualModel, fetchPerceptualModels }
+  const fetchProcessTaxonomies = async () => {
+    const response = await fetch(ENDPOINTS.process_taxonomies)
+    const process_taxonomies = await response.json()
+    processTaxonomies.value = process_taxonomies
+    return process_taxonomies
+  }
+
+  return {
+    perceptualModels,
+    selectedPerceptualModel,
+    setPerceptualModels,
+    setSelectedPerceptualModel,
+    fetchPerceptualModels,
+    fetchProcessTaxonomies
+  }
 })
