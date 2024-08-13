@@ -6,5 +6,6 @@ export const ENDPOINTS = {
   authLogin: `${APP_API_URL}/auth/jwt/login`,
   userInfo: `${APP_API_URL}/users/me`,
   perceptual_models_geojson: `${APP_API_URL}/perceptual_model/geojson`,
+  perceptual_models: `${APP_API_URL}/perceptual_model`,
   model_type_count: `${APP_API_URL}/statistics/model_type_count`
 }

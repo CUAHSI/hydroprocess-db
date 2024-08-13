@@ -3,28 +3,16 @@ import { ref } from 'vue'
 
 export const useMapStore = defineStore('map', () => {
   const mapObject = ref(new Map())
+  const modelFeatures = ref({})
 
-  const deselectFeature = (feature) => {
-    mapObject.value.reachesFeatures.setFeatureStyle(feature.id, {
-      color: 'blue',
-      weight: 3,
-      opacity: 1
-    })
+  function filterFeatures() {
+    console.log('filtering features')
+    mapObject.value.layerGroup.removeLayer(modelFeatures.value)
   }
 
-  const selectFeature = (feature) => {
-    mapObject.value.reachesFeatures.setFeatureStyle(feature.id, {
-      color: 'red',
-      weight: 3,
-      opacity: 1
-    })
+  return {
+    mapObject,
+    filterFeatures,
+    modelFeatures
   }
-
-  const clearAllFeatures = () => {
-    mapObject.value.reachesFeatures.eachFeature(function (feature) {
-      feature.setStyle({ color: 'blue', weight: 3, opacity: 1 })
-    })
-  }
-
-  return { mapObject, deselectFeature, selectFeature, clearAllFeatures }
 })
