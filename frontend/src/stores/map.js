@@ -10,12 +10,31 @@ export const useMapStore = defineStore('map', () => {
   const perceptualModelsGeojson = ref([])
 
   function onEachFeature(feature, layer) {
-    let content = `<h3>${feature.properties.citation.citation}</h3><p><ul>`
-    for (const [key, value] of Object.entries(feature.properties)) {
-      content += `<li>${key}: ${value}</li>`
-    }
-    content += '</ul></p>'
-    layer.bindPopup(content)
+    let content = `<h3>Perceptual model of <strong>${feature.properties.location.long_name}</strong></h3>`
+    content += `<p>${feature.properties.citation.citation}</p>`
+    content += '<hr>'
+    content += `<p><strong>${feature.properties.model_type.name}</strong></p>`
+    content += `<small>${feature.properties.textmodel_snipped}</small>`
+    content += '<hr>'
+
+    content += '<h4>Processes:</h4>'
+    content += '<ul>'
+    feature.properties.process_taxonomies.forEach((process_taxonomy) => {
+      content += `<li>${process_taxonomy.process} (${process_taxonomy.identifier})</li>`
+    })
+    content += '<hr>'
+
+    content += '<h4>Spatial zone:</h4>'
+    content += `${feature.properties.spatial_zone_type.spatial_property}`
+    content += '<hr>'
+
+    content += '<h4>Temporal zone:</h4>'
+    content += `${feature.properties.temporal_zone_type.temporal_property}`
+    layer.bindPopup(content, {
+      maxWidth: 400,
+      maxHeight: 300,
+      keepInView: true
+    })
   }
 
   const fetchPerceptualModelsGeojson = async () => {

@@ -5,8 +5,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.db import create_db_and_tables
 from app.routers.filters.router import router as filters_router
-from app.routers.statistics.router import router as statistics_router
 from app.routers.perceptual_model.router import router as perceptual_model_router
+from app.routers.statistics.router import router as statistics_router
 from app.schemas import UserCreate, UserRead, UserUpdate
 from app.users import auth_backend, fastapi_users
 from config import get_settings

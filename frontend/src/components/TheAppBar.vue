@@ -1,9 +1,8 @@
 <template>
   <v-app-bar v-if="!$route.meta.hideNavigation" color="navbar" ref="appBar" id="app-bar" elevate-on-scroll fixed app>
     <div class="d-flex align-end full-height pa-2 align-center w-100">
-      <router-link :to="{ path: `/` }" class="logo">
-        <img src="@/assets/logo.png" alt="home" />
-      </router-link>
+      <v-app-bar-title>Perceptual Models Around the World<div class="text-subtitle-1">McMillan Hydrology Lab</div>
+      </v-app-bar-title>
 
       <v-spacer></v-spacer>
 
@@ -41,14 +40,6 @@ function login(){
 </script>
 
 <style lang="scss" scoped>
-.logo {
-  height: 100%;
-  cursor: pointer;
-
-  img {
-    height: 100%;
-  }
-}
 
 .v-toolbar.v-app-bar--is-scrolled>.v-toolbar__content>.container {
   align-items: center !important;
