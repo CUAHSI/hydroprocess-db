@@ -13,3 +13,4 @@ pyproj==3.6.1
 wget==3.2
 geoalchemy2[shapely]==0.15.2
 pydantic-extra-types==2.9.0
+geojson-pydantic==1.1.0

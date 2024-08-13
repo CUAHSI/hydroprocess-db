@@ -54,7 +54,7 @@ onMounted(() => {
     CartoDB_PositronNoLabels.addTo(leaflet);
 
     function onEachFeature(feature, layer) {
-        let content = `<h3>${feature.properties.citation}</h3><p><ul>`
+        let content = `<h3>${feature.properties.citation.citation}</h3><p><ul>`
         for (const [key, value] of Object.entries(feature.properties)) {
             content += `<li>${key}: ${value}</li>`;
         }

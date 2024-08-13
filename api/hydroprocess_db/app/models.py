@@ -1,6 +1,7 @@
 import json
 
 from geoalchemy2 import Geometry, WKBElement, shape
+from geojson_pydantic import Feature, FeatureCollection, Point
 from pydantic import ConfigDict, model_serializer
 from pydantic_extra_types.coordinate import Latitude, Longitude
 from shapely import to_geojson
@@ -27,6 +28,7 @@ class FunctionType(SQLModel, table=True):
 
 
 class WKBToGeoJSON(SQLModel, WKBElement):
+    # TODO: return a geojson_pydantic object instead of a string
     @classmethod
     def validate(cls, value):
         if not isinstance(value, WKBElement):
@@ -140,6 +142,38 @@ class PerceptualModel(PerceptualModelBase, table=True):
     temporal_zone_type: TemporalZoneType = Relationship(back_populates="perceptual_models")
     model_type: ModelType = Relationship(back_populates="perceptual_models")
 
+    def get_feature_properties(self) -> dict:
+
+        # add the base properties
+        properties = self.model_dump()
+
+        # add the citation to the properties
+        citation = self.citation
+        if citation:
+            properties["citation"] = citation.model_dump()
+
+        # add the process taxonomies to the properties
+        process_taxonomies = self.process_taxonomies
+        if process_taxonomies:
+            properties["process_taxonomies"] = [pt.model_dump() for pt in process_taxonomies]
+
+        # add the spatial zone type to the properties
+        spatial_zone_type = self.spatial_zone_type
+        if spatial_zone_type:
+            properties["spatial_zone_type"] = spatial_zone_type.model_dump()
+
+        # add the temporal zone type to the properties
+        temporal_zone_type = self.temporal_zone_type
+        if temporal_zone_type:
+            properties["temporal_zone_type"] = temporal_zone_type.model_dump()
+
+        # add the model type to the properties
+        model_type = self.model_type
+        if model_type:
+            properties["model_type"] = model_type.model_dump()
+
+        return properties
+
 
 class PerceptualModelRecursive(PerceptualModelBase):
     process_taxonomies: list["ProcessTaxonomy"] | None
@@ -148,6 +182,17 @@ class PerceptualModelRecursive(PerceptualModelBase):
     spatial_zone_type: SpatialZoneType
     temporal_zone_type: TemporalZoneType
     model_type: ModelType
+
+
+class GeoJsonFeature(Feature):
+    type: str = "Feature"
+    properties: dict
+    geometry: Point
+
+
+class GeoJsonFeatureCollection(FeatureCollection):
+    type: str = "FeatureCollection"
+    features: list[GeoJsonFeature]
 
 
 class ProcessTaxonomy(SQLModel, table=True):
