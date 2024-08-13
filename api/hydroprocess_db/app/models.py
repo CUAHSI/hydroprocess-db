@@ -172,6 +172,11 @@ class PerceptualModel(PerceptualModelBase, table=True):
         if model_type:
             properties["model_type"] = model_type.model_dump()
 
+        # add the location to the properties
+        location = self.location
+        if location:
+            properties["location"] = location.model_dump()
+
         return properties
 
 

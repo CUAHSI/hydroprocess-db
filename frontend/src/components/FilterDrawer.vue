@@ -1,11 +1,11 @@
 <template>
-  <v-navigation-drawer location="left" width="auto" :model-value="show" @update:modelValue="$emit('toggle')">
+  <v-navigation-drawer location="left" width="auto" :model-value="show" @update:modelValue="$emit('toggle')" order="1">
     <v-btn @click="show = !show" color="primary" location="right" order="0" postition="absolute"
       :style="{ bottom: '30%', transform: translate(), position: 'absolute' }"
       :icon="show ? mdiChevronLeft : mdiChevronRight">
     </v-btn>
     <v-sheet class="mx-auto" elevation="8" :width="mdAndDown ? '100vw' : '20vw'">
-      <h3 class="ma-2 text-center">Model Filters</h3>
+      <h3 class="text-h6 ma-2 text-center">Model Filters</h3>
       <v-divider></v-divider>
       <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
         label="Process Taxonomies" @update:modelValue="filter" clearable chips multiple></v-autocomplete>
