@@ -8,7 +8,7 @@ export const ENDPOINTS = {
   perceptual_models_geojson: `${APP_API_URL}/perceptual_model/geojson`,
   perceptual_models: `${APP_API_URL}/perceptual_model`,
   model_type_count: `${APP_API_URL}/statistics/model_type_count`,
-  process_taxonomies: `${APP_API_URL}/process_taxonomy`,
-  spatial_zones: `${APP_API_URL}/spatial_zone`,
-  temporal_zones: `${APP_API_URL}/temporal_zone`
+  process_taxonomies: `${APP_API_URL}/filters/process_taxonomies`,
+  spatial_zones: `${APP_API_URL}/filters/spatial_zones`,
+  temporal_zones: `${APP_API_URL}/filters/temporal_zones`
 }
