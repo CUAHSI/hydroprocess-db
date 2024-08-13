@@ -68,7 +68,7 @@ const auth = useAuthStore();
 const { handleSubmit } = useForm({
     validationSchema: {
         password(value) {
-            if (value.length >= 6) return true
+            if (value?.length >= 6) return true
 
             return 'Must be at least 6 characters.'
         },

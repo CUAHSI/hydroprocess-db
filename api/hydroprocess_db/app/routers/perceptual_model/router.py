@@ -6,6 +6,8 @@ from sqlmodel import select
 from app.db import get_session
 from app.models import (
     Citation,
+    GeoJsonFeature,
+    GeoJsonFeatureCollection,
     Location,
     ModelType,
     PerceptualModel,
@@ -39,8 +41,29 @@ def get_perceptual_models_recursive(*, session=Depends(get_session)):
 
 
 @router.get(
+    "/recursive/{model_id}",
+    description="Get a perceptual model by ID along with its nested relations.",
+    response_model=PerceptualModelRecursive,
+)
+def get_perceptual_model_by_id_recursive(model_id: int, session=Depends(get_session)):
+    """
+    Get a perceptual model by ID along with its nested relations.
+
+    Parameters:
+    - model_id: The ID of the perceptual model to get.
+    - session: The async session to use for database operations.
+
+    Returns:
+    - The perceptual model with the specified ID.
+    """
+    model = session.get(PerceptualModel, model_id)
+    return model
+
+
+@router.get(
     "/geojson",
     description="Get all perceptual models along with their nested relations, as geojson.",
+    response_model=GeoJsonFeatureCollection,
 )
 def get_perceptual_models_geojson(*, session=Depends(get_session)):
     """
@@ -53,18 +76,38 @@ def get_perceptual_models_geojson(*, session=Depends(get_session)):
     - A list of perceptual models.
     """
     perceptual_models = session.exec(select(PerceptualModel)).all()
-    geojson = {"type": "FeatureCollection", "features": []}
+
+    features = []
     for pmodel in perceptual_models:
         geometry = WKBToGeoJSON.from_WKBElement(pmodel.location.pt)
-        feature = {"type": "Feature", "geometry": geometry, "properties": pmodel.model_dump()}
-
-        # add the citation to the properties
-        citation = pmodel.citation
-        if citation:
-            feature["properties"]["citation"] = citation.citation
-
-        geojson["features"].append(feature)
+        feature = GeoJsonFeature(type="Feature", geometry=geometry, properties=pmodel.get_feature_properties())
+        features.append(feature)
+    geojson = GeoJsonFeatureCollection(type="FeatureCollection", features=features)
     return geojson
+
+
+@router.get(
+    "/geojson/{model_id}",
+    description="Get a perceptual model by ID along with its nested relations, as geojson.",
+    response_model=GeoJsonFeature,
+)
+def get_perceptual_model_by_id_geojson(model_id: int, session=Depends(get_session)):
+    """
+    Get a perceptual model by ID along with its nested relations, as geojson.
+
+    Parameters:
+    - model_id: The ID of the perceptual model to get.
+    - session: The async session to use for database operations.
+
+    Returns:
+    - The perceptual model with the specified ID.
+    """
+    pmodel = session.get(PerceptualModel, model_id)
+
+    geometry = WKBToGeoJSON.from_WKBElement(pmodel.location.pt)
+    feature = {"type": "Feature", "geometry": geometry, "properties": pmodel.get_feature_properties()}
+
+    return GeoJsonFeature(**feature)
 
 
 @router.get(
