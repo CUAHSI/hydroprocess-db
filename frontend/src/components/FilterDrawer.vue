@@ -13,12 +13,25 @@
         label="Spatial Zones" @update:modelValue="filter" clearable chips multiple></v-autocomplete>
       <v-autocomplete v-model="selectedTemporalZones" :items="temporalZones" item-title="temporal_property"
         item-value="id" label="Temporal Zones" @update:modelValue="filter" clearable chips multiple></v-autocomplete>
+      <v-card order="1">
+        <v-card-title>Search Text Within:</v-card-title>
+        <v-card-text>
+          <v-btn-toggle v-model="textSearchFields" @update:modelValue="filter" class="mb-2" multiple outlined
+            variant="text" divided>
+            <v-btn value="long_name">Name</v-btn>
+            <v-btn value="citation">Citation</v-btn>
+            <v-btn value="textmodel_snipped">Abstract</v-btn>
+          </v-btn-toggle>
+          <v-text-field v-show="hasTextSearchFields" @update:focused="filter" @keydown.enter.prevent="filter"
+            @click:clear="filter" v-model="searchTerm" label="Search" clearable></v-text-field>
+        </v-card-text>
+      </v-card>
     </v-sheet>
   </v-navigation-drawer>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useDisplay } from 'vuetify'
 import { mdiChevronRight, mdiChevronLeft } from '@mdi/js'
 import { usePerceptualModelStore } from "@/stores/perceptual_models";
@@ -44,6 +57,12 @@ const spatialZones = ref([])
 const selectedSpatialZones = ref([])
 const temporalZones = ref([])
 const selectedTemporalZones = ref([])
+const searchTerm = ref(null)
+const textSearchFields = ref([])
+
+const hasTextSearchFields = computed(() => {
+  return textSearchFields.value.length > 0
+})
 
 // Fetch the process taxonomies, spatial zones, and temporal zones
 perceptualModelStore.fetchProcessTaxonomies().then((pt) => {
@@ -56,13 +75,31 @@ perceptualModelStore.fetchTemporalZones().then((tz) => {
   temporalZones.value = tz
 })
 
+const checkSearchTerm = (searchTerm, fieldsToSearch, feature) => {
+  if (!searchTerm) {
+    return true
+  }
+  return fieldsToSearch.some(field => {
+    const long_name = field === 'long_name' ? feature.properties.location?.long_name.toLowerCase().includes(searchTerm.toLowerCase()) : false
+    const citation = field === 'citation' ? feature.properties.citation?.citation.toLowerCase().includes(searchTerm.toLowerCase()) : false
+    const textmodel_snipped = field === 'textmodel_snipped' ? feature.properties.textmodel_snipped.toLowerCase().includes(searchTerm.toLowerCase()) : false
+    return long_name || citation || textmodel_snipped
+  })
+}
 
-const filter = () => {
+
+const filter = async () => {
+  // reset search term if no text search fields are selected
+  if (textSearchFields.value.length === 0) {
+    searchTerm.value = null
+  }
   const filterFunction = (feature) => {
     const process = selectedProcesses.value.length == 0 || feature.properties.process_taxonomies.some((pt) => selectedProcesses.value.includes(pt.id))
     const spatial = selectedSpatialZones.value.length == 0 || selectedSpatialZones.value.includes(feature.properties.spatialzone_id)
     const temporal = selectedTemporalZones.value.length == 0 || selectedTemporalZones.value.includes(feature.properties.temporalzone_id)
-    return process && spatial && temporal
+    const search = checkSearchTerm(searchTerm.value, textSearchFields.value, feature)
+
+    return process && spatial && temporal && search
   }
   mapStore.filterFeatures(filterFunction)
 }
