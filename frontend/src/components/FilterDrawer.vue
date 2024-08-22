@@ -1,8 +1,4 @@
 <template>
-  <v-btn @click="show = !show" color="primary" location="right" order="0" postition="absolute"
-    :style="{ bottom: '30%', transform: translate(), position: 'absolute' }"
-    :icon="show ? mdiChevronLeft : mdiChevronRight">
-  </v-btn>
   <v-sheet class="mx-auto" elevation="8">
     <h3 class="text-h6 ma-2 text-center">Model Filters</h3>
     <v-divider></v-divider>
@@ -33,7 +29,6 @@
 
 <script setup>
 import { ref, computed, nextTick } from 'vue'
-import { mdiChevronRight, mdiChevronLeft } from '@mdi/js'
 import { usePerceptualModelStore } from "@/stores/perceptual_models";
 import { useMapStore } from '@/stores/map';
 
@@ -105,15 +100,6 @@ async function filter() {
   }
   mapStore.filterFeatures(filterFunction)
   filtering.value = false
-}
-
-
-const translate = () => {
-  if (show.value) {
-    return 'translate(50%, 0)'
-  } else {
-    return 'translate(150%, 0)'
-  }
 }
 </script>
 

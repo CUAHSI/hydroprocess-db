@@ -1,8 +1,4 @@
 <template>
-  <v-btn @click="show = !show" color="primary" location="left" order="0" postition="absolute"
-    :style="{ bottom: '30%', transform: translate(), position: 'absolute' }"
-    :icon="show ? mdiChevronRight : mdiChevronLeft">
-  </v-btn>
   <v-sheet class="mx-auto" elevation="8">
     <v-card>
       <v-card-title>Model Type Counts</v-card-title>
@@ -39,18 +35,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { mdiChevronRight, mdiChevronLeft } from '@mdi/js'
 import { ENDPOINTS } from '../constants';
-
-let show = ref(true)
-
-const translate = () => {
-  if (show.value) {
-    return 'translate(-50%, 0)'
-  } else {
-    return 'translate(-140%, 0)'
-  }
-}
 
 let querying = ref(true)
 
