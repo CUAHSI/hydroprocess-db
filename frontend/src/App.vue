@@ -4,11 +4,12 @@
       <TheAppBar @toggle-mobile-nav="toggleMobileNav" :paths="paths" />
       <AlertPopup v-bind="alertStore.displayed"></AlertPopup>
       <TheMobileNavDrawer @toggle-mobile-nav="toggleMobileNav" :show="showMobileNavigation" :paths="paths" />
-      <RouterView />
-      <!-- The leaflet map kept alive outside of the RouterView -->
-      <KeepAlive>
-        <TheLeafletMap />
-      </KeepAlive>
+      <!-- https://router.vuejs.org/guide/migration/#-router-view-keep-alive-and-transition- -->
+      <RouterView v-slot="{ Component }">
+        <KeepAlive>
+          <component :is="Component" />
+        </KeepAlive>
+      </RouterView>
       <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
       <SnackBar />
       <TheBottomSheet />
@@ -27,7 +28,6 @@ import TheFooter from './components/TheFooter.vue'
 import { ref } from 'vue'
 import { useAlertStore } from './stores/alerts'
 import TheBottomSheet from "@/components/TheBottomSheet.vue";
-import TheLeafletMap from './components/TheLeafletMap.vue';
 
 const alertStore = useAlertStore()
 
