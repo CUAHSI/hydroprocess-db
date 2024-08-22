@@ -1,9 +1,8 @@
 <template>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <v-overlay :model-value="!mapStore.mapLoaded" class="align-center justify-center">
-        <v-progress-circular indeterminate :size="128"></v-progress-circular>
-    </v-overlay>
-    <div v-show="$route.meta.showMap" id="mapContainer"></div>
+    <v-col :cols="props.cols" :order="props.order">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <div v-show="$route.meta.showMap" id="mapContainer"></div>
+    </v-col>
 </template>
 
 <script setup>
@@ -15,6 +14,7 @@ import { useMapStore } from '@/stores/map'
 import 'leaflet-iconmaterial/dist/leaflet.icon-material.css'
 
 const mapStore = useMapStore()
+const props = defineProps(['cols', 'order'])
 
 onUpdated(() => {
     mapStore.leaflet.invalidateSize()
@@ -100,6 +100,6 @@ async function mapClick() {
 <style scoped>
 #mapContainer {
     width: 100%;
-    height: 100%;
+    height: 80vh;
 }
 </style>

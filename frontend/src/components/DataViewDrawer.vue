@@ -1,10 +1,10 @@
 <template>
-  <v-navigation-drawer v-if="!querying" location="right" width="auto" v-model="show" order="1">
-    <v-container>
-      <v-btn @click="show = !show" color="primary" location="left" order="0" postition="absolute"
-        :style="{ bottom: '30%', transform: translate(), position: 'absolute' }"
-        :icon="show ? mdiChevronRight : mdiChevronLeft">
-      </v-btn>
+  <v-col :cols="props.cols">
+    <v-btn @click="show = !show" color="primary" location="left" order="0" postition="absolute"
+      :style="{ bottom: '30%', transform: translate(), position: 'absolute' }"
+      :icon="show ? mdiChevronRight : mdiChevronLeft">
+    </v-btn>
+    <v-sheet class="mx-auto" elevation="8">
       <v-card>
         <v-card-title>Model Type Counts</v-card-title>
         <v-card-text>
@@ -35,8 +35,8 @@
           <p>{{ totalModels }}</p>
         </v-card-text>
       </v-card>
-    </v-container>
-  </v-navigation-drawer>
+    </v-sheet>
+  </v-col>
 </template>
 
 <script setup>
@@ -44,6 +44,7 @@ import { ref } from 'vue'
 import { mdiChevronRight, mdiChevronLeft } from '@mdi/js'
 import { ENDPOINTS } from '../constants';
 
+const props = defineProps(['cols'])
 let show = ref(true)
 
 const translate = () => {

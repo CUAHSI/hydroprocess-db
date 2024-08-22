@@ -1,10 +1,10 @@
 <template>
-  <v-navigation-drawer location="left" width="auto" :model-value="show" @update:modelValue="$emit('toggle')" order="1">
+  <v-col :cols="props.cols" :order="props.order">
     <v-btn @click="show = !show" color="primary" location="right" order="0" postition="absolute"
       :style="{ bottom: '30%', transform: translate(), position: 'absolute' }"
       :icon="show ? mdiChevronLeft : mdiChevronRight">
     </v-btn>
-    <v-sheet class="mx-auto" elevation="8" :width="mdAndDown ? '100vw' : '20vw'">
+    <v-sheet class="mx-auto" elevation="8">
       <h3 class="text-h6 ma-2 text-center">Model Filters</h3>
       <v-divider></v-divider>
       <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
@@ -31,12 +31,11 @@
         <v-progress-linear v-if="filtering" indeterminate color="primary"></v-progress-linear>
       </v-card>
     </v-sheet>
-  </v-navigation-drawer>
+  </v-col>
 </template>
 
 <script setup>
 import { ref, computed, nextTick } from 'vue'
-import { useDisplay } from 'vuetify'
 import { mdiChevronRight, mdiChevronLeft } from '@mdi/js'
 import { usePerceptualModelStore } from "@/stores/perceptual_models";
 import { useMapStore } from '@/stores/map';
@@ -46,7 +45,7 @@ const mapStore = useMapStore()
 
 const show = ref(true)
 defineEmits(['selectModel', 'toggle'])
-const { mdAndDown } = useDisplay()
+const props = defineProps(['cols', 'order'])
 
 let modelFeatures = ref({})
 const filtering = ref()
