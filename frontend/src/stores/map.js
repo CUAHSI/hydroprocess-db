@@ -53,7 +53,14 @@ export const useMapStore = defineStore('map', () => {
     })
   }
 
-  var textIcon = L.IconMaterial.icon({
+  const pointToLayer = (feature, latlng) => {
+    if (feature.properties.model_type.name === 'Text model') {
+      return L.marker(latlng, { icon: textIcon })
+    }
+    return L.marker(latlng, { icon: figureIcon })
+  }
+
+  let textIcon = L.IconMaterial.icon({
     icon: 'article', // Name of Material icon
     iconColor: 'white', // Material icon color (could be rgba, hex, html name...)
     markerColor: 'grey', // Marker fill color
@@ -79,12 +86,7 @@ export const useMapStore = defineStore('map', () => {
       onEachFeature: (feature, layer) => {
         onEachFeature(feature, layer)
       },
-      pointToLayer: (feature, latlng) => {
-        if (feature.properties.model_type.name === 'Text model') {
-          return L.marker(latlng, { icon: textIcon })
-        }
-        return L.marker(latlng, { icon: figureIcon })
-      }
+      pointToLayer: pointToLayer
     })
     layerGroup.value.addLayer(modelFeatures.value)
   }
@@ -100,7 +102,8 @@ export const useMapStore = defineStore('map', () => {
       },
       onEachFeature: (feature, layer) => {
         onEachFeature(feature, layer)
-      }
+      },
+      pointToLayer: pointToLayer
     })
     // add filtered features
     layerGroup.value.addLayer(modelFeatures.value)
