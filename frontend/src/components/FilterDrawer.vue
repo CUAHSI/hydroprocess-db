@@ -8,11 +8,14 @@
       <h3 class="text-h6 ma-2 text-center">Model Filters</h3>
       <v-divider></v-divider>
       <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
-        label="Process Taxonomies" @update:modelValue="filter" clearable chips multiple></v-autocomplete>
+        label="Process Taxonomies" @update:modelValue="filter" clearable chips multiple
+        :loading="filtering"></v-autocomplete>
       <v-autocomplete v-model="selectedSpatialZones" :items="spatialZones" item-title="spatial_property" item-value="id"
-        label="Spatial Zones" @update:modelValue="filter" clearable chips multiple></v-autocomplete>
+        label="Spatial Zones" @update:modelValue="filter" clearable chips multiple
+        :loading="filtering"></v-autocomplete>
       <v-autocomplete v-model="selectedTemporalZones" :items="temporalZones" item-title="temporal_property"
-        item-value="id" label="Temporal Zones" @update:modelValue="filter" clearable chips multiple></v-autocomplete>
+        item-value="id" label="Temporal Zones" @update:modelValue="filter" clearable chips multiple
+        :loading="filtering"></v-autocomplete>
       <v-card order="1">
         <v-card-title>Search Text Within:</v-card-title>
         <v-card-text>
@@ -25,13 +28,14 @@
           <v-text-field v-show="hasTextSearchFields" @update:focused="filter" @keydown.enter.prevent="filter"
             @click:clear="filter" v-model="searchTerm" label="Search" clearable></v-text-field>
         </v-card-text>
+        <v-progress-linear v-if="filtering" indeterminate color="primary"></v-progress-linear>
       </v-card>
     </v-sheet>
   </v-navigation-drawer>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import { useDisplay } from 'vuetify'
 import { mdiChevronRight, mdiChevronLeft } from '@mdi/js'
 import { usePerceptualModelStore } from "@/stores/perceptual_models";
@@ -45,6 +49,7 @@ defineEmits(['selectModel', 'toggle'])
 const { mdAndDown } = useDisplay()
 
 let modelFeatures = ref({})
+const filtering = ref()
 
 // query the api for the features
 perceptualModelStore.fetchPerceptualModels().then((perceptual_models) => {
@@ -88,7 +93,9 @@ const checkSearchTerm = (searchTerm, fieldsToSearch, feature) => {
 }
 
 
-const filter = async () => {
+async function filter() {
+  filtering.value = true
+  await nextTick()
   // reset search term if no text search fields are selected
   if (textSearchFields.value.length === 0) {
     searchTerm.value = null
@@ -102,6 +109,7 @@ const filter = async () => {
     return process && spatial && temporal && search
   }
   mapStore.filterFeatures(filterFunction)
+  filtering.value = false
 }
 
 

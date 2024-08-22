@@ -9,6 +9,7 @@ export const useMapStore = defineStore('map', () => {
   const layerGroup = ref(null)
   const modelFeatures = ref({})
   const perceptualModelsGeojson = ref([])
+  const mapLoaded = ref(false)
 
   function onEachFeature(feature, layer) {
     let content = `<h3>Perceptual model of <strong>${feature.properties.location.long_name}</strong></h3>`
@@ -45,7 +46,7 @@ export const useMapStore = defineStore('map', () => {
       content += '<h4>Temporal zone:</h4>'
       content += `${feature.properties.temporal_zone_type.temporal_property}`
     }
-    
+
     layer.bindPopup(content, {
       maxWidth: 400,
       maxHeight: 300,
@@ -123,6 +124,7 @@ export const useMapStore = defineStore('map', () => {
     leaflet,
     modelFeatures,
     layerGroup,
+    mapLoaded,
     fetchPerceptualModelsGeojson,
     filterFeatures,
     resetFilter
