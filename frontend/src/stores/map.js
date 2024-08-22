@@ -9,19 +9,19 @@ export const useMapStore = defineStore('map', () => {
   const layerGroup = ref(null)
   const modelFeatures = ref({})
   const perceptualModelsGeojson = ref([])
+  const mapLoaded = ref(false)
 
   function onEachFeature(feature, layer) {
     let content = `<h3>Perceptual model of <strong>${feature.properties.location.long_name}</strong></h3>`
     content += `<p>${feature.properties.citation.citation}</p>`
-    content += '<hr>'
-    content += `<p><strong>${feature.properties.model_type.name}</strong></p>`
+    content += '<hr><br>'
+    content += `<h4>${feature.properties.model_type.name}</h4>`
     if (feature.properties.model_type.name === 'Text model') {
       content += `<p>${feature.properties.textmodel_snipped}</p>`
     } else {
       content += `<img src="${feature.properties.figure_url}" style="width: 100%">`
     }
-    content += '<hr>'
-
+    content += '<hr><br>'
     content += '<h4>Processes:</h4>'
     content += '<ul>'
     feature.properties.process_taxonomies.forEach((process_taxonomy) => {
@@ -32,7 +32,7 @@ export const useMapStore = defineStore('map', () => {
       feature.properties.spatial_zone_type?.spatial_property &&
       feature.properties.spatial_zone_type.spatial_property != 'N'
     ) {
-      content += '<hr>'
+      content += '<hr><br>'
       content += '<h4>Spatial zone:</h4>'
       content += `${feature.properties.spatial_zone_type.spatial_property}`
     }
@@ -41,11 +41,11 @@ export const useMapStore = defineStore('map', () => {
       feature.properties.temporal_zone_type?.temporal_property &&
       feature.properties.temporal_zone_type.temporal_property != 'N'
     ) {
-      content += '<hr>'
+      content += '<hr><br>'
       content += '<h4>Temporal zone:</h4>'
       content += `${feature.properties.temporal_zone_type.temporal_property}`
     }
-    
+
     layer.bindPopup(content, {
       maxWidth: 400,
       maxHeight: 300,
@@ -53,7 +53,14 @@ export const useMapStore = defineStore('map', () => {
     })
   }
 
-  var textIcon = L.IconMaterial.icon({
+  const pointToLayer = (feature, latlng) => {
+    if (feature.properties.model_type.name === 'Text model') {
+      return L.marker(latlng, { icon: textIcon })
+    }
+    return L.marker(latlng, { icon: figureIcon })
+  }
+
+  let textIcon = L.IconMaterial.icon({
     icon: 'article', // Name of Material icon
     iconColor: 'white', // Material icon color (could be rgba, hex, html name...)
     markerColor: 'grey', // Marker fill color
@@ -79,12 +86,7 @@ export const useMapStore = defineStore('map', () => {
       onEachFeature: (feature, layer) => {
         onEachFeature(feature, layer)
       },
-      pointToLayer: (feature, latlng) => {
-        if (feature.properties.model_type.name === 'Text model') {
-          return L.marker(latlng, { icon: textIcon })
-        }
-        return L.marker(latlng, { icon: figureIcon })
-      }
+      pointToLayer: pointToLayer
     })
     layerGroup.value.addLayer(modelFeatures.value)
   }
@@ -100,7 +102,8 @@ export const useMapStore = defineStore('map', () => {
       },
       onEachFeature: (feature, layer) => {
         onEachFeature(feature, layer)
-      }
+      },
+      pointToLayer: pointToLayer
     })
     // add filtered features
     layerGroup.value.addLayer(modelFeatures.value)
@@ -120,6 +123,7 @@ export const useMapStore = defineStore('map', () => {
     leaflet,
     modelFeatures,
     layerGroup,
+    mapLoaded,
     fetchPerceptualModelsGeojson,
     filterFeatures,
     resetFilter

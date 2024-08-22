@@ -1,5 +1,8 @@
 <template>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <v-overlay :model-value="!mapStore.mapLoaded" class="align-center justify-center">
+        <v-progress-circular indeterminate :size="128"></v-progress-circular>
+    </v-overlay>
     <div v-show="$route.meta.showMap" id="mapContainer"></div>
 </template>
 
@@ -17,7 +20,7 @@ onUpdated(() => {
     mapStore.leaflet.invalidateSize()
 })
 
-onMounted(() => {
+onMounted(async () => {
     let leaflet = L.map('mapContainer').setView([0, 11], 2);
     mapStore.leaflet = leaflet;
     let layerGroup = new L.LayerGroup();
@@ -57,7 +60,7 @@ onMounted(() => {
     Esri_Hydro_Reference_Overlay.addTo(leaflet);
 
     // query the api for the features
-    mapStore.fetchPerceptualModelsGeojson()
+    await mapStore.fetchPerceptualModelsGeojson()
 
     // layer toggling
     let mixed = {
@@ -78,6 +81,8 @@ onMounted(() => {
     leaflet.on("click", function (e) {
         mapClick(e);
     });
+
+    mapStore.mapLoaded = true;
 })
 
 
