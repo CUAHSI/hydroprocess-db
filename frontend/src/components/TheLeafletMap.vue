@@ -1,8 +1,6 @@
 <template>
-    <v-col :cols="props.cols" :order="props.order">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <div v-show="$route.meta.showMap" id="mapContainer"></div>
-    </v-col>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <div v-show="$route.meta.showMap" id="mapContainer"></div>
 </template>
 
 <script setup>
@@ -14,7 +12,6 @@ import { useMapStore } from '@/stores/map'
 import 'leaflet-iconmaterial/dist/leaflet.icon-material.css'
 
 const mapStore = useMapStore()
-const props = defineProps(['cols', 'order'])
 
 onUpdated(() => {
     mapStore.leaflet.invalidateSize()

@@ -1,37 +1,34 @@
 <template>
-  <v-col :cols="props.cols" :order="props.order">
-    <v-btn @click="show = !show" color="primary" location="right" order="0" postition="absolute"
-      :style="{ bottom: '30%', transform: translate(), position: 'absolute' }"
-      :icon="show ? mdiChevronLeft : mdiChevronRight">
-    </v-btn>
-    <v-sheet class="mx-auto" elevation="8">
-      <h3 class="text-h6 ma-2 text-center">Model Filters</h3>
-      <v-divider></v-divider>
-      <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
-        label="Process Taxonomies" @update:modelValue="filter" clearable chips multiple
-        :loading="filtering"></v-autocomplete>
-      <v-autocomplete v-model="selectedSpatialZones" :items="spatialZones" item-title="spatial_property" item-value="id"
-        label="Spatial Zones" @update:modelValue="filter" clearable chips multiple
-        :loading="filtering"></v-autocomplete>
-      <v-autocomplete v-model="selectedTemporalZones" :items="temporalZones" item-title="temporal_property"
-        item-value="id" label="Temporal Zones" @update:modelValue="filter" clearable chips multiple
-        :loading="filtering"></v-autocomplete>
-      <v-card order="1">
-        <v-card-title>Search Text Within:</v-card-title>
-        <v-card-text>
-          <v-btn-toggle v-model="textSearchFields" @update:modelValue="filter" class="mb-2" multiple outlined
-            variant="text" divided>
-            <v-btn value="long_name">Name</v-btn>
-            <v-btn value="citation">Citation</v-btn>
-            <v-btn value="textmodel_snipped">Abstract</v-btn>
-          </v-btn-toggle>
-          <v-text-field v-show="hasTextSearchFields" @update:focused="filter" @keydown.enter.prevent="filter"
-            @click:clear="filter" v-model="searchTerm" label="Search" clearable></v-text-field>
-        </v-card-text>
-        <v-progress-linear v-if="filtering" indeterminate color="primary"></v-progress-linear>
-      </v-card>
-    </v-sheet>
-  </v-col>
+  <v-btn @click="show = !show" color="primary" location="right" order="0" postition="absolute"
+    :style="{ bottom: '30%', transform: translate(), position: 'absolute' }"
+    :icon="show ? mdiChevronLeft : mdiChevronRight">
+  </v-btn>
+  <v-sheet class="mx-auto" elevation="8">
+    <h3 class="text-h6 ma-2 text-center">Model Filters</h3>
+    <v-divider></v-divider>
+    <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
+      label="Process Taxonomies" @update:modelValue="filter" clearable chips multiple
+      :loading="filtering"></v-autocomplete>
+    <v-autocomplete v-model="selectedSpatialZones" :items="spatialZones" item-title="spatial_property" item-value="id"
+      label="Spatial Zones" @update:modelValue="filter" clearable chips multiple :loading="filtering"></v-autocomplete>
+    <v-autocomplete v-model="selectedTemporalZones" :items="temporalZones" item-title="temporal_property"
+      item-value="id" label="Temporal Zones" @update:modelValue="filter" clearable chips multiple
+      :loading="filtering"></v-autocomplete>
+    <v-card order="1">
+      <v-card-title>Search Text Within:</v-card-title>
+      <v-card-text>
+        <v-btn-toggle v-model="textSearchFields" @update:modelValue="filter" class="mb-2" multiple outlined
+          variant="text" divided>
+          <v-btn value="long_name">Name</v-btn>
+          <v-btn value="citation">Citation</v-btn>
+          <v-btn value="textmodel_snipped">Abstract</v-btn>
+        </v-btn-toggle>
+        <v-text-field v-show="hasTextSearchFields" @update:focused="filter" @keydown.enter.prevent="filter"
+          @click:clear="filter" v-model="searchTerm" label="Search" clearable></v-text-field>
+      </v-card-text>
+      <v-progress-linear v-if="filtering" indeterminate color="primary"></v-progress-linear>
+    </v-card>
+  </v-sheet>
 </template>
 
 <script setup>
@@ -45,7 +42,6 @@ const mapStore = useMapStore()
 
 const show = ref(true)
 defineEmits(['selectModel', 'toggle'])
-const props = defineProps(['cols', 'order'])
 
 let modelFeatures = ref({})
 const filtering = ref()

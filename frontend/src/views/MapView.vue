@@ -4,11 +4,17 @@
     </v-overlay>
     <v-container fluid>
         <v-row fill-height>
-            <FilterDrawer :cols="mdAndDown ? 12 : 3" :order="mdAndDown ? 'last' : ''" />
+            <v-col :cols="mdAndDown ? 12 : 3" :order="mdAndDown ? 'last' : ''">
+                <FilterDrawer />
+            </v-col>
             <v-divider vertical></v-divider>
-            <TheLeafletMap :cols="mdAndDown ? 12 : 7" />
+            <v-col :cols="mdAndDown ? 12 : 7">
+                <TheLeafletMap />
+            </v-col>
             <v-divider vertical></v-divider>
-            <DataViewDrawer :cols="mdAndDown ? 12 : 2" />
+            <v-col :cols="mdAndDown ? 12 : 2">
+                <DataViewDrawer />
+            </v-col>
         </v-row>
     </v-container>
 </template>
