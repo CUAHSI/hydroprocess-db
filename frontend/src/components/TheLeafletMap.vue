@@ -1,4 +1,5 @@
 <template>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <div v-show="$route.meta.showMap" id="mapContainer"></div>
 </template>
 
@@ -8,19 +9,16 @@ import L from 'leaflet'
 import * as esriLeaflet from 'esri-leaflet'
 import { onMounted, onUpdated } from 'vue'
 import { useMapStore } from '@/stores/map'
-import { usePerceptualModelStore } from "@/stores/perceptual_models";
+import 'leaflet-iconmaterial/dist/leaflet.icon-material.css'
 
 const mapStore = useMapStore()
-const perceptualModelStore = usePerceptualModelStore();
-
-let modelFeatures = {}
 
 onUpdated(() => {
     mapStore.leaflet.invalidateSize()
 })
 
 onMounted(() => {
-    let leaflet = L.map('mapContainer').setView([0, 11], 3);
+    let leaflet = L.map('mapContainer').setView([0, 11], 2);
     mapStore.leaflet = leaflet;
     let layerGroup = new L.LayerGroup();
     mapStore.layerGroup = layerGroup;
@@ -60,11 +58,6 @@ onMounted(() => {
 
     // query the api for the features
     mapStore.fetchPerceptualModelsGeojson()
-
-    // modelFeatures.on("click", function (e) {
-    //     featurePopup(e.layer.feature);
-
-    // });
 
     // layer toggling
     let mixed = {
