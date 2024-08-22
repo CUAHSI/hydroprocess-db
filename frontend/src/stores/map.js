@@ -15,7 +15,11 @@ export const useMapStore = defineStore('map', () => {
     content += `<p>${feature.properties.citation.citation}</p>`
     content += '<hr>'
     content += `<p><strong>${feature.properties.model_type.name}</strong></p>`
-    content += `<small>${feature.properties.textmodel_snipped}</small>`
+    if (feature.properties.model_type.name === 'Text model') {
+      content += `<p>${feature.properties.textmodel_snipped}</p>`
+    } else {
+      content += `<img src="${feature.properties.figure_url}" style="width: 100%">`
+    }
     content += '<hr>'
 
     content += '<h4>Processes:</h4>'
@@ -23,14 +27,25 @@ export const useMapStore = defineStore('map', () => {
     feature.properties.process_taxonomies.forEach((process_taxonomy) => {
       content += `<li>${process_taxonomy.process} (${process_taxonomy.identifier})</li>`
     })
-    content += '<hr>'
 
-    content += '<h4>Spatial zone:</h4>'
-    content += `${feature.properties.spatial_zone_type.spatial_property}`
-    content += '<hr>'
+    if (
+      feature.properties.spatial_zone_type?.spatial_property &&
+      feature.properties.spatial_zone_type.spatial_property != 'N'
+    ) {
+      content += '<hr>'
+      content += '<h4>Spatial zone:</h4>'
+      content += `${feature.properties.spatial_zone_type.spatial_property}`
+    }
 
-    content += '<h4>Temporal zone:</h4>'
-    content += `${feature.properties.temporal_zone_type.temporal_property}`
+    if (
+      feature.properties.temporal_zone_type?.temporal_property &&
+      feature.properties.temporal_zone_type.temporal_property != 'N'
+    ) {
+      content += '<hr>'
+      content += '<h4>Temporal zone:</h4>'
+      content += `${feature.properties.temporal_zone_type.temporal_property}`
+    }
+    
     layer.bindPopup(content, {
       maxWidth: 400,
       maxHeight: 300,
