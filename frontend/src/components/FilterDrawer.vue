@@ -35,7 +35,6 @@ import { useMapStore } from '@/stores/map';
 const perceptualModelStore = usePerceptualModelStore();
 const mapStore = useMapStore()
 
-const show = ref(true)
 defineEmits(['selectModel', 'toggle'])
 
 let modelFeatures = ref({})
