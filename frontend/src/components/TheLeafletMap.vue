@@ -20,7 +20,7 @@ onUpdated(() => {
 })
 
 onMounted(() => {
-    let leaflet = L.map('mapContainer').setView([0, 11], 3);
+    let leaflet = L.map('mapContainer').setView([0, 11], 2);
     mapStore.leaflet = leaflet;
     let layerGroup = new L.LayerGroup();
     mapStore.layerGroup = layerGroup;
