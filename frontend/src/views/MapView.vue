@@ -1,26 +1,39 @@
 <template>
-    <v-btn @click="toggleFilterDrawer" color="secondary" location="left" style="z-index: 9999"
-        :style="{ transform: translateFilter(), position: 'absolute' }"
-        :icon="showFilterDrawer ? mdiChevronLeft : mdiChevronRight" size="x-small">
-    </v-btn>
-    <v-btn @click="toggleDataDrawer" color="secondary" location="right" style="z-index: 9999"
-        :style="{ transform: translateData(), position: 'absolute' }"
-        :icon="showDataDrawer ? mdiChevronRight : mdiChevronLeft" size="x-small">
-    </v-btn>
     <v-overlay :model-value="!mapStore.mapLoaded" class="align-center justify-center">
         <v-progress-circular indeterminate :size="128"></v-progress-circular>
     </v-overlay>
-    <v-container fluid>
-        <v-row fill-height>
-            <v-col v-if="showFilterDrawer" :cols="mdAndDown ? 12 : 3" :order="mdAndDown ? '' : 'first'">
+    <v-container v-if="!mdAndDown" fluid>
+        <v-row fill-height style="height: 87vh">
+            <v-btn @click="toggleFilterDrawer" color="secondary" location="left" style="z-index: 9999"
+                :style="{ transform: translateFilter(), position: 'absolute' }"
+                :icon="showFilterDrawer ? mdiChevronLeft : mdiChevronRight" size="x-small">
+            </v-btn>
+            <v-btn @click="toggleDataDrawer" color="secondary" location="right" style="z-index: 9999"
+                :style="{ transform: translateData(), position: 'absolute' }"
+                :icon="showDataDrawer ? mdiChevronRight : mdiChevronLeft" size="x-small">
+            </v-btn>
+            <v-col v-if="showFilterDrawer" :cols="3">
                 <FilterDrawer />
             </v-col>
             <v-divider vertical></v-divider>
-            <v-col :cols="mdAndDown ? 12 : getCols" :order="mdAndDown ? 'first' : ''">
+            <v-col :cols="getCols">
                 <TheLeafletMap />
             </v-col>
             <v-divider vertical></v-divider>
-            <v-col v-if="showDataDrawer" :cols="mdAndDown ? 12 : 2" order="last">
+            <v-col v-if="showDataDrawer" cols="2">
+                <DataViewDrawer />
+            </v-col>
+        </v-row>
+    </v-container>
+    <v-container v-else>
+        <v-row style="height: 40vh">
+            <TheLeafletMap />
+        </v-row>
+        <v-row style="height: 50vh">
+            <v-col>
+                <FilterDrawer />
+            </v-col>
+            <v-col>
                 <DataViewDrawer />
             </v-col>
         </v-row>

@@ -5,14 +5,12 @@
         {{ new Date().getFullYear() }} — <strong>hydroprocess_db</strong>
       </div>
       <v-spacer></v-spacer>
-      <a href="https://cuahsi.org" class="logo" target="_blank">
-        <v-card height="10vh">
-          <v-card-text>
-            <div class="text-body-1">Powered by</div>
-            <v-img :src="imgUrl" cover width="8rem"></v-img>
-          </v-card-text>
-        </v-card>
-      </a>
+      <v-card href="https://cuahsi.org" class="mx-auto" rel="noopener" target="_blank" subtitle="Powered by" min-width="
+        16rem">
+        <template v-slot:append>
+          <v-img :src="imgUrl" cover width="8rem"></v-img>
+        </template>
+      </v-card>
     </div>
   </v-footer>
 </template>
@@ -24,11 +22,11 @@ import imgUrl from '@/assets/logo.png'
 
 <style lang="scss" scoped>
 .logo {
-  height: 10%;
+  height: 10vh;
   cursor: pointer;
 
   img {
-    height: 10%;
+    height: 10vh;
   }
 }
 </style>

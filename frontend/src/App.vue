@@ -13,7 +13,7 @@
       <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
       <SnackBar />
       <TheBottomSheet />
-      <TheFooter />
+      <TheFooter v-if="!mdAndDown" />
     </v-main>
   </v-app>
 </template>
@@ -28,6 +28,9 @@ import TheFooter from './components/TheFooter.vue'
 import { ref } from 'vue'
 import { useAlertStore } from './stores/alerts'
 import TheBottomSheet from "@/components/TheBottomSheet.vue";
+import { useDisplay } from 'vuetify'
+
+const { mdAndDown } = useDisplay()
 
 const alertStore = useAlertStore()
 
