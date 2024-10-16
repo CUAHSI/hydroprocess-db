@@ -4,18 +4,23 @@
 
 ### Clone the repo, checkout this branch
 ```console
-git clone https://github.com/CUAHSI/hydroprocess_db.git
-cd hydroprocess_db
+git clone https://github.com/CUAHSI/hydroprocess-db.git
+cd hydroprocess-db
 git checkout develop
 ```
 
 ### API running locally
 ```console
-cp .env.template .env
+cp env.template .env
 make build
 make up
 ```
 The API will be available at http://0.0.0.0:8001
+
+If you want to load some test data, you can run
+```console
+make loaddb
+```
 
 ### Frontend for local development
 ```console
