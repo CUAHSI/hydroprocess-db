@@ -22,6 +22,11 @@ If you want to load some test data, you can run
 make loaddb
 ```
 
+To reload the database (destructive, returns to original dump state):
+```console
+make reloaddb
+```
+
 ### Frontend for local development
 ```console
 cp .env.template .env  #if you haven't already. Replace `https://localhost` with `http://localhost:5173` (or whatever port is used by Vite)
