@@ -1,10 +1,5 @@
 version: '3'
 
-
-volumes:
-  mongo_data:
-    driver: local
-
 services:
   nginx:
     image: nginx:1.24.0
@@ -16,18 +11,19 @@ services:
     depends_on:
       - api
   
-  frontend:
-    image: frontend
-    env_file:
-      - .env
-    build:
-      dockerfile: Dockerfile
-      context: ./frontend/
-    ports:
-      - 8080:8080
-    restart: unless-stopped
-  #   # depends_on:
-  #   #   - api
+  # Commented out here so that HMR can be used via Vite for frontend development
+  # frontend:
+  #   image: frontend
+  #   env_file:
+  #     - .env
+  #   build:
+  #     dockerfile: Dockerfile
+  #     context: ./frontend/
+  #   ports:
+  #     - 8080:8080
+  #   restart: unless-stopped
+  # #   # depends_on:
+  # #   #   - api
 
   api:
     image: api
@@ -40,18 +36,25 @@ services:
     build:
       context: ./api/
       dockerfile: Dockerfile
-    command: python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 -m uvicorn --host 0.0.0.0 --port 8000 --proxy-headers main:app --reload
+    working_dir: /hydroprocess_db
+    command: python -m debugpy --listen 0.0.0.0:5678 -m uvicorn --host 0.0.0.0 --port 8000 --proxy-headers main:app --reload
     env_file:
       - .env
     depends_on:
-      - mongodb
+      - postgres
 
-  mongodb:
-    image: mongo:5.0
+  postgres:
+    image: postgis/postgis:16-master
     ports:
-      - '27017:27017'
+      - 5432:5432
     volumes:
-      - mongo_data:/data/db
+      - postgres_data:/var/lib/postgresql/data
+      # - ./data/combined_imports.sql:/docker-entrypoint-initdb.d/combined_imports.sql
+      - ./data/combined_imports.sql:/data/combined_imports.sql
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=password
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: hydroprocess
+  
+volumes:
+  postgres_data:

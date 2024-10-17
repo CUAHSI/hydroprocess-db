@@ -26,14 +26,6 @@ const router = createRouter({
       name: 'api',
       component: ApiView
     },
-    {
-      path: '/auth-redirect',
-      name: 'auth-redirect',
-      component: () => import('../views/AuthRedirectView.vue'),
-      meta: {
-        hideNavigation: true
-      }
-    }
   ]
 })
 
