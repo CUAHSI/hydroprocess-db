@@ -15,7 +15,7 @@
       <v-card-text>
         <v-btn-toggle v-model="textSearchFields" @update:modelValue="filter" class="mb-2" multiple outlined
           variant="text" divided>
-          <v-btn value="long_name">Name</v-btn>
+          <v-btn value="long_name">Title</v-btn>
           <v-btn value="citation">Citation</v-btn>
           <v-btn value="textmodel_snipped">Abstract</v-btn>
         </v-btn-toggle>

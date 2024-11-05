@@ -13,6 +13,13 @@ export const useMapStore = defineStore('map', () => {
 
   function onEachFeature(feature, layer) {
     let content = `<h3>Perceptual model of <strong>${feature.properties.location.long_name}</strong></h3>`
+
+    if(feature.properties.citation.url) {
+      content += '<br>'
+      content += '<h4 class="d-inline-block mr-2">URL:</h4>'
+      content += `<a href="${feature.properties.citation.url}" target="_blank" class="btn btn-primary">${feature.properties.citation.url}</a>`
+    }
+
     content += `<p>${feature.properties.citation.citation}</p>`
     content += '<hr><br>'
     content += `<h4>${feature.properties.model_type.name}</h4>`
