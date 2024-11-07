@@ -1,9 +1,9 @@
 <template>
   <v-footer v-if="!$route.meta.hideNavigation" app color="navbar" class="d-flex flex-column">
-    <div class="d-flex w-100 align-center">
+    <div class="d-flex w-100 align-center position-relative">
       <div class="text-center w-100">
         <p class="footerdescription">The work is supported by the National Science Foundation (NSF) under award 2322510: “Synthesizing hydrologic process knowledge through a community database.”</p>
-        {{ new Date().getFullYear() }} — <strong>hydroprocess_db</strong>
+       <div class="footeryearmark">{{ new Date().getFullYear() }} — <strong>hydroprocess_db</strong></div> 
       </div>
       <v-spacer></v-spacer>
       <div class="nsfimagecontainer">
@@ -51,5 +51,14 @@ import nfsImgUrl from '@/assets/nsf_logo.png';
 
 .footerdescription{
   font-size: 13px;
+}
+
+.footeryearmark{
+position: absolute;
+left: 43%;
+}
+
+.footerdescription{
+  margin-top: -28px;
 }
 </style>

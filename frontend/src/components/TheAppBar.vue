@@ -1,6 +1,6 @@
 <template>
   <v-app-bar v-if="!$route.meta.hideNavigation" color="navbar" ref="appBar" id="app-bar" elevate-on-scroll fixed app>
-    <div class="d-flex align-end full-height pa-2 align-center w-100">
+    <div class="d-flex align-end full-height pa-2 align-center w-100 position-relative">
       <v-app-bar-title>Perceptual Models Around the World<div class="text-subtitle-1">McMillan Hydrology Lab</div>
       </v-app-bar-title>
 
@@ -51,6 +51,8 @@ function login(){
 .nav-items {
   border-radius: 2rem !important;
   overflow: hidden;
+  position: absolute;
+  left: 43%;
 
   &>a.v-btn:first-child {
     border-top-left-radius: 2rem !important;
