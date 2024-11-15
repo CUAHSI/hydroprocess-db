@@ -63,11 +63,23 @@ perceptualModelStore.fetchProcessTaxonomies().then((pt) => {
   process_taxonomies.value = pt
 })
 perceptualModelStore.fetchSpatialZones().then((sz) => {
+  replaceNwithNone(sz, 'spatial_property');
   spatialZones.value = sz
 })
 perceptualModelStore.fetchTemporalZones().then((tz) => {
+  replaceNwithNone(tz, 'temporal_property');
   temporalZones.value = tz
 })
+
+const replaceNwithNone = (items, propName) => {
+  for(let item of items){
+    if(item[propName] === 'N') {
+      item[propName] = "None";
+      break;
+    }
+  }
+  return items;
+}
 
 const checkSearchTerm = (searchTerm, fieldsToSearch, feature) => {
   if (!searchTerm) {
@@ -99,7 +111,7 @@ async function filter() {
   }
   mapStore.filterFeatures(filterFunction)
   filtering.value = false
-}
+  }
 </script>
 
 <style scoped>
