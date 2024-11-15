@@ -1,5 +1,6 @@
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
+import { VTreeview } from 'vuetify/labs/VTreeview'
 import colors from 'vuetify/lib/util/colors'
 import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
 
@@ -46,5 +47,8 @@ export default createVuetify({
     sets: {
       mdi
     }
-  }
+  },
+  components: {
+    VTreeview,
+  },
 })

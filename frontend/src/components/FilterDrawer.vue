@@ -2,9 +2,37 @@
   <v-sheet class="mx-auto" elevation="8">
     <h3 class="text-h6 ma-2 text-center">Model Filters</h3>
     <v-divider></v-divider>
-    <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
+    <!-- <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
       label="Process Taxonomies" @update:modelValue="filter" clearable chips multiple
-      :loading="filtering"></v-autocomplete>
+      :loading="filtering"></v-autocomplete> -->
+      <v-text-field
+          v-model="searchTreeText"
+          label="Search Process Taxonomies"
+          :clear-icon="mdiCloseCircleOutline"
+          clearable
+          dark
+          flat
+          hide-details
+          solo-inverted>
+      </v-text-field>
+      <v-treeview
+          v-model:selected="selectedTreeItems"
+          :items="treeViewData"
+          select-strategy="clasic"
+          item-value="id"
+          selectable
+          :search="searchTreeText"
+          activatable
+          @update:modelValue="updateMap"
+        >
+        <template v-slot:prepend="{ item, isOpen }">
+          <v-icon>
+            {{ isOpen ? mdiFolderOpen : mdiFolder }}
+          </v-icon>
+        </template>
+      </v-treeview>
+
+
     <v-autocomplete v-model="selectedSpatialZones" :items="spatialZones" item-title="spatial_property" item-value="id"
       label="Spatial Zones" @update:modelValue="filter" clearable chips multiple :loading="filtering"></v-autocomplete>
     <v-autocomplete v-model="selectedTemporalZones" :items="temporalZones" item-title="temporal_property"
@@ -31,6 +59,8 @@
 import { ref, computed, nextTick } from 'vue'
 import { usePerceptualModelStore } from "@/stores/perceptual_models";
 import { useMapStore } from '@/stores/map';
+import { mdiFolderOpen, mdiFolder, mdiCloseCircleOutline } from '@mdi/js';
+
 
 const perceptualModelStore = usePerceptualModelStore();
 const mapStore = useMapStore()
@@ -53,6 +83,9 @@ const temporalZones = ref([])
 const selectedTemporalZones = ref([])
 const searchTerm = ref(null)
 const textSearchFields = ref([])
+const treeViewData = ref([])
+const selectedTreeItems = ref([])
+const searchTreeText = ref('')
 
 const hasTextSearchFields = computed(() => {
   return textSearchFields.value.length > 0
@@ -60,8 +93,61 @@ const hasTextSearchFields = computed(() => {
 
 // Fetch the process taxonomies, spatial zones, and temporal zones
 perceptualModelStore.fetchProcessTaxonomies().then((pt) => {
-  process_taxonomies.value = pt
+  process_taxonomies.value = pt;
+  treeViewData.value = buildTree(pt);
 })
+
+function buildTree(data) {
+    const root = {};
+
+    // Helper function to insert item into the correct place in the tree
+    const insert = (path, item) => {
+        let current = root;
+        path.forEach((part, index) => {
+            // Check if part already exists as a child, if not create it
+            if (!current[part]) {
+                current[part] = {
+                    title: part,
+                    id: item.id,
+                    children: {}
+                };
+            }
+            // If it's the last part, assign the item values to the node
+            if (index === path.length - 1) {
+                current[part] = {
+                    id: item.id,
+                    title: item.process,
+                    children: current[part].children || {}
+                };
+            }
+            current = current[part].children;
+        });
+    };
+
+    // Insert each item in data into the tree
+    data.forEach(item => {
+        const path = item.identifier.split(".");
+        insert(path, item);
+    });
+
+    // Convert tree object with nested children into desired array format
+    const convertToArray = (node) => {
+      return Object.values(node).map(child => {
+            const childrenArray = convertToArray(child.children);
+            const nodeObject = {
+                id: child.id,
+                title: child.title
+            };
+            if (childrenArray.length > 0) {
+                nodeObject.children = childrenArray;
+            }
+            return nodeObject;
+        });
+    };
+
+    return convertToArray(root);
+}
+
 perceptualModelStore.fetchSpatialZones().then((sz) => {
   spatialZones.value = sz
 })
@@ -99,6 +185,15 @@ async function filter() {
   }
   mapStore.filterFeatures(filterFunction)
   filtering.value = false
+}
+
+const updateMap = async () => {
+  selectedProcesses.value = [];
+  selectedTreeItems.value.forEach((item) => {
+    selectedProcesses.value.push(item);
+  });
+  await nextTick();
+  filter();
 }
 </script>
 
