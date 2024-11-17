@@ -35,7 +35,8 @@ import { useMapStore } from '@/stores/map';
 const perceptualModelStore = usePerceptualModelStore();
 const mapStore = useMapStore()
 
-defineEmits(['selectModel', 'toggle'])
+const emit = defineEmits(['selectModel', 'toggle', 'onFilter'])
+
 
 let modelFeatures = ref({})
 const filtering = ref()
@@ -83,6 +84,8 @@ const checkSearchTerm = (searchTerm, fieldsToSearch, feature) => {
 
 
 async function filter() {
+  emit('onFilter', {selectedSpatialZones, selectedTemporalZones, selectedProcesses})
+  
   filtering.value = true
   await nextTick()
   // reset search term if no text search fields are selected
@@ -94,7 +97,6 @@ async function filter() {
     const spatial = selectedSpatialZones.value.length == 0 || selectedSpatialZones.value.includes(feature.properties.spatialzone_id)
     const temporal = selectedTemporalZones.value.length == 0 || selectedTemporalZones.value.includes(feature.properties.temporalzone_id)
     const search = checkSearchTerm(searchTerm.value, textSearchFields.value, feature)
-
     return process && spatial && temporal && search
   }
   mapStore.filterFeatures(filterFunction)

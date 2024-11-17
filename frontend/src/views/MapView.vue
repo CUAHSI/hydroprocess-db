@@ -13,7 +13,7 @@
                 :icon="showDataDrawer ? mdiChevronRight : mdiChevronLeft" size="x-small">
             </v-btn>
             <v-col v-if="showFilterDrawer" :cols="3">
-                <FilterDrawer />
+                <FilterDrawer @onFilter="onFilter"/>
             </v-col>
             <v-divider vertical></v-divider>
             <v-col :cols="getCols">
@@ -21,7 +21,7 @@
             </v-col>
             <v-divider vertical></v-divider>
             <v-col v-if="showDataDrawer" cols="2">
-                <DataViewDrawer />
+                <DataViewDrawer ref="dataDrawerRef"/>
             </v-col>
         </v-row>
     </v-container>
@@ -54,6 +54,16 @@ const mapStore = useMapStore()
 
 const showFilterDrawer = ref(true)
 const showDataDrawer = ref(true)
+const dataDrawerRef = ref(null)
+
+const onFilter = (data) => {
+    const filters = {
+        spatialzone_ids: data.selectedSpatialZones.value,
+        temporalzone_ids: data.selectedTemporalZones.value,
+        process_taxonomy_ids: data.selectedProcesses.value,
+    }
+    dataDrawerRef.value.query(filters)
+}
 
 const toggleFilterDrawer = async () => {
     const center = mapStore.leaflet.getCenter()
