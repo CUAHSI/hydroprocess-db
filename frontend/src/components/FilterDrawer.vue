@@ -111,7 +111,7 @@ async function filter() {
   }
   mapStore.filterFeatures(filterFunction)
   filtering.value = false
-  }
+}
 </script>
 
 <style scoped>
