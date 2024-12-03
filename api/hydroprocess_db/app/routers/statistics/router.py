@@ -2,31 +2,39 @@ from fastapi import APIRouter, Depends
 from sqlmodel import select
 
 from app.db import get_session
-from app.models import ModelType, PerceptualModel
+from app.models import ModelType, PerceptualModel, ModelCountRequest, ProcessTaxonomy
 
 router = APIRouter()
 
-
-@router.get(
+@router.post(
     "/model_type_count",
     description="Get the count of models for each model type.",
     response_model=dict[str, int],
 )
-def get_model_count_by_type(*, session=Depends(get_session)):
-    """
-    Get the count of models for each model type.
-
-    Parameters:
-    - session: The async session to use for database operations.
-
-    Returns:
-    - A dictionary with the count of models for each model type.
-    """
+def get_model_count_by_type(
+    request: ModelCountRequest,
+    session=Depends(get_session)
+):
     model_types = session.exec(select(ModelType)).all()
     model_type_count = {}
+
     for model_type in model_types:
-        matching_models = session.query(PerceptualModel).where(PerceptualModel.model_type_id == model_type.id)
-        model_type_count[model_type.name] = matching_models.count()
+        query = session.query(PerceptualModel).where(PerceptualModel.model_type_id == model_type.id)
+
+        if request.spatialzone_ids:
+            query = query.where(PerceptualModel.spatialzone_id.in_(request.spatialzone_ids))
+
+        if request.temporalzone_ids:
+            query = query.where(PerceptualModel.temporalzone_id.in_(request.temporalzone_ids))
+
+        if request.process_taxonomy_ids:
+            query = query.join(PerceptualModel.process_taxonomies).where(
+                ProcessTaxonomy.id.in_(request.process_taxonomy_ids)
+            )
+
+        matching_models = query.all()            
+        model_type_count[model_type.name] = len(matching_models)
+
     return model_type_count
 
 
