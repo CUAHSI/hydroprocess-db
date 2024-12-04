@@ -109,18 +109,20 @@
 
 <script setup>
 import { mdiOpenInNew } from '@mdi/js';
+import hilary from '@/assets/hilary.jpg';
+import ryoko from '@/assets/ryoko.jpg';
 
 const members = [
         {
           name: 'Hilary McMillan',
           designation: 'Professor & Project Lead, San Diego State University',
-          img: 'https://lh7-rt.googleusercontent.com/docsz/AD_4nXdADheKsAYX2k0qqlrcKs1K045hXWzS2HBmPrFg9CFbIpcw5TKhCq6ufU6t8T5J7t9ZLpPzfCtzNgUXnDp-4swbkik01dvRoX_lPI09jbCHpbi6eFmkHbry9agRxKI1tC9ePF8pKpCumi5EXAXIwV3iXV9T?key=dlmBhZGLWn-vOON8gSsrvg',
+          img: hilary,
           link: 'http://www.mcmillanhydrology.org/',
         },
         {
           name: 'Ryoko Araki',
           designation: 'PhD Student & Developer, San Diego State University',
-          img: 'https://lh7-rt.googleusercontent.com/docsz/AD_4nXc_qLv2wfCPet7DY4CVIUk-q-6fAn5ySN5UKXIrXs4J8_F1OObBotovTMbgGHvdTWwRKLOpsUJvF275M-61mHUtL0IFvyW15VDQJq_pyeR8E1SC0szlcGwYzqmoydj5ryHXihvSTtqhKbSgWl98HEZXPMbf?key=dlmBhZGLWn-vOON8gSsrvg',
+          img: ryoko,
           link: 'http://rarakihydro.com/',
         },
       ]
