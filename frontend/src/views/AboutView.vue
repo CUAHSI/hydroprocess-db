@@ -1,65 +1,132 @@
 <template>
-  <h2 class="ma-2 text-center">Our Team</h2>
-  <v-container>
-    <v-row align="center" justify="center">
-      <v-col v-for="member in members" :key="member.name" cols="auto">
-        <v-card>
-          <v-img :src="`${member.image}`" :width="400" aspect-ratio="1" cover
-            lazy-src="https://www.hydroshare.org/static/static/img/home-page/carousel/bg3.jpg">
-            <template v-slot:placeholder>
-              <div class="d-flex align-center justify-center fill-height">
-                <v-progress-circular color="grey-lighten-4" indeterminate></v-progress-circular>
+<v-container fluid>
+    <div>
+      <div class="mb-3">
+        <h3>Hydrologic Process Knowledge Platform</h3>
+        <p>
+          This project enables you to view and search hydrologic process
+          knowledge derived from perceptual models of research watersheds around
+          the globe.
+        </p>
+      </div>
+
+      <div class="mb-3">
+        <h3>Hydrologic Processes</h3>
+        <p>
+          Hydrologic processes describe the flow paths and mechanisms that move
+          water from the canopy and land surface to its release into streams,
+          deep groundwater or evapotranspiration. Hydrologists often communicate
+          process knowledge using a perceptual model, a qualitative summary of
+          our knowledge about the hydrologic system presented as a schematic
+          figure or a text description. Perceptual models are one of the best
+          tools that the hydrologic community has to organize hydrologic
+          knowledge, test hypotheses about runoff generation, design accurate
+          computer models to predict river flows, and identify knowledge gaps. 
+        </p>
+      </div>
+
+      <div class="mb-3">
+        <h3>Funding</h3>
+        <p>
+          This project is funded by the NSF Division of Earth Sciences Award
+          #2322510:
+          <div>
+            <a href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=2322510"
+            >Synthesizing hydrologic process knowledge to determine global
+            drivers of dominant processes.</a>
+          </div>          
+        </p>
+      </div>
+
+      <div class="mb-3">
+        <h3>Project Team</h3>
+        <v-container fluid>
+          <v-row dense>
+            <v-col v-for="member in members" :key="member.name" cols="4">
+              <v-card>
+                <v-img
+                  :src="member.img"
+                  class="align-end"
+                  gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+                  height="350px"
+                >
+                  <v-card-title
+                    class="text-white"
+                    v-text="member.name"
+                  ></v-card-title>
+                </v-img>
+
+                <v-card-actions>
+                  <v-card-text v-text="member.designation"></v-card-text>
+
+                  <v-btn
+                    :icon="mdiOpenInNew"
+                    class="mx-auto"
+                    :href="member.link"
+                    size="small"
+                    target="_blank"
+                  ></v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+      </div>
+
+      <div>
+        <h3>Useful Links:</h3>
+        <v-list>
+          <v-list-item
+            title="Interactive Hydrologic Process Taxonomy:"
+            class="mb-5">
+            <div class="link-item-description">
+              <a href="http://mcmillanhydrology.org/ProcessTaxonomy/ProcessTaxonomyDiagram.html">
+                http://mcmillanhydrology.org/ProcessTaxonomy/ProcessTaxonomyDiagram.html
+              </a>
+            </div>
+          </v-list-item>
+
+          <v-list-item
+            title="Journal Articles Describing this Project:"
+            subtitle="McMillan, H., Araki, R., Gnann, S., Woods, R., & Wagener, T. (2023).">
+            <div class="link-item-description">
+              <div>
+                How do hydrologists perceive watersheds? A survey and analysis of
+                perceptual model figures for experimental watersheds.
               </div>
-            </template>
-          </v-img>
-          <v-card-title class="text-h6">
-            {{ member.name }}
-          </v-card-title>
-          <v-card-subtitle>
-            {{ member.position }}
-            <v-divider></v-divider>
-            {{ member.org }}
-          </v-card-subtitle>
-        </v-card>
-      </v-col>
-    </v-row>
+              <a href="https://onlinelibrary.wiley.com/doi/full/10.1002/hyp.14845"
+                >Read the Article
+              </a>
+            </div>
+          </v-list-item>
+        </v-list>
+      </div>
+    </div>
   </v-container>
 </template>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-  }
-}
-</style>
-
 <script setup>
+import { mdiOpenInNew } from '@mdi/js';
+import hilary from '@/assets/hilary.jpg';
+import ryoko from '@/assets/ryoko.jpg';
 
 const members = [
-  {
-    name: 'Scott Black',
-    image: 'https://www.cuahsi.org/uploads/team/img/_headshot/black-scott.jpg',
-    position: 'Senior Software Specialist',
-    org: 'CUAHSI'
-  },
-  {
-    name: 'Devin Cowan',
-    image: 'https://www.cuahsi.org/uploads/team/img/_headshot/Devin-Cowan.jpg',
-    position: 'Research Programmer',
-    org: 'CUAHSI'
-  },
-  {
-    name: 'Irene Garousi-Nejad',
-    image: 'https://www.cuahsi.org/uploads/team/img/_headshot/Irene_headshot03.jpg',
-    position: 'Research Scientist',
-    org: 'CUAHSI'
-  },
-  {
-    name: 'Tony Castronova',
-    image: 'https://www.cuahsi.org/uploads/team/img/_headshot/TCastronova.jpg',
-    position: 'Senior Research Hydrologist',
-    org: 'CUAHSI'
-  },
-]
+        {
+          name: 'Hilary McMillan',
+          designation: 'Professor & Project Lead, San Diego State University',
+          img: hilary,
+          link: 'http://www.mcmillanhydrology.org/',
+        },
+        {
+          name: 'Ryoko Araki',
+          designation: 'PhD Student & Developer, San Diego State University',
+          img: ryoko,
+          link: 'http://rarakihydro.com/',
+        },
+      ]
 </script>
+<style>
+.link-item-description{
+  font-size: 18px;
+}
+</style>
