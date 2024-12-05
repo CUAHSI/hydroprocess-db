@@ -23,10 +23,30 @@ export const useMapStore = defineStore('map', () => {
     content += `<p>${feature.properties.citation.citation}</p>`
     content += '<hr><br>'
     content += `<h4>${feature.properties.model_type.name}</h4>`
-    if (feature.properties.model_type.name === 'Text model') {
-      content += `<p>${feature.properties.textmodel_snipped}</p>`
-    } else {
-      content += `<img src="${feature.properties.figure_url}" style="width: 100%">`
+
+
+    const props = feature.properties;
+
+    if (props.model_type.name === 'Text model') {
+      if(props.citation.attribution == "Open-access"){
+        content += `<p>${feature.properties.textmodel_snipped}</p>`
+      }else if(props.citation.attribution == "Not open-access"){
+        content += "See article for text"
+      }
+
+      if(props.textmodel_section_name && props.textmodel_section_name != "N/A"){
+        content += `<h5>Section ${props.textmodel_section_number != "N/A" ? (props.textmodel_section_number + ',') : ''} ${props.textmodel_page_number != "N/A" ? ("pg " + props.textmodel_page_number) : ''} - ${props.textmodel_section_name}</h5>`
+      }
+    } else {     
+      if(props.citation.attribution == "Open-access"){
+        content += `<img src="${feature.properties.figure_url}" style="width: 100%">`
+      }else if(props.citation.attribution == "Not open-access"){
+        content += "See article for figure"
+      }
+      
+      if(props.figure_caption && props.figure_caption != "N/A"){
+        content += `<h5>Figure ${props.figure_num != "N/A" ? (props.figure_num + ':') : ''} ${props.figure_caption}</h5>`
+      }
     }
     content += '<hr><br>'
     content += '<h4>Processes:</h4>'
