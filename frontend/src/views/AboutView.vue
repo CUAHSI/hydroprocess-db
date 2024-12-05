@@ -42,14 +42,13 @@
         <h3>Project Team</h3>
         <v-container fluid>
           <v-row dense>
-            <v-col v-for="member in members" :key="member.name">
+            <v-col v-for="member in members" :key="member.name" cols="4">
               <v-card>
                 <v-img
                   :src="member.img"
                   class="align-end"
                   gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                   height="350px"
-                  cover
                 >
                   <v-card-title
                     class="text-white"
@@ -79,27 +78,26 @@
         <v-list>
           <v-list-item
             title="Interactive Hydrologic Process Taxonomy:"
-            class="mb-5"
-          >
-            <a
-              href="http://mcmillanhydrology.org/ProcessTaxonomy/ProcessTaxonomyDiagram.html"
-            >
-              http://mcmillanhydrology.org/ProcessTaxonomy/ProcessTaxonomyDiagram.html
-            </a>
+            class="mb-5">
+            <div class="link-item-description">
+              <a href="http://mcmillanhydrology.org/ProcessTaxonomy/ProcessTaxonomyDiagram.html">
+                http://mcmillanhydrology.org/ProcessTaxonomy/ProcessTaxonomyDiagram.html
+              </a>
+            </div>
           </v-list-item>
 
           <v-list-item
             title="Journal Articles Describing this Project:"
-            subtitle="McMillan, H., Araki, R., Gnann, S., Woods, R., & Wagener, T.
-                (2023)."
-          >
-            <div>
-              How do hydrologists perceive watersheds? A survey and analysis of
-              perceptual model figures for experimental watersheds.
+            subtitle="McMillan, H., Araki, R., Gnann, S., Woods, R., & Wagener, T. (2023).">
+            <div class="link-item-description">
+              <div>
+                How do hydrologists perceive watersheds? A survey and analysis of
+                perceptual model figures for experimental watersheds.
+              </div>
+              <a href="https://onlinelibrary.wiley.com/doi/full/10.1002/hyp.14845"
+                >Read the Article
+              </a>
             </div>
-            <a href="https://onlinelibrary.wiley.com/doi/full/10.1002/hyp.14845"
-              >Read the Article
-            </a>
           </v-list-item>
         </v-list>
       </div>
@@ -127,3 +125,8 @@ const members = [
         },
       ]
 </script>
+<style>
+.link-item-description{
+  font-size: 18px;
+}
+</style>
