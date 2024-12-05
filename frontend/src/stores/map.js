@@ -28,31 +28,24 @@ export const useMapStore = defineStore('map', () => {
     const props = feature.properties;
 
     if (props.model_type.name === 'Text model') {
-      let sectionInfo = '';
-      if(props.textmodel_section_name && props.textmodel_section_name != "N/A"){
-        sectionInfo = `<h5>Section ${props.textmodel_section_number != "N/A" ? (props.textmodel_section_number + ',') : ''} ${props.textmodel_page_number != "N/A" ? ("pg " + props.textmodel_page_number) : ''} - ${props.textmodel_section_name}</h5>`
-      }
-
       if(props.citation.attribution == "Open-access"){
         content += `<p>${feature.properties.textmodel_snipped}</p>`
-        content += sectionInfo
       }else if(props.citation.attribution == "Not open-access"){
-        content += `<a href="${props.citation.url}" target="_blank" class="btn btn-primary">See article for text</a>`
-        content += sectionInfo
+        content += "See article for text"
       }
-      
-    } else {
-      let figureInfo = '';
-      if(props.figure_caption && props.figure_caption != "N/A"){
-        figureInfo = `<h5>Figure ${props.figure_num != "N/A" ? (props.figure_num + ':') : ''} ${props.figure_caption}</h5>`
+
+      if(props.textmodel_section_name && props.textmodel_section_name != "N/A"){
+        content += `<h5>Section ${props.textmodel_section_number != "N/A" ? (props.textmodel_section_number + ',') : ''} ${props.textmodel_page_number != "N/A" ? ("pg " + props.textmodel_page_number) : ''} - ${props.textmodel_section_name}</h5>`
       }
-      
+    } else {     
       if(props.citation.attribution == "Open-access"){
         content += `<img src="${feature.properties.figure_url}" style="width: 100%">`
-        content += figureInfo
       }else if(props.citation.attribution == "Not open-access"){
-        content += `<a href="${feature.properties.figure_url}" target="_blank" class="btn btn-primary">See article for figure</a>`
-        content += figureInfo
+        content += "See article for figure"
+      }
+      
+      if(props.figure_caption && props.figure_caption != "N/A"){
+        content += `<h5>Figure ${props.figure_num != "N/A" ? (props.figure_num + ':') : ''} ${props.figure_caption}</h5>`
       }
     }
     content += '<hr><br>'
