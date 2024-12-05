@@ -52,6 +52,10 @@ const query = async (filters = {}) => {
     body: JSON.stringify(filters)
   });
   const counts = await response.json()
+
+  // Delete the 'Figure model (Hand-drawn)' key
+  delete counts['Figure model (Hand-drawn)']
+
   modelTypeCounts.value = counts
   totalModels.value = Object.values(counts).reduce((acc, count) => acc + count, 0)
   querying.value = false
