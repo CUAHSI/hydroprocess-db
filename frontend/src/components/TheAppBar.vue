@@ -16,16 +16,16 @@
         </nav>
       </v-card>
       <v-spacer></v-spacer>
-      <UserLogin @logged-in="login" v-if="!mdAndDown" :mobile="false" />
+      <!-- <UserLogin @logged-in="login" v-if="!mdAndDown" :mobile="false" /> -->
 
-      <v-app-bar-nav-icon @click="$emit('toggleMobileNav')" v-else />
+      <!-- <v-app-bar-nav-icon @click="$emit('toggleMobileNav')" v-else /> -->
     </div>
   </v-app-bar>
 </template>
 <script setup>
-import { RouterLink } from 'vue-router'
+// import { RouterLink } from 'vue-router'
 import { useDisplay } from 'vuetify'
-import UserLogin from "@/components/UserLogin.vue";
+// import UserLogin from "@/components/UserLogin.vue";
 import { useAuthStore } from '../stores/auth';
 defineProps(['paths'])
 defineEmits(['toggleMobileNav'])
