@@ -26,26 +26,28 @@ export const useMapStore = defineStore('map', () => {
 
 
     const props = feature.properties;
-
+    const note = "This is not a public access article, see the url.";
     if (props.model_type.name === 'Text model') {
-      if(props.citation.attribution == "Open-access"){
+      if(props.citation.attribution == "Not open-access"){
+        content += note
+      }else{
         content += `<p>${feature.properties.textmodel_snipped}</p>`
-      }else if(props.citation.attribution == "Not open-access"){
-        content += "See article for text"
       }
 
-      if(props.textmodel_section_name && props.textmodel_section_name != "N/A"){
-        content += `<h5>Section ${props.textmodel_section_number != "N/A" ? (props.textmodel_section_number + ',') : ''} ${props.textmodel_page_number != "N/A" ? ("pg " + props.textmodel_page_number) : ''} - ${props.textmodel_section_name}</h5>`
+      if(((props.textmodel_section_name && props.textmodel_section_name != "N/A") 
+        || (props.textmodel_section_number && props.textmodel_section_number != "N/A")) 
+        && (props.textmodel_page_number && props.textmodel_page_number != "N/A")){
+        content += `<h5>${props.textmodel_section_number != "N/A" ? ("Section " + props.textmodel_section_number ) + ' ' : ''} ${props.textmodel_section_name != 'N/A' ? props.textmodel_section_name + ' ' : ''} ${props.textmodel_page_number != "N/A" ? ("(pg " + props.textmodel_page_number) + ')' : ''}</h5>`
       }
     } else {     
-      if(props.citation.attribution == "Open-access"){
+      if(props.citation.attribution == "Not open-access"){
+        content += note
+      }else{
         content += `<img src="${feature.properties.figure_url}" style="width: 100%">`
-      }else if(props.citation.attribution == "Not open-access"){
-        content += "See article for figure"
       }
       
       if(props.figure_caption && props.figure_caption != "N/A"){
-        content += `<h5>Figure ${props.figure_num != "N/A" ? (props.figure_num + ':') : ''} ${props.figure_caption}</h5>`
+        content += `<h5>${props.figure_num != "N/A" ? ("Figure " + props.figure_num + ' : ') : ''} ${props.figure_caption}</h5>`
       }
     }
     content += '<hr><br>'
