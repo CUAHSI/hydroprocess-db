@@ -40,10 +40,10 @@ const paths = [
     attrs: { to: "/" },
     label: "Map",
   },
-  {
-    attrs: { to: "/api" },
-    label: "API",
-  },
+  // {
+  //   attrs: { to: "/api" },
+  //   label: "API",
+  // },
   {
     attrs: { to: "/about" },
     label: "About",

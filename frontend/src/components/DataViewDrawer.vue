@@ -42,14 +42,28 @@ let querying = ref(true)
 let modelTypeCounts = ref({})
 let totalModels = ref(0)
 
-const query = async () => {
+const query = async (filters = {}) => {
   querying.value = true
-  const response = await fetch(ENDPOINTS.model_type_count)
+  const response = await fetch(ENDPOINTS.model_type_count, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(filters)
+  });
   const counts = await response.json()
+
+  // Delete the 'Figure model (Hand-drawn)' key
+  delete counts['Figure model (Hand-drawn)']
+
   modelTypeCounts.value = counts
   totalModels.value = Object.values(counts).reduce((acc, count) => acc + count, 0)
   querying.value = false
 }
+
+defineExpose({
+  query
+})
 
 query()
 
