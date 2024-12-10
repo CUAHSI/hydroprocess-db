@@ -37,7 +37,7 @@ export const useMapStore = defineStore('map', () => {
       if(((props.textmodel_section_name && props.textmodel_section_name != "N/A") 
         || (props.textmodel_section_number && props.textmodel_section_number != "N/A")) 
         && (props.textmodel_page_number && props.textmodel_page_number != "N/A")){
-        content += `<p class="mt-1">${props.textmodel_section_number != "N/A" ? ("<b>Section " + props.textmodel_section_number ) + '</b> ' : ''} ${props.textmodel_section_name != 'N/A' ? props.textmodel_section_name + ' ' : ''} ${props.textmodel_page_number != "N/A" ? ("(pg " + props.textmodel_page_number) + ')' : ''}</p>`
+        content += `<p class="mt-1"><b>Section ${props.textmodel_section_number != "N/A" ? (props.textmodel_section_number ) + '</b> ' : '</b>'} ${props.textmodel_section_name != 'N/A' ? props.textmodel_section_name + ' ' : ''} ${props.textmodel_page_number != "N/A" ? ("(Page " + props.textmodel_page_number) + ')' : ''}</p>`
       }
     } else {     
       if(props.citation.attribution == "Not open-access"){
@@ -47,7 +47,7 @@ export const useMapStore = defineStore('map', () => {
       }
       
       if(props.figure_caption && props.figure_caption != "N/A"){
-        content += `<p class="mt-1">${props.figure_num != "N/A" ? ("<b>Figure " + props.figure_num + ' :</b> ') : ''} ${props.figure_caption}</p>`
+        content += `<p class="mt-1"><b>Figure ${props.figure_num != "N/A" ? (props.figure_num + ' :</b> ') : '</b>'} ${props.figure_caption}</p>`
       }
     }
     content += '<hr><br>'
