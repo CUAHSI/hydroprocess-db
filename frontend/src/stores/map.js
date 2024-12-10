@@ -26,10 +26,10 @@ export const useMapStore = defineStore('map', () => {
 
 
     const props = feature.properties;
-    const note = "This is not a public access article, see the url.";
+    const note = "Not open access, see article for ";
     if (props.model_type.name === 'Text model') {
       if(props.citation.attribution == "Not open-access"){
-        content += note
+        content += note + "text"
       }else{
         content += `<p>${feature.properties.textmodel_snipped}</p>`
       }
@@ -37,17 +37,17 @@ export const useMapStore = defineStore('map', () => {
       if(((props.textmodel_section_name && props.textmodel_section_name != "N/A") 
         || (props.textmodel_section_number && props.textmodel_section_number != "N/A")) 
         && (props.textmodel_page_number && props.textmodel_page_number != "N/A")){
-        content += `<h5>${props.textmodel_section_number != "N/A" ? ("Section " + props.textmodel_section_number ) + ' ' : ''} ${props.textmodel_section_name != 'N/A' ? props.textmodel_section_name + ' ' : ''} ${props.textmodel_page_number != "N/A" ? ("(pg " + props.textmodel_page_number) + ')' : ''}</h5>`
+        content += `<p class="mt-1">${props.textmodel_section_number != "N/A" ? ("<b>Section " + props.textmodel_section_number ) + '</b> ' : ''} ${props.textmodel_section_name != 'N/A' ? props.textmodel_section_name + ' ' : ''} ${props.textmodel_page_number != "N/A" ? ("(pg " + props.textmodel_page_number) + ')' : ''}</p>`
       }
     } else {     
       if(props.citation.attribution == "Not open-access"){
-        content += note
+        content += note + "figure"
       }else{
         content += `<img src="${feature.properties.figure_url}" style="width: 100%">`
       }
       
       if(props.figure_caption && props.figure_caption != "N/A"){
-        content += `<h5>${props.figure_num != "N/A" ? ("Figure " + props.figure_num + ' : ') : ''} ${props.figure_caption}</h5>`
+        content += `<p class="mt-1">${props.figure_num != "N/A" ? ("<b>Figure " + props.figure_num + ' :</b> ') : ''} ${props.figure_caption}</p>`
       }
     }
     content += '<hr><br>'
