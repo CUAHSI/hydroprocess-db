@@ -10,6 +10,7 @@ export const useMapStore = defineStore('map', () => {
   const modelFeatures = ref({})
   const perceptualModelsGeojson = ref([])
   const mapLoaded = ref(false)
+  let currentFilteredData = ref([])
 
   function onEachFeature(feature, layer) {
     let content = `<h3>Perceptual model of <strong>${feature.properties.location.long_name}</strong></h3>`
@@ -74,12 +75,12 @@ export const useMapStore = defineStore('map', () => {
       content += '<h4>Temporal zone:</h4>'
       content += `${feature.properties.temporal_zone_type.temporal_property}`
     }
-
     layer.bindPopup(content, {
       maxWidth: 400,
       maxHeight: 300,
       keepInView: true
     })
+    currentFilteredData.value.push(feature);
   }
 
   const pointToLayer = (feature, latlng) => {
@@ -121,6 +122,7 @@ export const useMapStore = defineStore('map', () => {
   }
 
   function filterFeatures(filterFunction) {
+    currentFilteredData.value =[];
     // TODO enable multiple filters at the same time
     // first remove all layers
     layerGroup.value.removeLayer(modelFeatures.value)
@@ -134,6 +136,7 @@ export const useMapStore = defineStore('map', () => {
       },
       pointToLayer: pointToLayer
     })
+
     // add filtered features
     layerGroup.value.addLayer(modelFeatures.value)
   }
@@ -155,6 +158,7 @@ export const useMapStore = defineStore('map', () => {
     mapLoaded,
     fetchPerceptualModelsGeojson,
     filterFeatures,
-    resetFilter
+    resetFilter,
+    currentFilteredData
   }
 })
