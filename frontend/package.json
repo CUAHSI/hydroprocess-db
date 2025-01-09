@@ -21,6 +21,7 @@
     "leaflet-easybutton": "^2.4.0",
     "leaflet-iconmaterial": "^1.1.0",
     "pinia": "^2.1.6",
+    "papaparse": "^5.4.1",
     "swagger-ui": "^5.10.5",
     "vee-validate": "^4.13.2",
     "vite-plugin-vuetify": "^1.0.2",
