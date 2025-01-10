@@ -6,23 +6,36 @@
 import { useMapStore } from '@/stores/map';
 import Papa from 'papaparse';
 
-const mapStore = useMapStore()
+const mapStore = useMapStore();
 const renameColumnInCSV = {
     "figure num": "Figure Number",
+    "figure caption": "Figure Caption",
+    "figure url": "Figure Url",
+    "textmodel section number": "Textmodel Section Number",
+    "textmodel section name": "Textmodel Section Name",
+    "textmodel page number": "Textmodel Page Number",
+    "textmodel snipped": "Textmodel Snippet",
     "citation citation": "Citation",
+    "citation url": "Citation Url",
+    "citation attribution": "Citation Attribution",
+    "citation attribution url": "Citation Attribution Url",
     "location long name": "Location Name",
+    "location country": "Location Country",
     "location area km2": "Location Area [km^2]",
     "process taxonomies process": "Taxonomy Processes",
+    "vegetation info": "Vegetation Info",
+    "soil info": "Soil Info",
     "geol info": "Geological Info",
     "topo info": "Topographic Info",
+    "uncertainty info": "Uncertainty Info",
+    "other info": "Other Info",
     "num spatial zones": "Number of Spatial Zones",
     "spatial zone type spatial property": "Spatial Zone Type",
     "num temporal zones": "Number of Temporal Zones",
     "temporal zone type temporal property": "Temporal Zone Type",
-    "model type name": "Model Type",
-    "textmodel snipped": "Textmodel Snippet"
+    "model type name": "Model Type"
 }
-const csvColumns = ['Figure Number', 'Figure Caption', 'Fgure Url', 'Textmodel Section Number', 'Textmodel Section Name', 'Textmodel Page Number', 'Textmodel Snippet', 'Citation', 'Citation Url', 'Citation Attribution', 'Citation Attribution Url', 'Location Name', 'Location Country', 'Location Area [km^2]', 'Taxonomy Processes', 'Vegetation Info', 'Soil Info', 'Geological Info', 'Topographic Info', 'Uncertainty Info', 'Other Info', 'Number of Spatial Zones', 'Spatial Zone Type', 'Number of Temporal Zones', 'Temporal Zone Type', 'Model Type']
+const csvColumns = Object.values(renameColumnInCSV);
 
 function flattenItem(obj, parentKey = '', result = {}) {
     for (const key in obj) {
@@ -97,8 +110,6 @@ function renamecsvColumn(name) {
     newName = newName.replace(/\b\w/g, char => char.toLowerCase());
     if (renameColumnInCSV[newName]) {
         newName = renameColumnInCSV[newName];
-    } else {
-        newName = newName.replace(/\b\w/g, char => char.toUpperCase());
     }
     return newName;
 }
