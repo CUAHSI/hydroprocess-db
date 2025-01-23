@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { ENDPOINTS } from '@/constants'
 import L from 'leaflet'
 import 'leaflet-iconmaterial/dist/leaflet.icon-material'
+import 'leaflet.markercluster';
 
 export const useMapStore = defineStore('map', () => {
   const leaflet = ref(null)
@@ -10,6 +11,34 @@ export const useMapStore = defineStore('map', () => {
   const modelFeatures = ref({})
   const perceptualModelsGeojson = ref([])
   const mapLoaded = ref(false)
+  const markerClusterGroup = L.markerClusterGroup({
+    iconCreateFunction: (cluster) => {
+      const childCount = cluster.getChildCount();
+  
+      let color = 'blue';
+      if (childCount > 10) {
+        color = 'red';
+      }
+  
+      return L.divIcon({
+        html: `
+        <div style="
+          background-color: ${color};
+          border-radius: 50%;
+          color: white;
+          text-align: center;
+          line-height: 40px;
+          width: 40px;
+          height: 40px;
+          box-shadow: 0 4px 10px ${color};
+        ">
+          ${childCount}
+        </div>`,
+        className: 'custom-cluster-icon',
+        iconSize: [40, 40]
+      });
+    },
+  });
 
   function onEachFeature(feature, layer) {
     let content = `<h3>Perceptual model of <strong>${feature.properties.location.long_name}</strong></h3>`
@@ -117,7 +146,8 @@ export const useMapStore = defineStore('map', () => {
       },
       pointToLayer: pointToLayer
     })
-    layerGroup.value.addLayer(modelFeatures.value)
+    markerClusterGroup.addLayer(modelFeatures.value); // Add features to the cluster group
+    layerGroup.value.addLayer(markerClusterGroup);
   }
 
   function filterFeatures(filterFunction) {
@@ -135,7 +165,8 @@ export const useMapStore = defineStore('map', () => {
       pointToLayer: pointToLayer
     })
     // add filtered features
-    layerGroup.value.addLayer(modelFeatures.value)
+    markerClusterGroup.addLayer(modelFeatures.value);
+    layerGroup.value.addLayer(markerClusterGroup);
   }
 
   function resetFilter() {
@@ -145,7 +176,8 @@ export const useMapStore = defineStore('map', () => {
         onEachFeature(feature, layer)
       }
     })
-    layerGroup.value.addLayer(modelFeatures.value)
+    markerClusterGroup.addLayer(modelFeatures.value);
+    layerGroup.value.addLayer(markerClusterGroup);
   }
 
   return {
