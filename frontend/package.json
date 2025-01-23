@@ -20,6 +20,7 @@
     "leaflet": "^1.9.4",
     "leaflet-easybutton": "^2.4.0",
     "leaflet-iconmaterial": "^1.1.0",
+    "papaparse": "^5.4.1",
     "leaflet.markercluster": "^1.5.3",
     "pinia": "^2.1.6",
     "swagger-ui": "^5.10.5",

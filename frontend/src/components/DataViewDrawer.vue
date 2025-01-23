@@ -30,12 +30,18 @@
         <p>{{ totalModels }}</p>
       </v-card-text>
     </v-card>
+    <v-card>
+      <v-card-text>
+        <DownloadMapData />
+      </v-card-text>
+    </v-card>
   </v-sheet>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import { ENDPOINTS } from '../constants';
+import DownloadMapData from '@/components/DownloadMapData.vue';
 
 let querying = ref(true)
 
