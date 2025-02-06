@@ -12,6 +12,7 @@ export const useMapStore = defineStore('map', () => {
   const perceptualModelsGeojson = ref([])
   const mapLoaded = ref(false)
   let currentFilteredData = ref([])
+  const allAvailableCoordinates = []
   const markerClusterGroup = L.markerClusterGroup({
     iconCreateFunction: (cluster) => {
       const childCount = cluster.getChildCount();
@@ -41,9 +42,8 @@ export const useMapStore = defineStore('map', () => {
     },
   });
 
-  function onEachFeature(feature, layer) {
+  function onEachFeature(feature, layer) {    
     let content = `<h3>Perceptual model of <strong>${feature.properties.location.long_name}</strong></h3>`
-
     if(feature.properties.citation.url) {
       content += '<br>'
       content += '<h4 class="d-inline-block mr-2">URL:</h4>'
@@ -104,6 +104,9 @@ export const useMapStore = defineStore('map', () => {
       content += '<h4>Temporal zone:</h4>'
       content += `${feature.properties.temporal_zone_type.temporal_property}`
     }
+
+    allAvailableCoordinates.push(adjustLatLon(feature.properties.location.lat, feature.properties.location.lon))
+
     layer.bindPopup(content, {
       maxWidth: 400,
       maxHeight: 300,
@@ -187,6 +190,12 @@ export const useMapStore = defineStore('map', () => {
     layerGroup.value.addLayer(markerClusterGroup);
   }
 
+  function adjustLatLon(lat, lon) {
+    return [
+        lat < 0 ? lat - 10 : lat + 10,
+        lon < 0 ? lon - 10 : lon + 10
+  ];
+}
   return {
     leaflet,
     modelFeatures,
@@ -195,6 +204,7 @@ export const useMapStore = defineStore('map', () => {
     fetchPerceptualModelsGeojson,
     filterFeatures,
     resetFilter,
-    currentFilteredData
+    currentFilteredData,
+    allAvailableCoordinates
   }
 })

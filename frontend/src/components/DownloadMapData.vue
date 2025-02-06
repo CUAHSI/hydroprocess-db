@@ -71,8 +71,13 @@ function flattenItem(obj, parentKey = '', result = {}) {
                     }
                 }
             } else {
-                if (csvColumns.includes(newKey))
-                    result[newKey] = obj[key];
+                if (csvColumns.includes(newKey)){
+                    if(newKey === "Textmodel Snippet" && obj.citation.attribution == "Not open-access") {
+                        result[newKey] = "N/A";
+                    }else{
+                        result[newKey] = obj[key];
+                    }
+                }
             }
         }
     }

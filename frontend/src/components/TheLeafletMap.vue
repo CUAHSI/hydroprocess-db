@@ -59,6 +59,12 @@ onMounted(async () => {
     // query the api for the features
     await mapStore.fetchPerceptualModelsGeojson()
 
+    // Convert to Leaflet LatLngBounds
+    const bounds = L.latLngBounds(mapStore.allAvailableCoordinates);
+
+    // Restrict panning to within bounds
+    leaflet.setMaxBounds(bounds);
+
     // layer toggling
     let mixed = {
         "Perceptual Models": layerGroup,
