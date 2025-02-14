@@ -4,6 +4,7 @@ import { ENDPOINTS } from '@/constants'
 import L from 'leaflet'
 import 'leaflet-iconmaterial/dist/leaflet.icon-material'
 import 'leaflet.markercluster';
+import citationMatchingFileNames from '@/assets/citation_and_images_matching.json'
 
 export const useMapStore = defineStore('map', () => {
   const leaflet = ref(null)
@@ -41,8 +42,7 @@ export const useMapStore = defineStore('map', () => {
       });
     },
   });
-
-  function onEachFeature(feature, layer) {    
+  function onEachFeature(feature, layer) {   
     let content = `<h3>Perceptual model of <strong>${feature.properties.location.long_name}</strong></h3>`
     if(feature.properties.citation.url) {
       content += '<br>'
@@ -73,7 +73,12 @@ export const useMapStore = defineStore('map', () => {
       if(props.citation.attribution == "Not open-access"){
         content += note + "figure"
       }else{
-        content += `<img src="${feature.properties.figure_url}" style="width: 100%">`
+
+        if(citationMatchingFileNames[feature.properties.citation.citation]){
+          content += `<img src="${getImagePath(citationMatchingFileNames[feature.properties.citation.citation])}" alt="Dynamic Image">` 
+        }else{
+          content += "<h5>No Figure</h5>"
+        }
       }
       
       if(props.figure_caption && props.figure_caption != "N/A"){
@@ -195,6 +200,10 @@ export const useMapStore = defineStore('map', () => {
         lat < 0 ? lat - 10 : lat + 10,
         lon < 0 ? lon - 10 : lon + 10
   ];
+}
+
+function getImagePath(filename) {
+  return new URL(`../assets/figure_model_images/${filename}`, import.meta.url).href;
 }
   return {
     leaflet,
