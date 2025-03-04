@@ -1,5 +1,20 @@
 <template>
   <v-sheet class="mx-auto" elevation="8">
+    <v-card order="1">
+      <!-- <v-card-title>Search Text Within:</v-card-title> -->
+      <v-card-text>
+        <!-- <v-btn-toggle v-model="textSearchFields" @update:modelValue="filter" class="mb-2" multiple outlined
+          variant="text" divided>
+          <v-btn value="long_name">Title</v-btn>
+          <v-btn value="citation">Citation</v-btn>
+          <v-btn value="textmodel_snipped">Abstract</v-btn>
+        </v-btn-toggle> -->
+        <v-text-field @update:focused="filter" @keydown.enter.prevent="filter"
+          @click:clear="filter" v-model="searchTerm" label="Search Data..." clearable>
+        </v-text-field>
+      </v-card-text>
+      <v-progress-linear v-if="filtering" indeterminate color="primary"></v-progress-linear>
+    </v-card>
     <h3 class="text-h6 ma-2 text-center">Model Filters</h3>
     <v-divider></v-divider>
     <!-- <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
@@ -38,20 +53,7 @@
     <v-autocomplete v-model="selectedTemporalZones" :items="temporalZones" item-title="temporal_property"
       item-value="id" label="Temporal Zones" @update:modelValue="filter" clearable chips multiple
       :loading="filtering"></v-autocomplete>
-    <v-card order="1">
-      <v-card-title>Search Text Within:</v-card-title>
-      <v-card-text>
-        <v-btn-toggle v-model="textSearchFields" @update:modelValue="filter" class="mb-2" multiple outlined
-          variant="text" divided>
-          <v-btn value="long_name">Title</v-btn>
-          <v-btn value="citation">Citation</v-btn>
-          <v-btn value="textmodel_snipped">Abstract</v-btn>
-        </v-btn-toggle>
-        <v-text-field v-show="hasTextSearchFields" @update:focused="filter" @keydown.enter.prevent="filter"
-          @click:clear="filter" v-model="searchTerm" label="Search" clearable></v-text-field>
-      </v-card-text>
-      <v-progress-linear v-if="filtering" indeterminate color="primary"></v-progress-linear>
-    </v-card>
+    
   </v-sheet>
 </template>
 
