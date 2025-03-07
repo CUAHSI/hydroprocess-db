@@ -1,16 +1,9 @@
 <template>
   <v-sheet class="mx-auto" elevation="8">
     <v-card order="1">
-      <!-- <v-card-title>Search Text Within:</v-card-title> -->
       <v-card-text>
-        <!-- <v-btn-toggle v-model="textSearchFields" @update:modelValue="filter" class="mb-2" multiple outlined
-          variant="text" divided>
-          <v-btn value="long_name">Title</v-btn>
-          <v-btn value="citation">Citation</v-btn>
-          <v-btn value="textmodel_snipped">Abstract</v-btn>
-        </v-btn-toggle> -->
-        <v-text-field @update:focused="filter" @keydown.enter.prevent="filter"
-          @click:clear="filter" v-model="searchTerm" label="Search Data..." clearable>
+        <v-text-field @update:focused="filter" @keydown.enter.prevent="filter" @click:clear="filter"
+          v-model="searchTerm" label="Search Data..." clearable>
         </v-text-field>
       </v-card-text>
       <v-progress-linear v-if="filtering" indeterminate color="primary"></v-progress-linear>
@@ -20,32 +13,17 @@
     <!-- <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
       label="Process Taxonomies" @update:modelValue="filter" clearable chips multiple
       :loading="filtering"></v-autocomplete> -->
-      <v-text-field
-          v-model="searchTreeText"
-          label="Search Process Taxonomies"
-          :clear-icon="mdiCloseCircleOutline"
-          clearable
-          dark
-          flat
-          hide-details
-          solo-inverted>
-      </v-text-field>
-      <v-treeview
-          v-model:selected="selectedTreeItems"
-          :items="treeViewData"
-          select-strategy="clasic"
-          item-value="id"
-          selectable
-          :search="searchTreeText"
-          activatable
-          @update:modelValue="updateMap"
-        >
-        <template v-slot:prepend="{ item, isOpen }">
-          <v-icon>
-            {{ isOpen ? mdiFolderOpen : mdiFolder }}
-          </v-icon>
-        </template>
-      </v-treeview>
+    <v-text-field v-model="searchTreeText" label="Search Process Taxonomies" :clear-icon="mdiCloseCircleOutline"
+      clearable dark flat hide-details solo-inverted>
+    </v-text-field>
+    <v-treeview v-model:selected="selectedTreeItems" :items="treeViewData" select-strategy="clasic" item-value="id"
+      selectable :search="searchTreeText" activatable @update:modelValue="updateMap">
+      <template v-slot:prepend="{ item, isOpen }">
+        <v-icon>
+          {{ isOpen ? mdiFolderOpen : mdiFolder }}
+        </v-icon>
+      </template>
+    </v-treeview>
 
 
     <v-autocomplete v-model="selectedSpatialZones" :items="spatialZones" item-title="spatial_property" item-value="id"
@@ -53,7 +31,7 @@
     <v-autocomplete v-model="selectedTemporalZones" :items="temporalZones" item-title="temporal_property"
       item-value="id" label="Temporal Zones" @update:modelValue="filter" clearable chips multiple
       :loading="filtering"></v-autocomplete>
-    
+
   </v-sheet>
 </template>
 
@@ -85,14 +63,10 @@ const selectedSpatialZones = ref([])
 const temporalZones = ref([])
 const selectedTemporalZones = ref([])
 const searchTerm = ref(null)
-const textSearchFields = ref([])
+const textSearchFields = ref(['long_name', 'citation', 'textmodel_snipped', 'processes_taxonomies', 'temporal_property', 'spatial_property'])
 const treeViewData = ref([])
 const selectedTreeItems = ref([])
 const searchTreeText = ref('')
-
-const hasTextSearchFields = computed(() => {
-  return textSearchFields.value.length > 0
-})
 
 // Fetch the process taxonomies, spatial zones, and temporal zones
 perceptualModelStore.fetchProcessTaxonomies().then((pt) => {
@@ -101,54 +75,54 @@ perceptualModelStore.fetchProcessTaxonomies().then((pt) => {
 })
 
 function buildTree(data) {
-    const root = {};
+  const root = {};
 
-    // Helper function to insert item into the correct place in the tree
-    const insert = (path, item) => {
-        let current = root;
-        path.forEach((part, index) => {
-            // Check if part already exists as a child, if not create it
-            if (!current[part]) {
-                current[part] = {
-                    title: part,
-                    id: item.id,
-                    children: {}
-                };
-            }
-            // If it's the last part, assign the item values to the node
-            if (index === path.length - 1) {
-                current[part] = {
-                    id: item.id,
-                    title: item.process,
-                    children: current[part].children || {}
-                };
-            }
-            current = current[part].children;
-        });
-    };
-
-    // Insert each item in data into the tree
-    data.forEach(item => {
-        const path = item.identifier.split(".");
-        insert(path, item);
+  // Helper function to insert item into the correct place in the tree
+  const insert = (path, item) => {
+    let current = root;
+    path.forEach((part, index) => {
+      // Check if part already exists as a child, if not create it
+      if (!current[part]) {
+        current[part] = {
+          title: part,
+          id: item.id,
+          children: {}
+        };
+      }
+      // If it's the last part, assign the item values to the node
+      if (index === path.length - 1) {
+        current[part] = {
+          id: item.id,
+          title: item.process,
+          children: current[part].children || {}
+        };
+      }
+      current = current[part].children;
     });
+  };
 
-    // Convert tree object with nested children into desired array format
-    const convertToArray = (node) => {
-      return Object.values(node).map(child => {
-            const childrenArray = convertToArray(child.children);
-            const nodeObject = {
-                id: child.id,
-                title: child.title
-            };
-            if (childrenArray.length > 0) {
-                nodeObject.children = childrenArray;
-            }
-            return nodeObject;
-        });
-    };
+  // Insert each item in data into the tree
+  data.forEach(item => {
+    const path = item.identifier.split(".");
+    insert(path, item);
+  });
 
-    return convertToArray(root);
+  // Convert tree object with nested children into desired array format
+  const convertToArray = (node) => {
+    return Object.values(node).map(child => {
+      const childrenArray = convertToArray(child.children);
+      const nodeObject = {
+        id: child.id,
+        title: child.title
+      };
+      if (childrenArray.length > 0) {
+        nodeObject.children = childrenArray;
+      }
+      return nodeObject;
+    });
+  };
+
+  return convertToArray(root);
 }
 
 perceptualModelStore.fetchSpatialZones().then((sz) => {
@@ -161,8 +135,8 @@ perceptualModelStore.fetchTemporalZones().then((tz) => {
 })
 
 const replaceNwithNone = (items, propName) => {
-  for(let item of items){
-    if(item[propName] === 'N') {
+  for (let item of items) {
+    if (item[propName] === 'N') {
       item[propName] = "None";
       break;
     }
@@ -184,8 +158,8 @@ const checkSearchTerm = (searchTerm, fieldsToSearch, feature) => {
 
 
 async function filter() {
-  emit('onFilter', {selectedSpatialZones, selectedTemporalZones, selectedProcesses})
-  
+  emit('onFilter', { selectedSpatialZones, selectedTemporalZones, selectedProcesses })
+
   filtering.value = true
   await nextTick()
   // reset search term if no text search fields are selected
