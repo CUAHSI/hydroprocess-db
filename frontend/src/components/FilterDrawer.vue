@@ -1,38 +1,10 @@
 <template>
   <v-sheet class="mx-auto" elevation="8">
-    <h3 class="text-h6 ma-2 text-center">Model Filters</h3>
+    <h3 class="text-h6 ma-2 text-center">Filter Map</h3>
     <v-divider></v-divider>
-    <!-- <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
+  <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
       label="Process Taxonomies" @update:modelValue="filter" clearable chips multiple
-      :loading="filtering"></v-autocomplete> -->
-      <v-text-field
-          v-model="searchTreeText"
-          label="Search Process Taxonomies"
-          :clear-icon="mdiCloseCircleOutline"
-          clearable
-          dark
-          flat
-          hide-details
-          solo-inverted>
-      </v-text-field>
-      <v-treeview
-          v-model:selected="selectedTreeItems"
-          :items="treeViewData"
-          select-strategy="clasic"
-          item-value="id"
-          selectable
-          :search="searchTreeText"
-          activatable
-          @update:modelValue="updateMap"
-        >
-        <template v-slot:prepend="{ item, isOpen }">
-          <v-icon>
-            {{ isOpen ? mdiFolderOpen : mdiFolder }}
-          </v-icon>
-        </template>
-      </v-treeview>
-
-
+      :loading="filtering"></v-autocomplete>
     <v-autocomplete v-model="selectedSpatialZones" :items="spatialZones" item-title="spatial_property" item-value="id"
       label="Spatial Zones" @update:modelValue="filter" clearable chips multiple :loading="filtering"></v-autocomplete>
     <v-autocomplete v-model="selectedTemporalZones" :items="temporalZones" item-title="temporal_property"
@@ -56,11 +28,9 @@
 </template>
 
 <script setup>
-import { ref, computed, nextTick } from 'vue'
+import { ref, nextTick, computed } from 'vue'
 import { usePerceptualModelStore } from "@/stores/perceptual_models";
 import { useMapStore } from '@/stores/map';
-import { mdiFolderOpen, mdiFolder, mdiCloseCircleOutline } from '@mdi/js';
-
 
 const perceptualModelStore = usePerceptualModelStore();
 const mapStore = useMapStore()
@@ -85,8 +55,6 @@ const selectedTemporalZones = ref([])
 const searchTerm = ref(null)
 const textSearchFields = ref([])
 const treeViewData = ref([])
-const selectedTreeItems = ref([])
-const searchTreeText = ref('')
 
 const hasTextSearchFields = computed(() => {
   return textSearchFields.value.length > 0
@@ -201,14 +169,6 @@ async function filter() {
   filtering.value = false
 }
 
-const updateMap = async () => {
-  selectedProcesses.value = [];
-  selectedTreeItems.value.forEach((item) => {
-    selectedProcesses.value.push(item);
-  });
-  await nextTick();
-  filter();
-}
 </script>
 
 <style scoped>
