@@ -3,7 +3,7 @@
     <v-card order="1">
       <v-card-text>
         <v-text-field @update:focused="filter" @keydown.enter.prevent="filter" @click:clear="filter"
-          v-model="searchTerm" label="Search Data..." clearable>
+          v-model="searchTerm" label="Search Data..." clearable hide-details>
         </v-text-field>
       </v-card-text>
       <v-progress-linear v-if="filtering" indeterminate color="primary"></v-progress-linear>
