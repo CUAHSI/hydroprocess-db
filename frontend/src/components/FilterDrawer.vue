@@ -1,15 +1,23 @@
 <template>
+  <v-card-text class="p-0">
+  <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
+    label="Process Taxonomies" @update:modelValue="filter" clearable chips multiple
+    :loading="filtering"></v-autocomplete>
+</v-card-text>
   <v-sheet class="mx-auto" elevation="8">
     <h3 class="text-h6 ma-2 text-center">Filter Map</h3>
     <v-divider></v-divider>
-  <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
-      label="Process Taxonomies" @update:modelValue="filter" clearable chips multiple
-      :loading="filtering"></v-autocomplete>
+
+  
+  <v-card-text class="p-0">
     <v-autocomplete v-model="selectedSpatialZones" :items="spatialZones" item-title="spatial_property" item-value="id"
       label="Spatial Zones" @update:modelValue="filter" clearable chips multiple :loading="filtering"></v-autocomplete>
+  </v-card-text>
+  <v-card-text class="p-0">
     <v-autocomplete v-model="selectedTemporalZones" :items="temporalZones" item-title="temporal_property"
       item-value="id" label="Temporal Zones" @update:modelValue="filter" clearable chips multiple
       :loading="filtering"></v-autocomplete>
+  </v-card-text>
     <v-card order="1">
       <v-card-title>Search Text Within:</v-card-title>
       <v-card-text>
@@ -67,54 +75,54 @@ perceptualModelStore.fetchProcessTaxonomies().then((pt) => {
 })
 
 function buildTree(data) {
-    const root = {};
+  const root = {};
 
-    // Helper function to insert item into the correct place in the tree
-    const insert = (path, item) => {
-        let current = root;
-        path.forEach((part, index) => {
-            // Check if part already exists as a child, if not create it
-            if (!current[part]) {
-                current[part] = {
-                    title: part,
-                    id: item.id,
-                    children: {}
-                };
-            }
-            // If it's the last part, assign the item values to the node
-            if (index === path.length - 1) {
-                current[part] = {
-                    id: item.id,
-                    title: item.process,
-                    children: current[part].children || {}
-                };
-            }
-            current = current[part].children;
-        });
-    };
-
-    // Insert each item in data into the tree
-    data.forEach(item => {
-        const path = item.identifier.split(".");
-        insert(path, item);
+  // Helper function to insert item into the correct place in the tree
+  const insert = (path, item) => {
+    let current = root;
+    path.forEach((part, index) => {
+      // Check if part already exists as a child, if not create it
+      if (!current[part]) {
+        current[part] = {
+          title: part,
+          id: item.id,
+          children: {}
+        };
+      }
+      // If it's the last part, assign the item values to the node
+      if (index === path.length - 1) {
+        current[part] = {
+          id: item.id,
+          title: item.process,
+          children: current[part].children || {}
+        };
+      }
+      current = current[part].children;
     });
+  };
 
-    // Convert tree object with nested children into desired array format
-    const convertToArray = (node) => {
-      return Object.values(node).map(child => {
-            const childrenArray = convertToArray(child.children);
-            const nodeObject = {
-                id: child.id,
-                title: child.title
-            };
-            if (childrenArray.length > 0) {
-                nodeObject.children = childrenArray;
-            }
-            return nodeObject;
-        });
-    };
+  // Insert each item in data into the tree
+  data.forEach(item => {
+    const path = item.identifier.split(".");
+    insert(path, item);
+  });
 
-    return convertToArray(root);
+  // Convert tree object with nested children into desired array format
+  const convertToArray = (node) => {
+    return Object.values(node).map(child => {
+      const childrenArray = convertToArray(child.children);
+      const nodeObject = {
+        id: child.id,
+        title: child.title
+      };
+      if (childrenArray.length > 0) {
+        nodeObject.children = childrenArray;
+      }
+      return nodeObject;
+    });
+  };
+
+  return convertToArray(root);
 }
 
 perceptualModelStore.fetchSpatialZones().then((sz) => {
@@ -127,8 +135,8 @@ perceptualModelStore.fetchTemporalZones().then((tz) => {
 })
 
 const replaceNwithNone = (items, propName) => {
-  for(let item of items){
-    if(item[propName] === 'N') {
+  for (let item of items) {
+    if (item[propName] === 'N') {
       item[propName] = "None";
       break;
     }
@@ -150,8 +158,8 @@ const checkSearchTerm = (searchTerm, fieldsToSearch, feature) => {
 
 
 async function filter() {
-  emit('onFilter', {selectedSpatialZones, selectedTemporalZones, selectedProcesses})
-  
+  emit('onFilter', { selectedSpatialZones, selectedTemporalZones, selectedProcesses })
+
   filtering.value = true
   await nextTick()
   // reset search term if no text search fields are selected
@@ -176,5 +184,8 @@ async function filter() {
   position: absolute;
   bottom: 30%;
   left: 110%;
+}
+.p-0{
+  padding: 0 1rem;
 }
 </style>
