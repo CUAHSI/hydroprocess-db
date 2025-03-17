@@ -1,7 +1,7 @@
 <template>
   <v-sheet class="mx-auto" elevation="8">
     <v-card order="1">
-      <v-card-text>
+      <v-card-text class="px-0">
         <v-text-field @update:focused="filter" @keydown.enter.prevent="filter" @click:clear="filter"
           v-model="searchTerm" label="Search Data..." clearable hide-details>
         </v-text-field>
