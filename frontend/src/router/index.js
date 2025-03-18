@@ -25,7 +25,7 @@ const router = createRouter({
       path: '/api',
       name: 'api',
       component: ApiView
-    },
+    }
   ]
 })
 

@@ -2,19 +2,17 @@ from fastapi import APIRouter, Depends
 from sqlmodel import select
 
 from app.db import get_session
-from app.models import ModelType, PerceptualModel, ModelCountRequest, ProcessTaxonomy
+from app.models import ModelCountRequest, ModelType, PerceptualModel, ProcessTaxonomy
 
 router = APIRouter()
+
 
 @router.post(
     "/model_type_count",
     description="Get the count of models for each model type.",
     response_model=dict[str, int],
 )
-def get_model_count_by_type(
-    request: ModelCountRequest,
-    session=Depends(get_session)
-):
+def get_model_count_by_type(request: ModelCountRequest, session=Depends(get_session)):
     model_types = session.exec(select(ModelType)).all()
     model_type_count = {}
 
@@ -32,7 +30,7 @@ def get_model_count_by_type(
                 ProcessTaxonomy.id.in_(request.process_taxonomy_ids)
             )
 
-        matching_models = query.all()            
+        matching_models = query.all()
         model_type_count[model_type.name] = len(matching_models)
 
     return model_type_count
