@@ -6,12 +6,8 @@
         <v-table>
           <thead>
             <tr>
-              <th class="text-left">
-                Model Type
-              </th>
-              <th class="text-left">
-                Count
-              </th>
+              <th class="text-left">Model Type</th>
+              <th class="text-left">Count</th>
             </tr>
           </thead>
           <tbody>
@@ -40,8 +36,8 @@
 
 <script setup>
 import { ref } from 'vue'
-import { ENDPOINTS } from '../constants';
-import DownloadMapData from '@/components/DownloadMapData.vue';
+import { ENDPOINTS } from '../constants'
+import DownloadMapData from '@/components/DownloadMapData.vue'
 
 let querying = ref(true)
 
@@ -53,10 +49,10 @@ const query = async (filters = {}) => {
   const response = await fetch(ENDPOINTS.model_type_count, {
     method: 'POST',
     headers: {
-        'Content-Type': 'application/json'
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify(filters)
-  });
+  })
   const counts = await response.json()
 
   // Delete the 'Figure model (Hand-drawn)' key
@@ -72,7 +68,6 @@ defineExpose({
 })
 
 query()
-
 </script>
 
 <style scoped>

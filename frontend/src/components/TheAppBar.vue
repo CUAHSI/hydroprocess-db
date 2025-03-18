@@ -1,16 +1,32 @@
 <template>
-  <v-app-bar v-if="!$route.meta.hideNavigation" color="navbar" ref="appBar" id="app-bar" elevate-on-scroll fixed app>
+  <v-app-bar
+    v-if="!$route.meta.hideNavigation"
+    color="navbar"
+    ref="appBar"
+    id="app-bar"
+    elevate-on-scroll
+    fixed
+    app
+  >
     <div class="d-flex align-end full-height pa-2 align-center w-100 position-relative">
-      <v-app-bar-title>Perceptual Models Around the World<div class="text-subtitle-1">McMillan Hydrology Lab</div>
+      <v-app-bar-title
+        >Perceptual Models Around the World
+        <div class="text-subtitle-1">McMillan Hydrology Lab</div>
       </v-app-bar-title>
 
       <v-spacer></v-spacer>
 
       <v-card class="nav-items mr-2 d-flex mr-4" :elevation="2" v-if="!mdAndDown">
         <nav>
-          <v-btn v-for="path of paths" :key="path.attrs.to || path.attrs.href" v-bind="path.attrs"
-            :id="`navbar-nav-${path.label.replaceAll(/[\/\s]/g, ``)}`" :elevation="0" active-class="primary"
-            :class="path.isActive?.() ? 'primary' : ''">
+          <v-btn
+            v-for="path of paths"
+            :key="path.attrs.to || path.attrs.href"
+            v-bind="path.attrs"
+            :id="`navbar-nav-${path.label.replaceAll(/[\/\s]/g, ``)}`"
+            :elevation="0"
+            active-class="primary"
+            :class="path.isActive?.() ? 'primary' : ''"
+          >
             {{ path.label }}
           </v-btn>
         </nav>
@@ -23,25 +39,15 @@
   </v-app-bar>
 </template>
 <script setup>
-// import { RouterLink } from 'vue-router'
 import { useDisplay } from 'vuetify'
-// import UserLogin from "@/components/UserLogin.vue";
-import { useAuthStore } from '../stores/auth';
 defineProps(['paths'])
 defineEmits(['toggleMobileNav'])
 
-const auth = useAuthStore();
 const { mdAndDown } = useDisplay()
-
-function login(){
-  auth.isLoggedIn = true
-}
-
 </script>
 
 <style lang="scss" scoped>
-
-.v-toolbar.v-app-bar--is-scrolled>.v-toolbar__content>.container {
+.v-toolbar.v-app-bar--is-scrolled > .v-toolbar__content > .container {
   align-items: center !important;
   will-change: padding;
   padding-top: 0;
@@ -54,12 +60,12 @@ function login(){
   position: absolute;
   left: 43%;
 
-  &>a.v-btn:first-child {
+  & > a.v-btn:first-child {
     border-top-left-radius: 2rem !important;
     border-bottom-left-radius: 2rem !important;
   }
 
-  &>a.v-btn:last-child {
+  & > a.v-btn:last-child {
     border-top-right-radius: 2rem !important;
     border-bottom-right-radius: 2rem !important;
   }

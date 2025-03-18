@@ -49,6 +49,6 @@ export default createVuetify({
     }
   },
   components: {
-    VTreeview,
-  },
+    VTreeview
+  }
 })
