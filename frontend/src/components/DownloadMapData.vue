@@ -94,14 +94,13 @@ function flattenMapDataJSON(data) {
 }
 
 function downloadMapData() {
-
   if (typeof window !== 'undefined' && window.heap) {
-    console.log("Heap is available. Map Download button clicked");
-    window.heap.track("Download", {
-      downloadItem: "Map"
-    });
+    console.log('Heap is available. Map Download button clicked')
+    window.heap.track('Download', {
+      downloadItem: 'Map'
+    })
   } else {
-    console.warn("Heap is not available.");
+    console.warn('Heap is not available.')
   }
   const mapData = mapStore.currentFilteredData
   const flattenedMapData = flattenMapDataJSON(mapData)
