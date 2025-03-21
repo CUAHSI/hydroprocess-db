@@ -1,21 +1,4 @@
 <template>
-  <v-sheet elevation="8">
-    <v-card-text>
-      <v-autocomplete
-        v-model="selectedProcesses"
-        :items="process_taxonomies"
-        item-title="process"
-        item-value="id"
-        label="Process Taxonomies"
-        @update:modelValue="filter"
-        clearable
-        chips
-        multiple
-        :loading="filtering"
-        :hide-details="true"
-      ></v-autocomplete>
-    </v-card-text>
-  </v-sheet>
   <v-sheet class="mx-auto" elevation="8">
     <h3 class="text-h6 ma-2 text-center">Filter Map</h3>
     <v-divider></v-divider>
