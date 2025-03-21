@@ -16,23 +16,32 @@
       solo-inverted
     >
     </v-text-field>
-    <v-treeview
-      v-model:selected="selectedTreeItems"
-      :items="treeViewData"
-      select-strategy="clasic"
-      item-value="id"
-      selectable
-      :search="searchTreeText"
-      activatable
-      @update:modelValue="updateMap"
-    >
-      <template v-slot:prepend="{ isOpen }">
-        <v-icon>
-          {{ isOpen ? mdiFolderOpen : mdiFolder }}
-        </v-icon>
-      </template>
-    </v-treeview>
-
+    <v-expansion-panels v-model="activePanel">
+      <v-expansion-panel value="tree"> 
+        <v-expansion-panel-title>
+          Process Taxanomy Tree
+        </v-expansion-panel-title>
+        <v-expansion-panel-content>
+          <v-treeview
+            v-model:selected="selectedTreeItems"
+            :items="treeViewData"
+            select-strategy="classic"
+            item-value="id"
+            selectable
+            :search="searchTreeText"
+            activatable
+            @update:modelValue="updateMap"
+          >
+            <template v-slot:prepend="{ isOpen }">
+              <v-icon>
+                {{ isOpen ? mdiFolderOpen : mdiFolder }}
+              </v-icon>
+            </template>
+          </v-treeview>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
+    <v-divider></v-divider>
     <v-autocomplete
       v-model="selectedSpatialZones"
       :items="spatialZones"
@@ -116,6 +125,9 @@ const selectedTemporalZones = ref([])
 const searchTerm = ref(null)
 const textSearchFields = ref([])
 const treeViewData = ref([])
+const selectedTreeItems = ref([])
+const searchTreeText = ref('')
+const activePanel = ref([])  // Empty array to start collapsed
 
 const hasTextSearchFields = computed(() => {
   return textSearchFields.value.length > 0
@@ -246,9 +258,9 @@ async function filter() {
 
 const updateMap = async () => {
   selectedProcesses.value = []
-  // selectedTreeItems.value.forEach((item) => {
-  //   selectedProcesses.value.push(item)
-  // })
+  selectedTreeItems.value.forEach((item) => {
+    selectedProcesses.value.push(item)
+  })
   await nextTick()
   filter()
 }
@@ -259,5 +271,13 @@ const updateMap = async () => {
   position: absolute;
   bottom: 30%;
   left: 110%;
+}
+
+.v-expansion-panel-content__wrap {
+  padding: 0;
+}
+
+.v-expansion-panel:not(.v-expansion-panel--active) .v-treeview {
+  display: none;
 }
 </style>
