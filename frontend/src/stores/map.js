@@ -131,12 +131,12 @@ export const useMapStore = defineStore('map', () => {
       keepInView: true
     })
     currentFilteredData.value.push(feature)
-    
+
     layer.on('click', () => {
       if (typeof window !== 'undefined' && window.heap) {
         console.log('Heap is available.', feature.properties.location.long_name)
         window.heap.track('Marker Clicked', {
-          "MarkerLocation": feature.properties.location.long_name
+          MarkerLocation: feature.properties.location.long_name
         })
       } else {
         console.warn('Heap is not available.')
