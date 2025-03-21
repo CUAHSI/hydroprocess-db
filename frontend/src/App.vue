@@ -3,14 +3,21 @@
     <v-main>
       <TheAppBar @toggle-mobile-nav="toggleMobileNav" :paths="paths" />
       <AlertPopup v-bind="alertStore.displayed"></AlertPopup>
-      <TheMobileNavDrawer @toggle-mobile-nav="toggleMobileNav" :show="showMobileNavigation" :paths="paths" />
+      <TheMobileNavDrawer
+        @toggle-mobile-nav="toggleMobileNav"
+        :show="showMobileNavigation"
+        :paths="paths"
+      />
       <!-- https://router.vuejs.org/guide/migration/#-router-view-keep-alive-and-transition- -->
       <RouterView v-slot="{ Component }">
         <KeepAlive>
           <component :is="Component" />
         </KeepAlive>
       </RouterView>
-      <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
+      <link
+        href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900"
+        rel="stylesheet"
+      />
       <SnackBar />
       <TheBottomSheet />
       <TheFooter v-if="!mdAndDown" />
@@ -27,7 +34,7 @@ import SnackBar from './components/SnackBar.vue'
 import TheFooter from './components/TheFooter.vue'
 import { ref } from 'vue'
 import { useAlertStore } from './stores/alerts'
-import TheBottomSheet from "@/components/TheBottomSheet.vue";
+import TheBottomSheet from '@/components/TheBottomSheet.vue'
 import { useDisplay } from 'vuetify'
 
 const { mdAndDown } = useDisplay()
@@ -37,18 +44,18 @@ const alertStore = useAlertStore()
 let showMobileNavigation = ref(false)
 const paths = [
   {
-    attrs: { to: "/" },
-    label: "Map",
+    attrs: { to: '/' },
+    label: 'Map'
   },
   // {
   //   attrs: { to: "/api" },
   //   label: "API",
   // },
   {
-    attrs: { to: "/about" },
-    label: "About",
-  },
-];
+    attrs: { to: '/about' },
+    label: 'About'
+  }
+]
 
 function toggleMobileNav() {
   showMobileNavigation.value = !showMobileNavigation.value
