@@ -17,10 +17,8 @@
     >
     </v-text-field>
     <v-expansion-panels v-model="activePanel">
-      <v-expansion-panel value="tree"> 
-        <v-expansion-panel-title>
-          Process Taxanomy Tree
-        </v-expansion-panel-title>
+      <v-expansion-panel value="tree">
+        <v-expansion-panel-title> Process Taxanomy Tree </v-expansion-panel-title>
         <v-expansion-panel-content>
           <v-treeview
             v-model:selected="selectedTreeItems"
@@ -127,7 +125,7 @@ const textSearchFields = ref([])
 const treeViewData = ref([])
 const selectedTreeItems = ref([])
 const searchTreeText = ref('')
-const activePanel = ref([])  // Empty array to start collapsed
+const activePanel = ref([]) // Empty array to start collapsed
 
 const hasTextSearchFields = computed(() => {
   return textSearchFields.value.length > 0
