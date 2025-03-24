@@ -132,29 +132,29 @@ perceptualModelStore.fetchProcessTaxonomies().then((pt) => {
 function buildTree(data) {
   const root = {}
 
-    // Helper function to insert item into the correct place in the tree
-    const insert = (path, item) => {
-        let current = root;
-        path.forEach((part, index) => {
-            // Check if part already exists as a child, if not create it
-            if (!current[part]) {
-                current[part] = {
-                    title: part,
-                    id: index === path.length - 1 ? item.id : `id${index}`,
-                    children: {}
-                };
-            }
-            // If it's the last part, assign the item values to the node
-            if (index === path.length - 1) {
-                current[part] = {
-                    id: item.id,
-                    title: item.process,
-                    children: current[part].children || {}
-                };
-            }
-            current = current[part].children;
-        });
-    };
+  // Helper function to insert item into the correct place in the tree
+  const insert = (path, item) => {
+    let current = root
+    path.forEach((part, index) => {
+      // Check if part already exists as a child, if not create it
+      if (!current[part]) {
+        current[part] = {
+          title: part,
+          id: index === path.length - 1 ? item.id : `id${index}`,
+          children: {}
+        }
+      }
+      // If it's the last part, assign the item values to the node
+      if (index === path.length - 1) {
+        current[part] = {
+          id: item.id,
+          title: item.process,
+          children: current[part].children || {}
+        }
+      }
+      current = current[part].children
+    })
+  }
 
   // Insert each item in data into the tree
   data.forEach((item) => {
