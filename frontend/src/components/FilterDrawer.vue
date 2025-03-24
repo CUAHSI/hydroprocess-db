@@ -16,7 +16,7 @@
       solo-inverted
     >
     </v-text-field>
-    <v-expansion-panels v-model="activePanel">
+    <v-expansion-panels v-model="activePanel" class="mb-4">
       <v-expansion-panel value="tree">
         <v-expansion-panel-title> Process Taxanomy Tree </v-expansion-panel-title>
         <v-expansion-panel-content>
