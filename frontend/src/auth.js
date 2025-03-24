@@ -5,7 +5,7 @@ import { useAlertStore } from './stores/alerts'
 export async function logIn(username, password, callback) {
   const alertStore = useAlertStore()
   const authStore = useAuthStore()
-  
+
   // create a new FormData object
   const formData = new FormData()
   // append the username and password to the form
