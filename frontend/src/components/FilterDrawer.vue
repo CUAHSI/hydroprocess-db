@@ -7,16 +7,33 @@
       :loading="filtering"></v-autocomplete> -->
 
     <v-expansion-panels v-model="activePanel" class="mb-4">
-      <v-expansion-panel value="tree" >
+      <v-expansion-panel value="tree">
         <!-- Title as Search Input -->
         <v-expansion-panel-title class="px-0 mx-0 my-0 py-0">
-          <v-text-field v-model="searchTreeText" label="Search Process Taxonomies" :clear-icon="mdiCloseCircleOutline"
-            clearable dark flat hide-details solo-inverted dense @input="updateMap" />
+          <v-text-field
+            v-model="searchTreeText"
+            label="Search Process Taxonomies"
+            :clear-icon="mdiCloseCircleOutline"
+            clearable
+            dark
+            flat
+            hide-details
+            solo-inverted
+            dense
+            @input="updateMap"
+          />
         </v-expansion-panel-title>
 
-        <v-treeview v-model:selected="selectedTreeItems" :items="treeViewData" select-strategy="classic" item-value="id"
-          selectable :search="searchTreeText" activatable @update:modelValue="updateMap">
-
+        <v-treeview
+          v-model:selected="selectedTreeItems"
+          :items="treeViewData"
+          select-strategy="classic"
+          item-value="id"
+          selectable
+          :search="searchTreeText"
+          activatable
+          @update:modelValue="updateMap"
+        >
           <template v-slot:prepend="{ isOpen }">
             <v-icon>
               {{ isOpen ? mdiFolderOpen : mdiFolder }}
@@ -26,24 +43,56 @@
       </v-expansion-panel>
     </v-expansion-panels>
 
-
     <v-divider></v-divider>
-    <v-autocomplete v-model="selectedSpatialZones" :items="spatialZones" item-title="spatial_property" item-value="id"
-      label="Spatial Zones" @update:modelValue="filter" clearable chips multiple :loading="filtering"></v-autocomplete>
-    <v-autocomplete v-model="selectedTemporalZones" :items="temporalZones" item-title="temporal_property"
-      item-value="id" label="Temporal Zones" @update:modelValue="filter" clearable chips multiple
-      :loading="filtering"></v-autocomplete>
+    <v-autocomplete
+      v-model="selectedSpatialZones"
+      :items="spatialZones"
+      item-title="spatial_property"
+      item-value="id"
+      label="Spatial Zones"
+      @update:modelValue="filter"
+      clearable
+      chips
+      multiple
+      :loading="filtering"
+    ></v-autocomplete>
+    <v-autocomplete
+      v-model="selectedTemporalZones"
+      :items="temporalZones"
+      item-title="temporal_property"
+      item-value="id"
+      label="Temporal Zones"
+      @update:modelValue="filter"
+      clearable
+      chips
+      multiple
+      :loading="filtering"
+    ></v-autocomplete>
     <v-card order="1">
       <v-card-title>Search Text Within:</v-card-title>
       <v-card-text>
-        <v-btn-toggle v-model="textSearchFields" @update:modelValue="filter" class="mb-2" multiple outlined
-          variant="text" divided>
+        <v-btn-toggle
+          v-model="textSearchFields"
+          @update:modelValue="filter"
+          class="mb-2"
+          multiple
+          outlined
+          variant="text"
+          divided
+        >
           <v-btn value="long_name">Title</v-btn>
           <v-btn value="citation">Citation</v-btn>
           <v-btn value="textmodel_snipped">Abstract</v-btn>
         </v-btn-toggle>
-        <v-text-field v-show="hasTextSearchFields" @update:focused="filter" @keydown.enter.prevent="filter"
-          @click:clear="filter" v-model="searchTerm" label="Search" clearable></v-text-field>
+        <v-text-field
+          v-show="hasTextSearchFields"
+          @update:focused="filter"
+          @keydown.enter.prevent="filter"
+          @click:clear="filter"
+          v-model="searchTerm"
+          label="Search"
+          clearable
+        ></v-text-field>
       </v-card-text>
       <v-progress-linear v-if="filtering" indeterminate color="primary"></v-progress-linear>
     </v-card>
