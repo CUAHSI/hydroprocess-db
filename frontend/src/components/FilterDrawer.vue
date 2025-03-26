@@ -6,10 +6,9 @@
       label="Process Taxonomies" @update:modelValue="filter" clearable chips multiple
       :loading="filtering"></v-autocomplete> -->
 
-    <v-expansion-panels v-model="activePanel" class="mb-4">
-      <v-expansion-panel value="tree">
-        <!-- Title as Search Input -->
-        <v-expansion-panel-title class="px-0 mx-0 my-0 py-0">
+    <v-expansion-panels @click.stop v-model="activePanel"  class="mb-4">
+      <v-expansion-panel @click.stop value="tree">
+        <v-expansion-panel-title @click.stop class="px-0 mx-0 my-0 py-0">
           <v-text-field
             v-model="searchTreeText"
             label="Search Process Taxonomies"
@@ -21,6 +20,7 @@
             solo-inverted
             dense
             @input="updateMap"
+            @blur="handleBlur"
           />
         </v-expansion-panel-title>
 
@@ -265,6 +265,11 @@ const updateMap = async () => {
   })
   await nextTick()
   filter()
+}
+const handleBlur = () => {
+  if (searchTreeText.value === '' && selectedTreeItems.value.length === 0) {
+    activePanel.value = []
+  }
 }
 </script>
 
