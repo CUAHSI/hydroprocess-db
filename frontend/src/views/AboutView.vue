@@ -102,6 +102,10 @@
 import { mdiOpenInNew } from '@mdi/js'
 import hilary from '@/assets/hilary.jpg'
 import ryoko from '@/assets/ryoko.jpg'
+import tony from '@/assets/tony.jpg'
+import devin from '@/assets/devin.jpg'
+import irene from '@/assets/irene.jpg'
+import sandesh from '@/assets/sandesh.jpg'
 
 const members = [
   {
@@ -115,6 +119,30 @@ const members = [
     designation: 'PhD Student & Developer, San Diego State University',
     img: ryoko,
     link: 'http://rarakihydro.com/'
+  },
+  {
+    name: 'Anthony Castronova',
+    designation: 'Senior Research Scientist, CUAHSI',
+    img: tony,
+    link: 'https://www.linkedin.com/in/anthony-castronova-900a2632/'
+  }, 
+  {
+    name: 'Devin Cowan',
+    designation: 'Research Programmer, CUAHSI',
+    img: devin,
+    link: 'https://www.linkedin.com/in/devin-cowan/'
+  },
+  {
+    name: 'Irene Garousi-Nejad',
+    designation: 'Research Scientist, CUAHSI',
+    img: irene,
+    link: 'https://www.linkedin.com/in/irene-garousi-nejad-phd-0809a047/'
+  },
+  {
+    name: 'Sandesh Maddila',
+    designation: 'Software Engineer, CUAHSI',
+    img: sandesh,
+    link: 'https://www.cuahsi.org/about/our-team/sandesh-maddilia'
   }
 ]
 </script>
