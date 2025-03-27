@@ -120,6 +120,11 @@
                   https://doi.org/10.1002/hyp.14845
                 </a>
               </div>
+
+              <div class="text-body-2 mb-3">
+                McMillan, H., Araki, R., Bolotin, L., Kim, D-H., Coxon, G., Clark, M., Seibert, J. (2025). Global patterns in observed hydrologic processes.
+                <i>Nature Water</i>, in press.
+              </div>
             </div>
           </v-list-item>
         </v-list>
