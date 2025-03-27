@@ -19,27 +19,37 @@
             hide-details
             solo-inverted
             dense
+            @click.stop
             @input="updateMap"
+            @focus="activePanel=['tree']"
             @blur="handleBlur"
           />
         </v-expansion-panel-title>
 
         <v-treeview
-          v-model:selected="selectedTreeItems"
-          :items="treeViewData"
-          select-strategy="classic"
-          item-value="id"
-          selectable
-          :search="searchTreeText"
-          activatable
-          @update:modelValue="updateMap"
-        >
-          <template v-slot:prepend="{ isOpen }">
-            <v-icon>
-              {{ isOpen ? mdiFolderOpen : mdiFolder }}
-            </v-icon>
-          </template>
-        </v-treeview>
+        v-if="filteredTreeData.length > 0"
+        v-model:selected="selectedTreeItems"
+        :items="filteredTreeData"
+        select-strategy="classic"
+        item-value="id"
+        selectable
+        :search="searchTreeText"
+        activatable
+        @update:modelValue="updateMap"
+      >
+        <template v-slot:prepend="{ isOpen }">
+          <v-icon>
+            {{ isOpen ? mdiFolderOpen : mdiFolder }}
+          </v-icon>
+        </template>
+      </v-treeview>
+
+      <!-- Show message when no process taxonomies are available -->
+      <p v-else class="text-center text-grey-darken-1">
+  No process taxonomies found
+</p>
+
+
       </v-expansion-panel>
     </v-expansion-panels>
 
@@ -266,10 +276,34 @@ const updateMap = async () => {
   await nextTick()
   filter()
 }
-const handleBlur = () => {
-  if (searchTreeText.value === '' && selectedTreeItems.value.length === 0) {
-    activePanel.value = []
-  }
+
+const filterTreeData = (data, searchText) => {
+  return data
+    .map((node) => {
+      const children = node.children ? filterTreeData(node.children, searchText) : [];
+
+      // If the search term matches the node title or its children, include it in the filtered result
+      if (node.title.toLowerCase().includes(searchText.toLowerCase()) || children.length > 0) {
+        return { ...node, children };
+      }
+
+      return null;
+    })
+    .filter((node) => node !== null);
+};
+
+const filteredTreeData = computed(() => {
+  return filterTreeData(treeViewData.value, searchTreeText.value);
+});
+
+
+const handleBlur = async() => {
+
+  setTimeout(() => {
+    if (searchTreeText.value === '' && selectedTreeItems.value.length === 0) {
+      activePanel.value = [];
+    }
+  }, 200);
 }
 </script>
 
