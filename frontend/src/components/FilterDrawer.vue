@@ -140,7 +140,7 @@ function buildTree(data) {
       if (!current[part]) {
         current[part] = {
           title: part,
-          id: item.id,
+          id: index === path.length - 1 ? item.id : `id${index}`,
           children: {}
         }
       }
