@@ -1,15 +1,24 @@
 <template>
   <v-container fluid>
     <div>
-      <div class="mb-3">
+      <div class="useful-links-wrapper mb-5">
         <h3>Hydrologic Process Knowledge Platform</h3>
         <p>
-          This project enables you to view and search hydrologic process knowledge derived from
-          perceptual models of research watersheds around the globe.
+          This project enables users to view and search a hydrologic process knowledge database derived from
+          perceptual models of research watersheds around the globe (McMillan et al., 2023, 2025). The relational
+          database captures extensive knowledge from hundreds of experimental watersheds using standardized 
+          workflows and a hierarchical Hydrologic Process Taxonomy to ensure consistency and data quality 
+          (McMillan, 2022). 
+        </p>
+        <p>
+          Potential use cases for this platform include, but are not limited to, exploring global patterns of 
+          hydrologic function and analyzing how dominant processes relate to physical watershed features. 
+          The database can also support evaluation of next-generation, continental-scale hydrologic models, which
+          often lack the process-level data needed to inform model structure.
         </p>
       </div>
 
-      <div class="mb-3">
+      <div class="useful-links-wrapper mb-5">
         <h3>Hydrologic Processes</h3>
         <p>
           Hydrologic processes describe the flow paths and mechanisms that move water from the
@@ -23,19 +32,18 @@
         </p>
       </div>
 
-      <div class="mb-3">
+      <div class="useful-links-wrapper mb-5">
         <h3>Funding</h3>
         <p>
-          This project is funded by the NSF Division of Earth Sciences Award #2322510:
-          <br />
-          <a href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=2322510"
-            >Synthesizing hydrologic process knowledge to determine global drivers of dominant
-            processes.
+          This project is supported by the National Science Foundation (NSF), Division of Earth Sciences,
+          under Award No. 2322510:
+          <a href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=2322510" target="_blank">
+            Synthesizing hydrologic process knowledge to determine global drivers of dominant processes.
           </a>
         </p>
       </div>
 
-      <div class="mb-3">
+      <div class="useful-links-wrapper mb-5">
         <h3>Project Team</h3>
         <v-container fluid>
           <v-row dense>
@@ -67,29 +75,51 @@
         </v-container>
       </div>
 
-      <div>
+      <div class="useful-links-wrapper mb-5">
         <h3>Useful Links:</h3>
-        <v-list>
-          <v-list-item title="Interactive Hydrologic Process Taxonomy:" class="mb-5">
-            <div class="link-item-description">
-              <a href="http://mcmillanhydrology.org/ProcessTaxonomy/ProcessTaxonomyDiagram.html">
-                http://mcmillanhydrology.org/ProcessTaxonomy/ProcessTaxonomyDiagram.html
-              </a>
+        <v-list density="compact">
+          <v-list-item class="mb-4">
+            <div>
+              <div class="text-h6 font-weight-medium mb-1">
+                Interactive Hydrologic Process Taxonomy:
+              </div>
+              <div class="text-body-2">
+                <a
+                  href="http://mcmillanhydrology.org/ProcessTaxonomy/ProcessTaxonomyDiagram.html"
+                  target="_blank"
+                >
+                  http://mcmillanhydrology.org/ProcessTaxonomy/ProcessTaxonomyDiagram.html
+                </a>
+              </div>
             </div>
           </v-list-item>
-
-          <v-list-item
-            title="Journal Articles Describing this Project:"
-            subtitle="McMillan, H., Araki, R., Gnann, S., Woods, R., & Wagener, T. (2023)."
-          >
-            <div class="link-item-description">
-              <div>
-                How do hydrologists perceive watersheds? A survey and analysis of perceptual model
-                figures for experimental watersheds.
+            
+          <v-list-item class="mb-4">
+            <div>
+              <div class="text-h6 font-weight-medium mb-1">
+                Journal Articles Describing this Project:
               </div>
-              <a href="https://onlinelibrary.wiley.com/doi/full/10.1002/hyp.14845"
-                >Read the Article
-              </a>
+
+              <div class="text-body-2 mb-3">
+                McMillan, H. (2022). A taxonomy of hydrological processes and watershed function. <i>Hydrological Processes, 36</i>(3), e14537.
+                <a
+                  href="https://onlinelibrary.wiley.com/doi/10.1002/hyp.14537"
+                  target="_blank"
+                >
+                  https://doi.org/10.1002/hyp.14537
+                </a>
+              </div>
+
+              <div class="text-body-2 mb-3">
+                McMillan, H., Araki, R., Gnann, S., Woods, R., & Wagener, T. (2023). How do hydrologists perceive watersheds? A survey and analysis of perceptual model figures for experimental watersheds.
+                <i>Hydrological Processes, 37</i>(5), e14845.
+                <a
+                  href="https://onlinelibrary.wiley.com/doi/full/10.1002/hyp.14845"
+                  target="_blank"
+                >
+                  https://doi.org/10.1002/hyp.14845
+                </a>
+              </div>
             </div>
           </v-list-item>
         </v-list>
@@ -149,5 +179,11 @@ const members = [
 <style>
 .link-item-description {
   font-size: 18px;
+}
+
+.useful-links-wrapper {
+  max-width: 950px;
+  margin-left: auto;
+  margin-right: auto;
 }
 </style>
