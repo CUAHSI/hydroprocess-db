@@ -91,7 +91,13 @@
 <script setup>
 import { ref, computed, nextTick } from 'vue'
 import { usePerceptualModelStore } from '@/stores/perceptual_models'
-import { useMapStore,selectedSpatialZones, selectedTemporalZones, selectedProcesses, searchTerm  } from '@/stores/map'
+import {
+  useMapStore,
+  selectedSpatialZones,
+  selectedTemporalZones,
+  selectedProcesses,
+  searchTerm
+} from '@/stores/map'
 import { mdiFolderOpen, mdiFolder, mdiCloseCircleOutline } from '@mdi/js'
 
 const perceptualModelStore = usePerceptualModelStore()

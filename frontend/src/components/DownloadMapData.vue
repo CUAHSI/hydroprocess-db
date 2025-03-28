@@ -3,7 +3,13 @@
 </template>
 
 <script setup>
-import { useMapStore, selectedSpatialZones, selectedTemporalZones, selectedProcesses, searchTerm } from '@/stores/map'
+import {
+  useMapStore,
+  selectedSpatialZones,
+  selectedTemporalZones,
+  selectedProcesses,
+  searchTerm
+} from '@/stores/map'
 import Papa from 'papaparse'
 
 const mapStore = useMapStore()
@@ -97,10 +103,10 @@ function downloadMapData() {
   if (typeof window !== 'undefined' && window.heap) {
     window.heap.track('Download', {
       downloadItem: 'Map',
-      "selectedSpatialZones": selectedSpatialZones.value.join(', '),
-      "selectedTemporalZones": selectedTemporalZones.value.join(', '),
-      "selectedProcesses": selectedProcesses.value.join(', '),
-      "searchTerm": searchTerm.value
+      selectedSpatialZones: selectedSpatialZones.value.join(', '),
+      selectedTemporalZones: selectedTemporalZones.value.join(', '),
+      selectedProcesses: selectedProcesses.value.join(', '),
+      searchTerm: searchTerm.value
     })
   } else {
     console.warn('Heap is not available.')
