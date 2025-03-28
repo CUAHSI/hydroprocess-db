@@ -95,28 +95,30 @@ function flattenMapDataJSON(data) {
 
 function downloadMapData() {
   if (typeof window !== 'undefined' && window.heap) {
-    console.log('Heap is available. Map Download button clicked')
     window.heap.track('Download', {
-      downloadItem: 'Map'
+      downloadItem: 'Map',
+      //  "selectedSpatialZones": selectedSpatialZones, NEED TO get from filter drawer component
+      //  "selectedTemporalZones": selectedTemporalZones, 
+      //  "textSearchFields": searchTerm 
     })
-  } else {
-    console.warn('Heap is not available.')
-  }
-  const mapData = mapStore.currentFilteredData
-  const flattenedMapData = flattenMapDataJSON(mapData)
+} else {
+  console.warn('Heap is not available.')
+}
+const mapData = mapStore.currentFilteredData
+const flattenedMapData = flattenMapDataJSON(mapData)
 
-  const csv = Papa.unparse(flattenedMapData, {
-    columns: csvColumns
-  })
+const csv = Papa.unparse(flattenedMapData, {
+  columns: csvColumns
+})
 
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
 
-  const link = document.createElement('a')
-  link.href = URL.createObjectURL(blob)
-  link.setAttribute('download', 'data.csv')
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
+const link = document.createElement('a')
+link.href = URL.createObjectURL(blob)
+link.setAttribute('download', 'data.csv')
+document.body.appendChild(link)
+link.click()
+document.body.removeChild(link)
 }
 function renamecsvColumn(name) {
   let newName = name.replaceAll('_', ' ')

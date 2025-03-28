@@ -134,7 +134,6 @@ export const useMapStore = defineStore('map', () => {
 
     layer.on('click', () => {
       if (typeof window !== 'undefined' && window.heap) {
-        console.log('Heap is available.', feature.properties.location.long_name)
         window.heap.track('Marker Clicked', {
           MarkerLocation: feature.properties.location.long_name
         })

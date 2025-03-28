@@ -223,7 +223,6 @@ const checkSearchTerm = (searchTerm, fieldsToSearch, feature) => {
 async function filter() {
   emit('onFilter', { selectedSpatialZones, selectedTemporalZones, selectedProcesses })
   if (typeof window !== 'undefined' && window.heap) {
-    console.log('Heap is available.', searchTerm.value)
     window.heap.track('Search', {
       textSearched: searchTerm.value
     })
