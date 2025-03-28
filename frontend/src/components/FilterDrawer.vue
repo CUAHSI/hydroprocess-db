@@ -6,7 +6,7 @@
       label="Process Taxonomies" @update:modelValue="filter" clearable chips multiple
       :loading="filtering"></v-autocomplete> -->
 
-    <v-expansion-panels @click.stop v-model="activePanel"  class="mb-4">
+    <v-expansion-panels @click.stop v-model="activePanel" class="mb-4">
       <v-expansion-panel @click.stop value="tree">
         <v-expansion-panel-title @click.stop class="px-0 mx-0 my-0 py-0">
           <v-text-field
@@ -21,35 +21,31 @@
             dense
             @click.stop
             @input="updateMap"
-            @focus="activePanel=['tree']"
+            @focus="activePanel = ['tree']"
             @blur="handleBlur"
           />
         </v-expansion-panel-title>
 
         <v-treeview
-        v-if="filteredTreeData.length > 0"
-        v-model:selected="selectedTreeItems"
-        :items="filteredTreeData"
-        select-strategy="classic"
-        item-value="id"
-        selectable
-        :search="searchTreeText"
-        activatable
-        @update:modelValue="updateMap"
-      >
-        <template v-slot:prepend="{ isOpen }">
-          <v-icon>
-            {{ isOpen ? mdiFolderOpen : mdiFolder }}
-          </v-icon>
-        </template>
-      </v-treeview>
+          v-if="filteredTreeData.length > 0"
+          v-model:selected="selectedTreeItems"
+          :items="filteredTreeData"
+          select-strategy="classic"
+          item-value="id"
+          selectable
+          :search="searchTreeText"
+          activatable
+          @update:modelValue="updateMap"
+        >
+          <template v-slot:prepend="{ isOpen }">
+            <v-icon>
+              {{ isOpen ? mdiFolderOpen : mdiFolder }}
+            </v-icon>
+          </template>
+        </v-treeview>
 
-      <!-- Show message when no process taxonomies are available -->
-      <p v-else class="text-center text-grey-darken-1">
-  No process taxonomies found
-</p>
-
-
+        <!-- Show message when no process taxonomies are available -->
+        <p v-else class="text-center text-grey-darken-1">No process taxonomies found</p>
       </v-expansion-panel>
     </v-expansion-panels>
 
@@ -280,30 +276,28 @@ const updateMap = async () => {
 const filterTreeData = (data, searchText) => {
   return data
     .map((node) => {
-      const children = node.children ? filterTreeData(node.children, searchText) : [];
+      const children = node.children ? filterTreeData(node.children, searchText) : []
 
       // If the search term matches the node title or its children, include it in the filtered result
       if (node.title.toLowerCase().includes(searchText.toLowerCase()) || children.length > 0) {
-        return { ...node, children };
+        return { ...node, children }
       }
 
-      return null;
+      return null
     })
-    .filter((node) => node !== null);
-};
+    .filter((node) => node !== null)
+}
 
 const filteredTreeData = computed(() => {
-  return filterTreeData(treeViewData.value, searchTreeText.value);
-});
+  return filterTreeData(treeViewData.value, searchTreeText.value)
+})
 
-
-const handleBlur = async() => {
-
+const handleBlur = async () => {
   setTimeout(() => {
     if (searchTreeText.value === '' && selectedTreeItems.value.length === 0) {
-      activePanel.value = [];
+      activePanel.value = []
     }
-  }, 200);
+  }, 200)
 }
 </script>
 
