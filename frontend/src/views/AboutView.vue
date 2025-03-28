@@ -4,17 +4,18 @@
       <div class="useful-links-wrapper mb-5">
         <h3>Hydrologic Process Knowledge Platform</h3>
         <p>
-          This project enables users to view and search a hydrologic process knowledge database derived from
-          perceptual models of research watersheds around the globe (McMillan et al., 2023, 2025). The relational
-          database captures extensive knowledge from hundreds of experimental watersheds using standardized 
-          workflows and a hierarchical Hydrologic Process Taxonomy to ensure consistency and data quality 
-          (McMillan, 2022). 
+          This project enables users to view and search a hydrologic process knowledge database
+          derived from perceptual models of research watersheds around the globe (McMillan et al.,
+          2023, 2025). The relational database captures extensive knowledge from hundreds of
+          experimental watersheds using standardized workflows and a hierarchical Hydrologic Process
+          Taxonomy to ensure consistency and data quality (McMillan, 2022).
         </p>
         <p>
-          Potential use cases for this platform include, but are not limited to, exploring global patterns of 
-          hydrologic function and analyzing how dominant processes relate to physical watershed features. 
-          The database can also support evaluation of next-generation, continental-scale hydrologic models, which
-          often lack the process-level data needed to inform model structure.
+          Potential use cases for this platform include, but are not limited to, exploring global
+          patterns of hydrologic function and analyzing how dominant processes relate to physical
+          watershed features. The database can also support evaluation of next-generation,
+          continental-scale hydrologic models, which often lack the process-level data needed to
+          inform model structure.
         </p>
       </div>
 
@@ -35,10 +36,11 @@
       <div class="useful-links-wrapper mb-5">
         <h3>Funding</h3>
         <p>
-          This project is supported by the National Science Foundation (NSF), Division of Earth Sciences,
-          under Award No. 2322510:
+          This project is supported by the National Science Foundation (NSF), Division of Earth
+          Sciences, under Award No. 2322510:
           <a href="https://www.nsf.gov/awardsearch/showAward?AWD_ID=2322510" target="_blank">
-            Synthesizing hydrologic process knowledge to determine global drivers of dominant processes.
+            Synthesizing hydrologic process knowledge to determine global drivers of dominant
+            processes.
           </a>
         </p>
       </div>
@@ -93,7 +95,7 @@
               </div>
             </div>
           </v-list-item>
-            
+
           <v-list-item class="mb-4">
             <div>
               <div class="text-h6 font-weight-medium mb-1">
@@ -101,17 +103,17 @@
               </div>
 
               <div class="text-body-2 mb-3">
-                McMillan, H. (2022). A taxonomy of hydrological processes and watershed function. <i>Hydrological Processes, 36</i>(3), e14537.
-                <a
-                  href="https://onlinelibrary.wiley.com/doi/10.1002/hyp.14537"
-                  target="_blank"
-                >
+                McMillan, H. (2022). A taxonomy of hydrological processes and watershed function.
+                <i>Hydrological Processes, 36</i>(3), e14537.
+                <a href="https://onlinelibrary.wiley.com/doi/10.1002/hyp.14537" target="_blank">
                   https://doi.org/10.1002/hyp.14537
                 </a>
               </div>
 
               <div class="text-body-2 mb-3">
-                McMillan, H., Araki, R., Gnann, S., Woods, R., & Wagener, T. (2023). How do hydrologists perceive watersheds? A survey and analysis of perceptual model figures for experimental watersheds.
+                McMillan, H., Araki, R., Gnann, S., Woods, R., & Wagener, T. (2023). How do
+                hydrologists perceive watersheds? A survey and analysis of perceptual model figures
+                for experimental watersheds.
                 <i>Hydrological Processes, 37</i>(5), e14845.
                 <a
                   href="https://onlinelibrary.wiley.com/doi/full/10.1002/hyp.14845"
@@ -122,7 +124,8 @@
               </div>
 
               <div class="text-body-2 mb-3">
-                McMillan, H., Araki, R., Bolotin, L., Kim, D-H., Coxon, G., Clark, M., Seibert, J. (2025). Global patterns in observed hydrologic processes.
+                McMillan, H., Araki, R., Bolotin, L., Kim, D-H., Coxon, G., Clark, M., Seibert, J.
+                (2025). Global patterns in observed hydrologic processes.
                 <i>Nature Water</i>, in press.
               </div>
             </div>
@@ -160,7 +163,7 @@ const members = [
     designation: 'Senior Research Scientist, CUAHSI',
     img: tony,
     link: 'https://www.linkedin.com/in/anthony-castronova-900a2632/'
-  }, 
+  },
   {
     name: 'Devin Cowan',
     designation: 'Research Programmer, CUAHSI',

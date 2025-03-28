@@ -1,5 +1,20 @@
 <template>
   <v-sheet class="mx-auto" elevation="8">
+    <v-card order="1">
+      <v-card-text class="px-0">
+        <v-text-field
+          @update:focused="filter"
+          @keydown.enter.prevent="filter"
+          @click:clear="filter"
+          v-model="searchTerm"
+          label="Search Data..."
+          clearable
+          hide-details
+        >
+        </v-text-field>
+      </v-card-text>
+      <v-progress-linear v-if="filtering" indeterminate color="primary"></v-progress-linear>
+    </v-card>
     <h3 class="text-h6 ma-2 text-center">Model Filters</h3>
     <v-divider></v-divider>
     <!-- <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
@@ -89,7 +104,7 @@
 </template>
 
 <script setup>
-import { ref, computed, nextTick } from 'vue'
+import { ref, nextTick } from 'vue'
 import { usePerceptualModelStore } from '@/stores/perceptual_models'
 import { useMapStore } from '@/stores/map'
 import { mdiFolderOpen, mdiFolder, mdiCloseCircleOutline } from '@mdi/js'
@@ -114,14 +129,17 @@ const selectedSpatialZones = ref([])
 const temporalZones = ref([])
 const selectedTemporalZones = ref([])
 const searchTerm = ref(null)
-const textSearchFields = ref([])
+const textSearchFields = ref([
+  'long_name',
+  'citation',
+  'textmodel_snipped',
+  'processes_taxonomies',
+  'temporal_property',
+  'spatial_property'
+])
 const treeViewData = ref([])
 const selectedTreeItems = ref([])
 const searchTreeText = ref('')
-
-const hasTextSearchFields = computed(() => {
-  return textSearchFields.value.length > 0
-})
 
 // Fetch the process taxonomies, spatial zones, and temporal zones
 perceptualModelStore.fetchProcessTaxonomies().then((pt) => {
