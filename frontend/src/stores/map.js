@@ -237,3 +237,7 @@ export const useMapStore = defineStore('map', () => {
     allAvailableCoordinates
   }
 })
+export const selectedSpatialZones = ref([])
+export const selectedTemporalZones = ref([])
+export const selectedProcesses = ref([])
+export const searchTerm = ref(null)

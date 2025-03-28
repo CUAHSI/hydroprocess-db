@@ -91,7 +91,7 @@
 <script setup>
 import { ref, computed, nextTick } from 'vue'
 import { usePerceptualModelStore } from '@/stores/perceptual_models'
-import { useMapStore } from '@/stores/map'
+import { useMapStore,selectedSpatialZones, selectedTemporalZones, selectedProcesses, searchTerm  } from '@/stores/map'
 import { mdiFolderOpen, mdiFolder, mdiCloseCircleOutline } from '@mdi/js'
 
 const perceptualModelStore = usePerceptualModelStore()
@@ -108,12 +108,8 @@ perceptualModelStore.fetchPerceptualModels().then((perceptual_models) => {
 })
 
 const process_taxonomies = ref([])
-const selectedProcesses = ref([])
 const spatialZones = ref([])
-const selectedSpatialZones = ref([])
 const temporalZones = ref([])
-const selectedTemporalZones = ref([])
-const searchTerm = ref(null)
 const textSearchFields = ref([])
 const treeViewData = ref([])
 const selectedTreeItems = ref([])
