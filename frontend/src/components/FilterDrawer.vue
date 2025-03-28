@@ -2,8 +2,15 @@
   <v-sheet class="mx-auto" elevation="8">
     <v-card order="1">
       <v-card-text class="px-0">
-        <v-text-field @update:focused="filter" @keydown.enter.prevent="filter" @click:clear="filter"
-          v-model="searchTerm" label="Search Data..." clearable hide-details>
+        <v-text-field
+          @update:focused="filter"
+          @keydown.enter.prevent="filter"
+          @click:clear="filter"
+          v-model="searchTerm"
+          label="Search Data..."
+          clearable
+          hide-details
+        >
         </v-text-field>
       </v-card-text>
       <v-progress-linear v-if="filtering" indeterminate color="primary"></v-progress-linear>
@@ -122,7 +129,14 @@ const selectedSpatialZones = ref([])
 const temporalZones = ref([])
 const selectedTemporalZones = ref([])
 const searchTerm = ref(null)
-const textSearchFields = ref(['long_name', 'citation', 'textmodel_snipped', 'processes_taxonomies', 'temporal_property', 'spatial_property'])
+const textSearchFields = ref([
+  'long_name',
+  'citation',
+  'textmodel_snipped',
+  'processes_taxonomies',
+  'temporal_property',
+  'spatial_property'
+])
 const treeViewData = ref([])
 const selectedTreeItems = ref([])
 const searchTreeText = ref('')
