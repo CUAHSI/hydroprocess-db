@@ -72,34 +72,6 @@
       multiple
       :loading="filtering"
     ></v-autocomplete>
-    <v-card order="1">
-      <v-card-title>Search Text Within:</v-card-title>
-      <v-card-text>
-        <v-btn-toggle
-          v-model="textSearchFields"
-          @update:modelValue="filter"
-          class="mb-2"
-          multiple
-          outlined
-          variant="text"
-          divided
-        >
-          <v-btn value="long_name">Title</v-btn>
-          <v-btn value="citation">Citation</v-btn>
-          <v-btn value="textmodel_snipped">Abstract</v-btn>
-        </v-btn-toggle>
-        <v-text-field
-          v-show="hasTextSearchFields"
-          @update:focused="filter"
-          @keydown.enter.prevent="filter"
-          @click:clear="filter"
-          v-model="searchTerm"
-          label="Search"
-          clearable
-        ></v-text-field>
-      </v-card-text>
-      <v-progress-linear v-if="filtering" indeterminate color="primary"></v-progress-linear>
-    </v-card>
   </v-sheet>
 </template>
 
