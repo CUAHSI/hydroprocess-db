@@ -34,7 +34,7 @@
     <v-treeview
       v-model:selected="selectedTreeItems"
       :items="treeViewData"
-      select-strategy="clasic"
+      select-strategy="classic"
       item-value="id"
       selectable
       :search="searchTreeText"
@@ -130,7 +130,7 @@ function buildTree(data) {
       if (!current[part]) {
         current[part] = {
           title: part,
-          id: index === path.length - 1 ? item.id : `id${index}`,
+          id: index === path.length - 1 ? item.id : `id${part}${index}`,
           children: {}
         }
       }
