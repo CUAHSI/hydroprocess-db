@@ -1,5 +1,20 @@
 <template>
   <v-sheet class="mx-auto" elevation="8">
+    <v-card order="1">
+      <v-card-text class="px-0">
+        <v-text-field
+          @update:focused="filter"
+          @keydown.enter.prevent="filter"
+          @click:clear="filter"
+          v-model="searchTerm"
+          label="Search Data..."
+          clearable
+          hide-details
+        >
+        </v-text-field>
+      </v-card-text>
+      <v-progress-linear v-if="filtering" indeterminate color="primary"></v-progress-linear>
+    </v-card>
     <h3 class="text-h6 ma-2 text-center">Model Filters</h3>
     <v-divider></v-divider>
     <!-- <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
@@ -19,7 +34,7 @@
     <v-treeview
       v-model:selected="selectedTreeItems"
       :items="treeViewData"
-      select-strategy="clasic"
+      select-strategy="classic"
       item-value="id"
       selectable
       :search="searchTreeText"
@@ -57,39 +72,11 @@
       multiple
       :loading="filtering"
     ></v-autocomplete>
-    <v-card order="1">
-      <v-card-title>Search Text Within:</v-card-title>
-      <v-card-text>
-        <v-btn-toggle
-          v-model="textSearchFields"
-          @update:modelValue="filter"
-          class="mb-2"
-          multiple
-          outlined
-          variant="text"
-          divided
-        >
-          <v-btn value="long_name">Title</v-btn>
-          <v-btn value="citation">Citation</v-btn>
-          <v-btn value="textmodel_snipped">Abstract</v-btn>
-        </v-btn-toggle>
-        <v-text-field
-          v-show="hasTextSearchFields"
-          @update:focused="filter"
-          @keydown.enter.prevent="filter"
-          @click:clear="filter"
-          v-model="searchTerm"
-          label="Search"
-          clearable
-        ></v-text-field>
-      </v-card-text>
-      <v-progress-linear v-if="filtering" indeterminate color="primary"></v-progress-linear>
-    </v-card>
   </v-sheet>
 </template>
 
 <script setup>
-import { ref, computed, nextTick } from 'vue'
+import { ref, nextTick } from 'vue'
 import { usePerceptualModelStore } from '@/stores/perceptual_models'
 import {
   useMapStore,
@@ -116,14 +103,19 @@ perceptualModelStore.fetchPerceptualModels().then((perceptual_models) => {
 const process_taxonomies = ref([])
 const spatialZones = ref([])
 const temporalZones = ref([])
-const textSearchFields = ref([])
+const selectedTemporalZones = ref([])
+const searchTerm = ref(null)
+const textSearchFields = ref([
+  'long_name',
+  'citation',
+  'textmodel_snipped',
+  'processes_taxonomies',
+  'temporal_property',
+  'spatial_property'
+])
 const treeViewData = ref([])
 const selectedTreeItems = ref([])
 const searchTreeText = ref('')
-
-const hasTextSearchFields = computed(() => {
-  return textSearchFields.value.length > 0
-})
 
 // Fetch the process taxonomies, spatial zones, and temporal zones
 perceptualModelStore.fetchProcessTaxonomies().then((pt) => {
@@ -142,7 +134,7 @@ function buildTree(data) {
       if (!current[part]) {
         current[part] = {
           title: part,
-          id: index === path.length - 1 ? item.id : `id${index}`,
+          id: index === path.length - 1 ? item.id : `id${part}${index}`,
           children: {}
         }
       }
@@ -253,7 +245,15 @@ async function filter() {
     const search = checkSearchTerm(searchTerm.value, textSearchFields.value, feature)
     return process && spatial && temporal && search
   }
-  mapStore.filterFeatures(filterFunction)
+  await mapStore.filterFeatures(filterFunction)
+  const filteredFeatures = mapStore.currentFilteredData
+  emit('onFilter', {
+    selectedSpatialZones,
+    selectedTemporalZones,
+    selectedProcesses,
+    searchTerm,
+    filteredFeatures
+  })
   filtering.value = false
 }
 
