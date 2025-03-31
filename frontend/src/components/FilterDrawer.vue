@@ -224,7 +224,10 @@ const checkSearchTerm = (searchTerm, fieldsToSearch, feature) => {
 
 async function filter() {
   emit('onFilter', { selectedSpatialZones, selectedTemporalZones, selectedProcesses })
-  if (typeof window !== 'undefined' && window.heap && searchTerm.value !== null || searchTerm.value !== '') {
+  if (
+    (typeof window !== 'undefined' && window.heap && searchTerm.value !== null) ||
+    searchTerm.value !== ''
+  ) {
     window.heap.track('Search', {
       textSearched: searchTerm.value
     })
