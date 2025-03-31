@@ -1,6 +1,6 @@
 # Hydroprocess DB
 
-## Getting Started
+## Quick Start
 
 ### Clone the repo, checkout this branch
 ```console
@@ -41,3 +41,11 @@ More detailed info is available in the [frontend readme](frontend/README.md)
 ```console
 make format
 ```
+
+## Contributing guidelines
+We would love for you to contibute!
+Pull requests should be submitted against our [develop branch](https://github.com/CUAHSI/hydroprocess-db/tree/develop)
+PRs will receive at least one approval before being merged into `develop`.
+Review at this stage should include a code review as well as a functional review.
+After any necessary revisions/comments are addressed, the Reviewer(s) will approve the PR in Github, after which the developer/contributor is free to merge (assuming they have adequate priveleges on the repo--if not, then the Reviewer will complete the merge).
+Once a set of features are ready for release, a PR will be opened up by an administrator, for `develop` -> `main`.
