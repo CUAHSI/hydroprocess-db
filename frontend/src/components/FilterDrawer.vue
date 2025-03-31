@@ -78,7 +78,13 @@
 <script setup>
 import { ref, nextTick } from 'vue'
 import { usePerceptualModelStore } from '@/stores/perceptual_models'
-import { useMapStore } from '@/stores/map'
+import {
+  useMapStore,
+  selectedSpatialZones,
+  selectedTemporalZones,
+  selectedProcesses,
+  searchTerm
+} from '@/stores/map'
 import { mdiFolderOpen, mdiFolder, mdiCloseCircleOutline } from '@mdi/js'
 
 const perceptualModelStore = usePerceptualModelStore()
@@ -95,9 +101,7 @@ perceptualModelStore.fetchPerceptualModels().then((perceptual_models) => {
 })
 
 const process_taxonomies = ref([])
-const selectedProcesses = ref([])
 const spatialZones = ref([])
-const selectedSpatialZones = ref([])
 const temporalZones = ref([])
 const selectedTemporalZones = ref([])
 const searchTerm = ref(null)
@@ -211,6 +215,17 @@ const checkSearchTerm = (searchTerm, fieldsToSearch, feature) => {
 }
 
 async function filter() {
+  emit('onFilter', { selectedSpatialZones, selectedTemporalZones, selectedProcesses })
+  if (
+    (typeof window !== 'undefined' && window.heap && searchTerm.value !== null) ||
+    searchTerm.value !== ''
+  ) {
+    window.heap.track('Search', {
+      textSearched: searchTerm.value
+    })
+  } else {
+    console.warn('Heap is not available.')
+  }
   filtering.value = true
   await nextTick()
   // reset search term if no text search fields are selected

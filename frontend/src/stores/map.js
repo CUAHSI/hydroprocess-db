@@ -47,7 +47,7 @@ export const useMapStore = defineStore('map', () => {
     if (feature.properties.citation.url) {
       content += '<br>'
       content += '<h4 class="d-inline-block mr-2">URL:</h4>'
-      content += `<a href="${feature.properties.citation.url}" target="_blank" class="btn btn-primary">${feature.properties.citation.url}</a>`
+      content += `<a id="ExternalURL" href="${feature.properties.citation.url}" target="_blank" class="btn btn-primary">${feature.properties.citation.url}</a>`
     }
 
     content += `<p>${feature.properties.citation.citation}</p>`
@@ -131,6 +131,16 @@ export const useMapStore = defineStore('map', () => {
       keepInView: true
     })
     currentFilteredData.value.push(feature)
+
+    layer.on('click', () => {
+      if (typeof window !== 'undefined' && window.heap) {
+        window.heap.track('Marker Clicked', {
+          MarkerLocation: feature.properties.location.long_name
+        })
+      } else {
+        console.warn('Heap is not available.')
+      }
+    })
   }
 
   const pointToLayer = (feature, latlng) => {
@@ -227,3 +237,7 @@ export const useMapStore = defineStore('map', () => {
     allAvailableCoordinates
   }
 })
+export const selectedSpatialZones = ref([])
+export const selectedTemporalZones = ref([])
+export const selectedProcesses = ref([])
+export const searchTerm = ref(null)
