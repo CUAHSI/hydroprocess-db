@@ -211,7 +211,6 @@ const checkSearchTerm = (searchTerm, fieldsToSearch, feature) => {
 }
 
 async function filter() {
-  emit('onFilter', { selectedSpatialZones, selectedTemporalZones, selectedProcesses })
 
   filtering.value = true
   await nextTick()
@@ -232,7 +231,15 @@ async function filter() {
     const search = checkSearchTerm(searchTerm.value, textSearchFields.value, feature)
     return process && spatial && temporal && search
   }
-  mapStore.filterFeatures(filterFunction)
+  await mapStore.filterFeatures(filterFunction)
+  const filteredFeatures = mapStore.currentFilteredData
+  emit('onFilter', {
+    selectedSpatialZones,
+    selectedTemporalZones,
+    selectedProcesses,
+    searchTerm,
+    filteredFeatures
+  })
   filtering.value = false
 }
 

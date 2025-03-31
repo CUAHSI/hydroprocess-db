@@ -43,10 +43,10 @@
     </v-row>
     <v-row style="height: 50vh">
       <v-col>
-        <FilterDrawer />
+        <FilterDrawer @onFilter="onFilter" />
       </v-col>
       <v-col>
-        <DataViewDrawer />
+        <DataViewDrawer ref="dataDrawerRef" />
       </v-col>
     </v-row>
   </v-container>
@@ -74,7 +74,20 @@ const onFilter = (data) => {
     temporalzone_ids: data.selectedTemporalZones.value,
     process_taxonomy_ids: data.selectedProcesses.value
   }
-  dataDrawerRef.value.query(filters)
+
+  // Update counts with filtered features if provided
+  if (data.filteredFeatures) {
+    dataDrawerRef.value.updateCounts(data.filteredFeatures)
+  } 
+  // Call query only if no filtered features and no filters are applied (initial state)
+  else if (
+    !data.searchTerm?.value &&
+    data.selectedSpatialZones.value.length === 0 &&
+    data.selectedTemporalZones.value.length === 0 &&
+    data.selectedProcesses.value.length === 0
+  ) {
+    dataDrawerRef.value.query(filters)
+  }
 }
 
 const toggleFilterDrawer = async () => {

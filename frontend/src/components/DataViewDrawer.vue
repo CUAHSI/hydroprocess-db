@@ -63,8 +63,25 @@ const query = async (filters = {}) => {
   querying.value = false
 }
 
+const updateCounts = (filteredFeatures) => {
+  querying.value = true
+  const counts = {}
+  if (Array.isArray(filteredFeatures) && filteredFeatures.length > 0) {
+    filteredFeatures.forEach(feature => {
+      const modelType = feature.properties?.model_type?.name
+      if (modelType && modelType !== 'Figure model (Hand-drawn)') {
+        counts[modelType] = (counts[modelType] || 0) + 1
+      }
+    })
+  }
+  modelTypeCounts.value = counts
+  totalModels.value = Object.values(counts).reduce((acc, count) => acc + count, 0) || 0
+  querying.value = false
+}
+
 defineExpose({
-  query
+  query,
+  updateCounts
 })
 
 query()
