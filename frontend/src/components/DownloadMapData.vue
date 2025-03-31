@@ -100,7 +100,7 @@ function flattenMapDataJSON(data) {
 }
 
 function downloadMapData() {
-  if (typeof window !== 'undefined' && window.heap) {
+  try {
     window.heap.track('Download', {
       downloadItem: 'Map',
       selectedSpatialZones: selectedSpatialZones.value.join(', '),
@@ -108,7 +108,7 @@ function downloadMapData() {
       selectedProcesses: selectedProcesses.value.join(', '),
       searchTerm: searchTerm.value
     })
-  } else {
+  } catch (e) {
     console.warn('Heap is not available.')
   }
   const mapData = mapStore.currentFilteredData
