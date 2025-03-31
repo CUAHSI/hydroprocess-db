@@ -103,8 +103,6 @@ perceptualModelStore.fetchPerceptualModels().then((perceptual_models) => {
 const process_taxonomies = ref([])
 const spatialZones = ref([])
 const temporalZones = ref([])
-const selectedTemporalZones = ref([])
-const searchTerm = ref(null)
 const textSearchFields = ref([
   'long_name',
   'citation',
