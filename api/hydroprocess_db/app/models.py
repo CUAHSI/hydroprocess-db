@@ -1,12 +1,12 @@
 import json
+from typing import List, Optional
 
 from geoalchemy2 import Geometry, WKBElement, shape
 from geojson_pydantic import Feature, FeatureCollection, Point
-from pydantic import ConfigDict, model_serializer, BaseModel
+from pydantic import BaseModel, ConfigDict, model_serializer
 from pydantic_extra_types.coordinate import Latitude, Longitude
 from shapely import to_geojson
 from sqlmodel import Column, Field, Relationship, SQLModel
-from typing import List, Optional
 
 
 class Citation(SQLModel, table=True):
@@ -228,6 +228,7 @@ class ProcessAltName(SQLModel, table=True):
     process_id: int | None = Field(default=None)
 
     process_taxonomy: ProcessTaxonomy | None = Relationship(back_populates="process_alt_name")
+
 
 class ModelCountRequest(BaseModel):
     spatialzone_ids: Optional[List[int]] = None
