@@ -78,7 +78,7 @@ const onFilter = (data) => {
   // Update counts with filtered features if provided
   if (data.filteredFeatures) {
     dataDrawerRef.value.updateCounts(data.filteredFeatures)
-  } 
+  }
   // Call query only if no filtered features and no filters are applied (initial state)
   else if (
     !data.searchTerm?.value &&

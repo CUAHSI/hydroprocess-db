@@ -211,7 +211,6 @@ const checkSearchTerm = (searchTerm, fieldsToSearch, feature) => {
 }
 
 async function filter() {
-
   filtering.value = true
   await nextTick()
   // reset search term if no text search fields are selected
