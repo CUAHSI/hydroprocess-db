@@ -5,10 +5,7 @@
 <script setup>
 import {
   useMapStore,
-  selectedSpatialZones,
-  selectedTemporalZones,
-  selectedProcesses,
-  searchTerm
+  selectedFilters,
 } from '@/stores/map'
 import Papa from 'papaparse'
 
@@ -100,13 +97,11 @@ function flattenMapDataJSON(data) {
 }
 
 function downloadMapData() {
+  // console.log("Seelcted Filters:",{...selectedFilters.value})
   try {
     window.heap.track('Download', {
       downloadItem: 'Map',
-      selectedSpatialZones: selectedSpatialZones.value.join(', '),
-      selectedTemporalZones: selectedTemporalZones.value.join(', '),
-      selectedProcesses: selectedProcesses.value.join(', '),
-      searchTerm: searchTerm.value
+      ...selectedFilters
     })
   } catch (e) {
     console.warn('Heap is not available.')
