@@ -3,10 +3,7 @@
 </template>
 
 <script setup>
-import {
-  useMapStore,
-  selectedFilters,
-} from '@/stores/map'
+import { useMapStore, selectedFilters } from '@/stores/map'
 import Papa from 'papaparse'
 
 const mapStore = useMapStore()
