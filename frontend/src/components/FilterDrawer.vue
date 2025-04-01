@@ -20,14 +20,16 @@
           <v-text-field v-model="searchTreeText" label="Search Process Taxonomies" :clear-icon="mdiCloseCircleOutline"
             clearable dark flat hide-details solo-inverted>
           </v-text-field>
-          <v-treeview v-model:selected="selectedTreeItems" :items="treeViewData" select-strategy="classic"
-            item-value="id" selectable :search="searchTreeText" activatable @update:modelValue="updateMap">
+          <v-treeview v-if="filteredTreeData.length > 0" v-model:selected="selectedTreeItems" :items="filteredTreeData"
+            select-strategy="classic" item-value="id" selectable :search="searchTreeText" activatable
+            @update:modelValue="updateMap">
             <template v-slot:prepend="{ isOpen }">
               <v-icon>
                 {{ isOpen ? mdiFolderOpen : mdiFolder }}
               </v-icon>
             </template>
           </v-treeview>
+          <p v-else class="text-center text-grey-darken-1">No process taxonomies found</p>
         </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -41,7 +43,7 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, computed } from 'vue'
 import { usePerceptualModelStore } from '@/stores/perceptual_models'
 import {
   useMapStore,
@@ -84,6 +86,25 @@ const searchTreeText = ref('')
 perceptualModelStore.fetchProcessTaxonomies().then((pt) => {
   process_taxonomies.value = pt
   treeViewData.value = buildTree(pt)
+})
+
+const filterTreeData = (data, searchText) => {
+  return data
+    .map((node) => {
+      const children = node.children ? filterTreeData(node.children, searchText) : []
+
+      // If the search term matches the node title or its children, include it in the filtered result
+      if (node.title.toLowerCase().includes(searchText.toLowerCase()) || children.length > 0) {
+        return { ...node, children }
+      }
+
+      return null
+    })
+    .filter((node) => node !== null)
+}
+
+const filteredTreeData = computed(() => {
+  return filterTreeData(treeViewData.value, searchTreeText.value)
 })
 
 function buildTree(data) {
@@ -234,6 +255,7 @@ const updateMap = async () => {
   bottom: 30%;
   left: 110%;
 }
+
 :deep(.v-expansion-panel-text__wrapper) {
   padding: 0 !important;
 }
