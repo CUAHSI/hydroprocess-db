@@ -2,76 +2,41 @@
   <v-sheet class="mx-auto" elevation="8">
     <v-card order="1">
       <v-card-text class="px-0">
-        <v-text-field
-          @update:focused="filter"
-          @keydown.enter.prevent="filter"
-          @click:clear="filter"
-          v-model="searchTerm"
-          label="Search Data..."
-          clearable
-          hide-details
-        >
+        <v-text-field @update:focused="filter" @keydown.enter.prevent="filter" @click:clear="filter"
+          v-model="searchTerm" label="Search Data..." clearable hide-details>
         </v-text-field>
       </v-card-text>
       <v-progress-linear v-if="filtering" indeterminate color="primary"></v-progress-linear>
     </v-card>
-    <h3 class="text-h6 ma-2 text-center">Model Filters</h3>
+    <h3 class="text-h6 ma-2 text-center">Filter Map</h3>
     <v-divider></v-divider>
     <!-- <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
       label="Process Taxonomies" @update:modelValue="filter" clearable chips multiple
       :loading="filtering"></v-autocomplete> -->
-    <v-text-field
-      v-model="searchTreeText"
-      label="Search Process Taxonomies"
-      :clear-icon="mdiCloseCircleOutline"
-      clearable
-      dark
-      flat
-      hide-details
-      solo-inverted
-    >
-    </v-text-field>
-    <v-treeview
-      v-model:selected="selectedTreeItems"
-      :items="treeViewData"
-      select-strategy="classic"
-      item-value="id"
-      selectable
-      :search="searchTreeText"
-      activatable
-      @update:modelValue="updateMap"
-    >
-      <template v-slot:prepend="{ isOpen }">
-        <v-icon>
-          {{ isOpen ? mdiFolderOpen : mdiFolder }}
-        </v-icon>
-      </template>
-    </v-treeview>
+    <v-expansion-panels class="mx-0 mb-4">
+      <v-expansion-panel class="px-0 py-0">
+        <v-expansion-panel-title>Process Taxonomies</v-expansion-panel-title>
+        <v-expansion-panel-text class="pa-0">
+          <v-text-field v-model="searchTreeText" label="Search Process Taxonomies" :clear-icon="mdiCloseCircleOutline"
+            clearable dark flat hide-details solo-inverted>
+          </v-text-field>
+          <v-treeview v-model:selected="selectedTreeItems" :items="treeViewData" select-strategy="classic"
+            item-value="id" selectable :search="searchTreeText" activatable @update:modelValue="updateMap">
+            <template v-slot:prepend="{ isOpen }">
+              <v-icon>
+                {{ isOpen ? mdiFolderOpen : mdiFolder }}
+              </v-icon>
+            </template>
+          </v-treeview>
+        </v-expansion-panel-text>
+      </v-expansion-panel>
+    </v-expansion-panels>
 
-    <v-autocomplete
-      v-model="selectedSpatialZones"
-      :items="spatialZones"
-      item-title="spatial_property"
-      item-value="id"
-      label="Spatial Zones"
-      @update:modelValue="filter"
-      clearable
-      chips
-      multiple
-      :loading="filtering"
-    ></v-autocomplete>
-    <v-autocomplete
-      v-model="selectedTemporalZones"
-      :items="temporalZones"
-      item-title="temporal_property"
-      item-value="id"
-      label="Temporal Zones"
-      @update:modelValue="filter"
-      clearable
-      chips
-      multiple
-      :loading="filtering"
-    ></v-autocomplete>
+    <v-autocomplete v-model="selectedSpatialZones" :items="spatialZones" item-title="spatial_property" item-value="id"
+      label="Spatial Zones" @update:modelValue="filter" clearable chips multiple :loading="filtering"></v-autocomplete>
+    <v-autocomplete v-model="selectedTemporalZones" :items="temporalZones" item-title="temporal_property"
+      item-value="id" label="Temporal Zones" @update:modelValue="filter" clearable chips multiple
+      :loading="filtering"></v-autocomplete>
   </v-sheet>
 </template>
 
@@ -268,5 +233,8 @@ const updateMap = async () => {
   position: absolute;
   bottom: 30%;
   left: 110%;
+}
+:deep(.v-expansion-panel-text__wrapper) {
+  padding: 0 !important;
 }
 </style>
