@@ -3,9 +3,9 @@
     <v-card order="1">
       <v-card-text class="px-0">
         <v-text-field
-          @update:focused="filter"
-          @keydown.enter.prevent="filter"
-          @click:clear="filter"
+          @update:focused="debouncedFilter"
+          @keydown.enter.prevent="debouncedFilter"
+          @click:clear="debouncedFilter"
           v-model="searchTerm"
           label="Search Data..."
           clearable
@@ -20,7 +20,7 @@
     <!-- <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
       label="Process Taxonomies" @update:modelValue="filter" clearable chips multiple
       :loading="filtering"></v-autocomplete> -->
-    <v-expansion-panels class="mx-0 mb-4">
+    <v-expansion-panels class="mx-0 mb-4" eager>
       <v-expansion-panel class="px-0 py-0">
         <v-expansion-panel-title>Process Taxonomies</v-expansion-panel-title>
         <v-expansion-panel-text class="pa-0">
@@ -38,7 +38,7 @@
           <v-treeview
             v-if="filteredTreeData.length > 0"
             v-model:selected="selectedTreeItems"
-            :items="filteredTreeData"
+            :items="treeViewData"
             select-strategy="classic"
             item-value="id"
             selectable
@@ -85,7 +85,7 @@
 </template>
 
 <script setup>
-import { ref, nextTick, computed } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { usePerceptualModelStore } from '@/stores/perceptual_models'
 import {
   useMapStore,
@@ -123,30 +123,13 @@ const textSearchFields = ref([
 const treeViewData = ref([])
 const selectedTreeItems = ref([])
 const searchTreeText = ref('')
+const debouncedSearchTreeText = ref('')
+const debounceTimeout = ref(null)
 
 // Fetch the process taxonomies, spatial zones, and temporal zones
 perceptualModelStore.fetchProcessTaxonomies().then((pt) => {
   process_taxonomies.value = pt
   treeViewData.value = buildTree(pt)
-})
-
-const filterTreeData = (data, searchText) => {
-  return data
-    .map((node) => {
-      const children = node.children ? filterTreeData(node.children, searchText) : []
-
-      // If the search term matches the node title or its children, include it in the filtered result
-      if (node.title.toLowerCase().includes(searchText.toLowerCase()) || children.length > 0) {
-        return { ...node, children }
-      }
-
-      return null
-    })
-    .filter((node) => node !== null)
-}
-
-const filteredTreeData = computed(() => {
-  return filterTreeData(treeViewData.value, searchTreeText.value)
 })
 
 function buildTree(data) {
@@ -251,7 +234,7 @@ async function filter() {
     }
   }
   filtering.value = true
-  await nextTick()
+  // await nextTick()
   // reset search term if no text search fields are selected
   if (textSearchFields.value.length === 0) {
     searchTerm.value = null
@@ -269,7 +252,7 @@ async function filter() {
     const search = checkSearchTerm(searchTerm.value, textSearchFields.value, feature)
     return process && spatial && temporal && search
   }
-  await mapStore.filterFeatures(filterFunction)
+  mapStore.filterFeatures(filterFunction)
   const filteredFeatures = mapStore.currentFilteredData
   emit('onFilter', {
     selectedSpatialZones,
@@ -286,9 +269,43 @@ const updateMap = async () => {
   selectedTreeItems.value.forEach((item) => {
     selectedProcesses.value.push(item)
   })
-  await nextTick()
+  // await nextTick()
   filter()
 }
+const debouncedFilter = () => {
+  clearTimeout(debounceTimeout.value)
+  debounceTimeout.value = setTimeout(() => {
+    filter()
+  }, 300) // 300ms debounce
+}
+const filteredTreeData = computed(() => {
+  if (!searchTreeText.value || !treeViewData.value.length) {
+    return treeViewData.value; // Return original data if no search or empty
+  }
+
+  const searchLower = searchTreeText.value.toLowerCase();
+  const hasMatchingItems = (items) => {
+    return items.some((item) => {
+      const matchesTitle = item.title.toLowerCase().includes(searchLower);
+      const matchesChildren = item.children?.length ? hasMatchingItems(item.children) : false;
+      return matchesTitle || matchesChildren;
+    });
+  };
+
+  return hasMatchingItems(treeViewData.value) ? treeViewData.value : [];
+});
+
+const debounceSearch = (query) => {
+  clearTimeout(debounceTimeout.value)
+  debounceTimeout.value = setTimeout(() => {
+    debouncedSearchTreeText.value = query
+  }, 300)
+}
+
+watch(() => searchTreeText.value, (newQuery) => {
+  debounceSearch(newQuery)
+})
+
 </script>
 
 <style scoped>
