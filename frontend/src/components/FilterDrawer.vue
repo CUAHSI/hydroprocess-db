@@ -280,20 +280,20 @@ const debouncedFilter = () => {
 }
 const filteredTreeData = computed(() => {
   if (!searchTreeText.value || !treeViewData.value.length) {
-    return treeViewData.value; // Return original data if no search or empty
+    return treeViewData.value // Return original data if no search or empty
   }
 
-  const searchLower = searchTreeText.value.toLowerCase();
+  const searchLower = searchTreeText.value.toLowerCase()
   const hasMatchingItems = (items) => {
     return items.some((item) => {
-      const matchesTitle = item.title.toLowerCase().includes(searchLower);
-      const matchesChildren = item.children?.length ? hasMatchingItems(item.children) : false;
-      return matchesTitle || matchesChildren;
-    });
-  };
+      const matchesTitle = item.title.toLowerCase().includes(searchLower)
+      const matchesChildren = item.children?.length ? hasMatchingItems(item.children) : false
+      return matchesTitle || matchesChildren
+    })
+  }
 
-  return hasMatchingItems(treeViewData.value) ? treeViewData.value : [];
-});
+  return hasMatchingItems(treeViewData.value) ? treeViewData.value : []
+})
 
 const debounceSearch = (query) => {
   clearTimeout(debounceTimeout.value)
@@ -302,10 +302,12 @@ const debounceSearch = (query) => {
   }, 300)
 }
 
-watch(() => searchTreeText.value, (newQuery) => {
-  debounceSearch(newQuery)
-})
-
+watch(
+  () => searchTreeText.value,
+  (newQuery) => {
+    debounceSearch(newQuery)
+  }
+)
 </script>
 
 <style scoped>
