@@ -256,7 +256,7 @@ const logIdentifiers = async () => {
     temporalZonesMap.value,
     'selectedTemporalZones'
   )
-  
+
   try {
     if (selectedIdentifiers.selectedProcesses) {
       window.heap.track('selectedProcesses', {
@@ -285,7 +285,6 @@ const logIdentifiers = async () => {
 }
 
 async function filter() {
-  
   filtering.value = true
   await nextTick()
   // reset search term if no text search fields are selected
