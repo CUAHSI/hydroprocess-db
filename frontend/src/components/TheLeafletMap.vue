@@ -1,6 +1,10 @@
 <template>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-  <div v-show="$route.meta.showMap" id="mapContainer"></div>
+  <div v-show="$route.meta.showMap" id="mapContainer">
+    <div v-if="mapStore.currentFilteredData.length === 0" class="no-data-overlay">
+      <span>No data found</span>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -107,5 +111,29 @@ async function mapClick() {
 #mapContainer {
   width: 100%;
   height: 100%;
+  position: relative;
+}
+
+.no-data-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.no-data-overlay span {
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 10px 20px;
+  border-radius: 5px;
 }
 </style>
