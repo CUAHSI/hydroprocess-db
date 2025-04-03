@@ -234,8 +234,7 @@ async function filter() {
     }
   }
   filtering.value = true
-  // await nextTick()
-  // reset search term if no text search fields are selected
+
   if (textSearchFields.value.length === 0) {
     searchTerm.value = null
   }
@@ -269,18 +268,17 @@ const updateMap = async () => {
   selectedTreeItems.value.forEach((item) => {
     selectedProcesses.value.push(item)
   })
-  // await nextTick()
   filter()
 }
 const debouncedFilter = () => {
   clearTimeout(debounceTimeout.value)
   debounceTimeout.value = setTimeout(() => {
     filter()
-  }, 300) // 300ms debounce
+  }, 300)
 }
 const filteredTreeData = computed(() => {
   if (!searchTreeText.value || !treeViewData.value.length) {
-    return treeViewData.value // Return original data if no search or empty
+    return treeViewData.value
   }
 
   const searchLower = searchTreeText.value.toLowerCase()
