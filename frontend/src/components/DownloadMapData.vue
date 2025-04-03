@@ -50,7 +50,7 @@ function flattenItem(obj, parentKey = '', result = {}) {
         flattenItem(obj[key], newKey, result)
       } else if (Array.isArray(obj[key])) {
         if (obj[key].every((item) => typeof item === 'string' || typeof item === 'number')) {
-          result[newKey] = obj[key].join(', ')
+          result[newKey] = obj[key].join('|')
         } else {
           const arrayValues = {}
           obj[key].forEach((item) => {
@@ -94,7 +94,6 @@ function flattenMapDataJSON(data) {
 }
 
 function downloadMapData() {
-  // console.log("Seelcted Filters:",{...selectedFilters.value})
   try {
     window.heap.track('Download', {
       downloadItem: 'Map',
