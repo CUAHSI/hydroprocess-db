@@ -3,13 +3,7 @@
 </template>
 
 <script setup>
-import {
-  useMapStore,
-  selectedSpatialZones,
-  selectedTemporalZones,
-  selectedProcesses,
-  searchTerm
-} from '@/stores/map'
+import { useMapStore, selectedFilters } from '@/stores/map'
 import Papa from 'papaparse'
 
 const mapStore = useMapStore()
@@ -56,7 +50,7 @@ function flattenItem(obj, parentKey = '', result = {}) {
         flattenItem(obj[key], newKey, result)
       } else if (Array.isArray(obj[key])) {
         if (obj[key].every((item) => typeof item === 'string' || typeof item === 'number')) {
-          result[newKey] = obj[key].join(', ')
+          result[newKey] = obj[key].join('|')
         } else {
           const arrayValues = {}
           obj[key].forEach((item) => {
@@ -103,10 +97,7 @@ function downloadMapData() {
   try {
     window.heap.track('Download', {
       downloadItem: 'Map',
-      selectedSpatialZones: selectedSpatialZones.value.join(', '),
-      selectedTemporalZones: selectedTemporalZones.value.join(', '),
-      selectedProcesses: selectedProcesses.value.join(', '),
-      searchTerm: searchTerm.value
+      ...selectedFilters
     })
   } catch (e) {
     console.warn('Heap is not available.')
