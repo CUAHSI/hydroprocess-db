@@ -237,7 +237,7 @@ const logIdentifiers = async () => {
         console.log(`${category} not found for ID:`, id)
       }
     }
-    selectedIdentifiers[category] = identifiers.join(', ') // Join as a string
+    selectedIdentifiers[category] = identifiers.join('|') // Join as a string
   }
   selectedIdentifiers['searchTerm'] = searchTerm.value
   // Collect identifiers for all categories as strings
@@ -256,20 +256,36 @@ const logIdentifiers = async () => {
     temporalZonesMap.value,
     'selectedTemporalZones'
   )
-
+  
+  try {
+    if (selectedIdentifiers.selectedProcesses) {
+      window.heap.track('selectedProcesses', {
+        processes: selectedIdentifiers.selectedProcesses
+      })
+    }
+    if (selectedIdentifiers.selectedSpatialZones) {
+      window.heap.track('selectedSpatialZones', {
+        spatialZones: selectedIdentifiers.selectedSpatialZones
+      })
+    }
+    if (selectedIdentifiers.selectedTemporalZones) {
+      window.heap.track('selectedTemporalZones', {
+        temporalZones: selectedIdentifiers.selectedTemporalZones
+      })
+    }
+    if (selectedIdentifiers.searchTerm) {
+      window.heap.track('Search', {
+        textSearched: selectedIdentifiers.searchTerm
+      })
+    }
+  } catch (e) {
+    console.warn('Heap is not available.')
+  }
   selectedFilters.value = selectedIdentifiers
 }
 
 async function filter() {
-  if (searchTerm.value !== null || searchTerm.value !== '') {
-    try {
-      window.heap.track('Search', {
-        textSearched: searchTerm.value
-      })
-    } catch (e) {
-      console.warn('Heap is not available.')
-    }
-  }
+  
   filtering.value = true
   await nextTick()
   // reset search term if no text search fields are selected
