@@ -92,7 +92,8 @@ import {
   selectedSpatialZones,
   selectedTemporalZones,
   selectedProcesses,
-  searchTerm
+  searchTerm,
+  userTouchedFilter
 } from '@/stores/map'
 import { mdiFolderOpen, mdiFolder, mdiCloseCircleOutline } from '@mdi/js'
 
@@ -234,7 +235,7 @@ async function filter() {
     }
   }
   filtering.value = true
-
+  userTouchedFilter.value = true
   if (textSearchFields.value.length === 0) {
     searchTerm.value = null
   }

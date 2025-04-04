@@ -1,7 +1,7 @@
 <template>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   <div v-show="$route.meta.showMap" id="mapContainer">
-    <div v-if="mapStore.currentFilteredData.length === 0" class="no-data-overlay">
+    <div v-if="userTouchedFilter && mapStore.currentFilteredData.length === 0" class="no-data-overlay">
       <span>No data found</span>
     </div>
   </div>
@@ -12,7 +12,7 @@ import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import * as esriLeaflet from 'esri-leaflet'
 import { onMounted, onUpdated } from 'vue'
-import { useMapStore } from '@/stores/map'
+import { useMapStore, userTouchedFilter } from '@/stores/map'
 import 'leaflet-iconmaterial/dist/leaflet.icon-material.css'
 
 const mapStore = useMapStore()
