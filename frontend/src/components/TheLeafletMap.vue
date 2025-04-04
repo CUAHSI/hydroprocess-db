@@ -1,7 +1,10 @@
 <template>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   <div v-show="$route.meta.showMap" id="mapContainer">
-    <div v-if="userTouchedFilter && mapStore.currentFilteredData.length === 0" class="no-data-overlay">
+    <div
+      v-if="userTouchedFilter && mapStore.currentFilteredData.length === 0"
+      class="no-data-overlay"
+    >
       <span>No data found</span>
     </div>
   </div>
