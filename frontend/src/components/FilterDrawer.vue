@@ -83,7 +83,8 @@ import {
   selectedSpatialZones,
   selectedTemporalZones,
   selectedProcesses,
-  searchTerm
+  searchTerm,
+  selectedFilters
 } from '@/stores/map'
 import { mdiFolderOpen, mdiFolder, mdiCloseCircleOutline } from '@mdi/js'
 
@@ -114,12 +115,9 @@ const textSearchFields = ref([
 const treeViewData = ref([])
 const selectedTreeItems = ref([])
 const searchTreeText = ref('')
-
-// Fetch the process taxonomies, spatial zones, and temporal zones
-perceptualModelStore.fetchProcessTaxonomies().then((pt) => {
-  process_taxonomies.value = pt
-  treeViewData.value = buildTree(pt)
-})
+const processTaxonomiesMap = ref(new Map())
+const spatialZonesMap = ref(new Map())
+const temporalZonesMap = ref(new Map())
 
 function buildTree(data) {
   const root = {}
@@ -172,13 +170,22 @@ function buildTree(data) {
   return convertToArray(root)
 }
 
+// Fetch the process taxonomies, spatial zones, and temporal zones
+perceptualModelStore.fetchProcessTaxonomies().then((pt) => {
+  process_taxonomies.value = pt
+  treeViewData.value = buildTree(pt)
+  processTaxonomiesMap.value = new Map(pt.map((item) => [item.id, item.identifier]))
+})
+
 perceptualModelStore.fetchSpatialZones().then((sz) => {
   replaceNwithNone(sz, 'spatial_property')
   spatialZones.value = sz
+  spatialZonesMap.value = new Map(sz.map((item) => [item.id, item.spatial_property]))
 })
 perceptualModelStore.fetchTemporalZones().then((tz) => {
   replaceNwithNone(tz, 'temporal_property')
   temporalZones.value = tz
+  temporalZonesMap.value = new Map(tz.map((item) => [item.id, item.temporal_property]))
 })
 
 const replaceNwithNone = (items, propName) => {
@@ -212,16 +219,72 @@ const checkSearchTerm = (searchTerm, fieldsToSearch, feature) => {
   })
 }
 
-async function filter() {
-  if (searchTerm.value !== null || searchTerm.value !== '') {
-    try {
-      window.heap.track('Search', {
-        textSearched: searchTerm.value
-      })
-    } catch (e) {
-      console.warn('Heap is not available.')
-    }
+const logIdentifiers = async () => {
+  const selectedIdentifiers = {
+    selectedProcesses: '',
+    selectedSpatialZones: '',
+    selectedTemporalZones: ''
   }
+
+  const collectIdentifiersAsString = async (ids, map, category) => {
+    const identifiers = []
+    for (let id of ids) {
+      await nextTick()
+      const selectedItem = map.get(id)
+      if (selectedItem) {
+        identifiers.push(selectedItem)
+      } else {
+        console.log(`${category} not found for ID:`, id)
+      }
+    }
+    selectedIdentifiers[category] = identifiers.join('|') // Join as a string
+  }
+  selectedIdentifiers['searchTerm'] = searchTerm.value
+  // Collect identifiers for all categories as strings
+  await collectIdentifiersAsString(
+    selectedProcesses.value,
+    processTaxonomiesMap.value,
+    'selectedProcesses'
+  )
+  await collectIdentifiersAsString(
+    selectedSpatialZones.value,
+    spatialZonesMap.value,
+    'selectedSpatialZones'
+  )
+  await collectIdentifiersAsString(
+    selectedTemporalZones.value,
+    temporalZonesMap.value,
+    'selectedTemporalZones'
+  )
+
+  try {
+    if (selectedIdentifiers.selectedProcesses) {
+      window.heap.track('selectedProcesses', {
+        processes: selectedIdentifiers.selectedProcesses
+      })
+    }
+    if (selectedIdentifiers.selectedSpatialZones) {
+      window.heap.track('selectedSpatialZones', {
+        spatialZones: selectedIdentifiers.selectedSpatialZones
+      })
+    }
+    if (selectedIdentifiers.selectedTemporalZones) {
+      window.heap.track('selectedTemporalZones', {
+        temporalZones: selectedIdentifiers.selectedTemporalZones
+      })
+    }
+    if (selectedIdentifiers.searchTerm) {
+      window.heap.track('Search', {
+        textSearched: selectedIdentifiers.searchTerm
+      })
+    }
+  } catch (e) {
+    console.warn('Heap is not available.')
+  }
+  selectedFilters.value = selectedIdentifiers
+}
+
+async function filter() {
   filtering.value = true
   await nextTick()
   // reset search term if no text search fields are selected
@@ -250,6 +313,7 @@ async function filter() {
     searchTerm,
     filteredFeatures
   })
+  logIdentifiers()
   filtering.value = false
 }
 
