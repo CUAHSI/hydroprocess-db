@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, shallowRef } from 'vue'
 import { ENDPOINTS } from '@/constants'
 import L from 'leaflet'
 import 'leaflet-iconmaterial/dist/leaflet.icon-material'
@@ -7,13 +7,13 @@ import 'leaflet.markercluster'
 import citationMatchingFileNames from '@/assets/citation_and_images_matching.json'
 
 export const useMapStore = defineStore('map', () => {
-  const leaflet = ref(null)
+  const leaflet = shallowRef(null)
   const layerGroup = ref(null)
   const modelFeatures = ref({})
   const perceptualModelsGeojson = ref([])
   const mapLoaded = ref(false)
   let currentFilteredData = ref([])
-  const allAvailableCoordinates = []
+  const allAvailableCoordinates = ref([])
   const markerClusterGroup = L.markerClusterGroup({
     iconCreateFunction: (cluster) => {
       const childCount = cluster.getChildCount()
@@ -121,7 +121,7 @@ export const useMapStore = defineStore('map', () => {
       content += `${feature.properties.temporal_zone_type.temporal_property}`
     }
 
-    allAvailableCoordinates.push(
+    allAvailableCoordinates.value.push(
       adjustLatLon(feature.properties.location.lat, feature.properties.location.lon)
     )
 

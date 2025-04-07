@@ -13,23 +13,23 @@
 <script setup>
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
+import { storeToRefs } from 'pinia'
 import * as esriLeaflet from 'esri-leaflet'
 import { onMounted, onUpdated } from 'vue'
 import { useMapStore, userTouchedFilter } from '@/stores/map'
 import 'leaflet-iconmaterial/dist/leaflet.icon-material.css'
 
 const mapStore = useMapStore()
+const { leaflet, layerGroup, allAvailableCoordinates, mapLoaded } = storeToRefs(mapStore)
 
 onUpdated(() => {
-  mapStore.leaflet.invalidateSize()
+  leaflet.value.invalidateSize()
 })
 
 onMounted(async () => {
-  let leaflet = L.map('mapContainer', { minZoom: 2 }).setView([0, 11], 2)
-  mapStore.leaflet = leaflet
-  let layerGroup = new L.LayerGroup()
-  mapStore.layerGroup = layerGroup
-  layerGroup.addTo(leaflet)
+  leaflet.value = L.map('mapContainer', { minZoom: 2 }).setView([0, 11], 2)
+  layerGroup.value = new L.LayerGroup()
+  layerGroup.value.addTo(leaflet.value)
 
   // Initial OSM tile layer
   let CartoDB_PositronNoLabels = L.tileLayer(
@@ -65,21 +65,21 @@ onMounted(async () => {
     Esri_WorldImagery
   }
 
-  Esri_WorldImagery.addTo(leaflet)
-  Esri_Hydro_Reference_Overlay.addTo(leaflet)
+  Esri_WorldImagery.addTo(leaflet.value)
+  Esri_Hydro_Reference_Overlay.addTo(leaflet.value)
 
   // query the api for the features
   await mapStore.fetchPerceptualModelsGeojson()
 
   // Convert to Leaflet LatLngBounds
-  const bounds = L.latLngBounds(mapStore.allAvailableCoordinates)
+  const bounds = L.latLngBounds(allAvailableCoordinates.value)
 
   // Restrict panning to within bounds
-  leaflet.setMaxBounds(bounds)
+  leaflet.value.setMaxBounds(bounds)
 
   // layer toggling
   let mixed = {
-    'Perceptual Models': layerGroup,
+    'Perceptual Models': layerGroup.value,
     'Esri Hydro Reference Overlay': Esri_Hydro_Reference_Overlay
   }
 
@@ -88,16 +88,16 @@ onMounted(async () => {
   //  */
 
   // Layer Control
-  L.control.layers(baselayers, mixed).addTo(leaflet)
+  L.control.layers(baselayers, mixed).addTo(leaflet.value)
 
   /*
    * LEAFLET EVENT HANDLERS
    */
-  leaflet.on('click', function (e) {
+  leaflet.value.on('click', function (e) {
     mapClick(e)
   })
 
-  mapStore.mapLoaded = true
+  mapLoaded.value = true
 })
 
 /**
