@@ -15,21 +15,22 @@ import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import { storeToRefs } from 'pinia'
 import * as esriLeaflet from 'esri-leaflet'
-import { onMounted, onUpdated } from 'vue'
-import { useMapStore, userTouchedFilter } from '@/stores/map'
+import { onMounted, onUpdated, toRaw } from 'vue'
+import { useMapStore } from '@/stores/map'
 import 'leaflet-iconmaterial/dist/leaflet.icon-material.css'
 
 const mapStore = useMapStore()
-const { leaflet, layerGroup, allAvailableCoordinates, mapLoaded } = storeToRefs(mapStore)
+const { leaflet, layerGroup, allAvailableCoordinates, mapLoaded, userTouchedFilter } = storeToRefs(mapStore)
+let rawLeaflet = toRaw(leaflet)
 
 onUpdated(() => {
-  leaflet.value.invalidateSize()
+  rawLeaflet.invalidateSize()
 })
 
 onMounted(async () => {
-  leaflet.value = L.map('mapContainer', { minZoom: 2 }).setView([0, 11], 2)
+  rawLeaflet = L.map('mapContainer', { minZoom: 2 }).setView([0, 11], 2)
   layerGroup.value = new L.LayerGroup()
-  layerGroup.value.addTo(leaflet.value)
+  layerGroup.value.addTo(rawLeaflet)
 
   // Initial OSM tile layer
   let CartoDB_PositronNoLabels = L.tileLayer(
@@ -65,8 +66,8 @@ onMounted(async () => {
     Esri_WorldImagery
   }
 
-  Esri_WorldImagery.addTo(leaflet.value)
-  Esri_Hydro_Reference_Overlay.addTo(leaflet.value)
+  Esri_WorldImagery.addTo(rawLeaflet)
+  Esri_Hydro_Reference_Overlay.addTo(rawLeaflet)
 
   // query the api for the features
   await mapStore.fetchPerceptualModelsGeojson()
@@ -75,7 +76,7 @@ onMounted(async () => {
   const bounds = L.latLngBounds(allAvailableCoordinates.value)
 
   // Restrict panning to within bounds
-  leaflet.value.setMaxBounds(bounds)
+  rawLeaflet.setMaxBounds(bounds)
 
   // layer toggling
   let mixed = {
@@ -88,16 +89,17 @@ onMounted(async () => {
   //  */
 
   // Layer Control
-  L.control.layers(baselayers, mixed).addTo(leaflet.value)
+  L.control.layers(baselayers, mixed).addTo(rawLeaflet)
 
   /*
    * LEAFLET EVENT HANDLERS
    */
-  leaflet.value.on('click', function (e) {
+  rawLeaflet.on('click', function (e) {
     mapClick(e)
   })
 
   mapLoaded.value = true
+  leaflet.value = rawLeaflet
 })
 
 /**

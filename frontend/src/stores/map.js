@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, shallowRef } from 'vue'
+import { ref } from 'vue'
 import { ENDPOINTS } from '@/constants'
 import L from 'leaflet'
 import 'leaflet-iconmaterial/dist/leaflet.icon-material'
@@ -7,7 +7,7 @@ import 'leaflet.markercluster'
 import citationMatchingFileNames from '@/assets/citation_and_images_matching.json'
 
 export const useMapStore = defineStore('map', () => {
-  const leaflet = shallowRef(null)
+  const leaflet = ref(null)
   const layerGroup = ref(null)
   const modelFeatures = ref({})
   const perceptualModelsGeojson = ref([])

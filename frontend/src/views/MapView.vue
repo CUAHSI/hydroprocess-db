@@ -53,7 +53,7 @@
 </template>
 
 <script setup>
-import { ref, computed, nextTick } from 'vue'
+import { ref, computed, nextTick, toRaw } from 'vue'
 import FilterDrawer from '@/components/FilterDrawer.vue'
 import DataViewDrawer from '@/components/DataViewDrawer.vue'
 import TheLeafletMap from '@/components/TheLeafletMap.vue'
@@ -66,6 +66,7 @@ const { mdAndDown } = useDisplay()
 const mapStore = useMapStore()
 
 const { leaflet } = storeToRefs(mapStore)
+const rawLeaflet = toRaw(leaflet)
 
 const showFilterDrawer = ref(true)
 const showDataDrawer = ref(true)
@@ -94,21 +95,23 @@ const onFilter = (data) => {
 }
 
 const toggleFilterDrawer = async () => {
-  const center = leaflet.value.getCenter()
+  const center = rawLeaflet.getCenter()
   showFilterDrawer.value = !showFilterDrawer.value
   await nextTick()
-  leaflet.value.invalidateSize(true)
-  leaflet.value.setView(center)
+  rawLeaflet.invalidateSize(true)
+  rawLeaflet.setView(center)
+  leaflet.value = rawLeaflet
 }
 
 const toggleDataDrawer = async () => {
   // get the center of the map before the drawer is toggled
-  const center = leaflet.value.getCenter()
+  const center = rawLeaflet.getCenter()
   showDataDrawer.value = !showDataDrawer.value
   await nextTick()
-  leaflet.value.invalidateSize(true)
+  rawLeaflet.invalidateSize(true)
   // set the center of the map after the drawer is toggled
-  leaflet.value.setView(center)
+  rawLeaflet.setView(center)
+  leaflet.value = rawLeaflet
 }
 
 const getCols = computed(() => {
