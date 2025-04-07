@@ -86,20 +86,23 @@
 
 <script setup>
 import { ref, watch, computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import { usePerceptualModelStore } from '@/stores/perceptual_models'
-import {
-  useMapStore,
+import { useMapStore } from '@/stores/map'
+import { mdiFolderOpen, mdiFolder, mdiCloseCircleOutline } from '@mdi/js'
+
+const perceptualModelStore = usePerceptualModelStore()
+const mapStore = useMapStore()
+
+const {
+  currentFilteredData,
   selectedSpatialZones,
   selectedTemporalZones,
   selectedProcesses,
   searchTerm,
   userTouchedFilter,
   selectedFilters
-} from '@/stores/map'
-import { mdiFolderOpen, mdiFolder, mdiCloseCircleOutline } from '@mdi/js'
-
-const perceptualModelStore = usePerceptualModelStore()
-const mapStore = useMapStore()
+} = storeToRefs(mapStore)
 
 const emit = defineEmits(['selectModel', 'toggle', 'onFilter'])
 
@@ -321,7 +324,7 @@ async function filter() {
     return process && spatial && temporal && search
   }
   mapStore.filterFeatures(filterFunction)
-  const filteredFeatures = mapStore.currentFilteredData
+  const filteredFeatures = currentFilteredData.value
   emit('onFilter', {
     selectedSpatialZones,
     selectedTemporalZones,

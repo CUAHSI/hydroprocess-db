@@ -7,6 +7,12 @@ import 'leaflet.markercluster'
 import citationMatchingFileNames from '@/assets/citation_and_images_matching.json'
 
 export const useMapStore = defineStore('map', () => {
+  const selectedSpatialZones = ref([])
+  const selectedTemporalZones = ref([])
+  const selectedProcesses = ref([])
+  const searchTerm = ref(null)
+  const userTouchedFilter = ref(false)
+  const selectedFilters = ref({})
   const leaflet = shallowRef(null)
   const layerGroup = shallowRef(null)
   const allAvailableCoordinates = shallowRef([])
@@ -234,12 +240,12 @@ export const useMapStore = defineStore('map', () => {
     filterFeatures,
     resetFilter,
     currentFilteredData,
-    allAvailableCoordinates
+    allAvailableCoordinates,
+    selectedSpatialZones,
+    selectedTemporalZones,
+    selectedProcesses,
+    searchTerm,
+    userTouchedFilter,
+    selectedFilters
   }
 })
-export const selectedSpatialZones = ref([])
-export const selectedTemporalZones = ref([])
-export const selectedProcesses = ref([])
-export const searchTerm = ref(null)
-export const userTouchedFilter = ref(false)
-export const selectedFilters = ref({})

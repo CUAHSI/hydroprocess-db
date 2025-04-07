@@ -1,10 +1,7 @@
 <template>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   <div v-show="$route.meta.showMap" id="mapContainer">
-    <div
-      v-if="userTouchedFilter && mapStore.currentFilteredData.length === 0"
-      class="no-data-overlay"
-    >
+    <div v-if="userTouchedFilter && currentFilteredData.length === 0" class="no-data-overlay">
       <span>No data found</span>
     </div>
   </div>
@@ -20,7 +17,7 @@ import { useMapStore } from '@/stores/map'
 import 'leaflet-iconmaterial/dist/leaflet.icon-material.css'
 
 const mapStore = useMapStore()
-const { mapLoaded, userTouchedFilter } = storeToRefs(mapStore)
+const { mapLoaded, userTouchedFilter, currentFilteredData } = storeToRefs(mapStore)
 
 onUpdated(() => {
   mapStore.leaflet.invalidateSize()

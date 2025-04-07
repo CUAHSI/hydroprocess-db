@@ -3,10 +3,12 @@
 </template>
 
 <script setup>
-import { useMapStore, selectedFilters } from '@/stores/map'
+import { useMapStore } from '@/stores/map'
 import Papa from 'papaparse'
+import { storeToRefs } from 'pinia'
 
 const mapStore = useMapStore()
+const { currentFilteredData, selectedFilters } = storeToRefs(mapStore)
 const renameColumnInCSV = {
   'figure num': 'Figure Number',
   'figure caption': 'Figure Caption',
@@ -102,8 +104,8 @@ function downloadMapData() {
   } catch (e) {
     console.warn('Heap is not available.')
   }
-  const mapData = mapStore.currentFilteredData
-  const flattenedMapData = flattenMapDataJSON(mapData)
+
+  const flattenedMapData = flattenMapDataJSON(currentFilteredData.value)
 
   const csv = Papa.unparse(flattenedMapData, {
     columns: csvColumns
