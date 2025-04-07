@@ -3,9 +3,9 @@
     <v-card order="1">
       <v-card-text class="px-0">
         <v-text-field
-          @update:focused="filter"
-          @keydown.enter.prevent="filter"
-          @click:clear="filter"
+          @update:focused="debouncedFilter"
+          @keydown.enter.prevent="debouncedFilter"
+          @click:clear="debouncedFilter"
           v-model="searchTerm"
           label="Search Data..."
           clearable
@@ -15,38 +15,47 @@
       </v-card-text>
       <v-progress-linear v-if="filtering" indeterminate color="primary"></v-progress-linear>
     </v-card>
-    <h3 class="text-h6 ma-2 text-center">Model Filters</h3>
+    <h3 class="text-h6 ma-2 text-center">Filter Map</h3>
     <v-divider></v-divider>
     <!-- <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
       label="Process Taxonomies" @update:modelValue="filter" clearable chips multiple
       :loading="filtering"></v-autocomplete> -->
-    <v-text-field
-      v-model="searchTreeText"
-      label="Search Process Taxonomies"
-      :clear-icon="mdiCloseCircleOutline"
-      clearable
-      dark
-      flat
-      hide-details
-      solo-inverted
-    >
-    </v-text-field>
-    <v-treeview
-      v-model:selected="selectedTreeItems"
-      :items="treeViewData"
-      select-strategy="classic"
-      item-value="id"
-      selectable
-      :search="searchTreeText"
-      activatable
-      @update:modelValue="updateMap"
-    >
-      <template v-slot:prepend="{ isOpen }">
-        <v-icon>
-          {{ isOpen ? mdiFolderOpen : mdiFolder }}
-        </v-icon>
-      </template>
-    </v-treeview>
+    <v-expansion-panels class="mx-0 mb-4" eager>
+      <v-expansion-panel class="px-0 py-0">
+        <v-expansion-panel-title>Process Taxonomies</v-expansion-panel-title>
+        <v-expansion-panel-text class="pa-0">
+          <v-text-field
+            v-model="searchTreeText"
+            label="Search Process Taxonomies"
+            :clear-icon="mdiCloseCircleOutline"
+            clearable
+            dark
+            flat
+            hide-details
+            solo-inverted
+          >
+          </v-text-field>
+          <v-treeview
+            v-if="filteredTreeData.length > 0"
+            v-model:selected="selectedTreeItems"
+            :items="treeViewData"
+            select-strategy="classic"
+            item-value="id"
+            selectable
+            :search="searchTreeText"
+            activatable
+            @update:modelValue="updateMap"
+          >
+            <template v-slot:prepend="{ isOpen }">
+              <v-icon>
+                {{ isOpen ? mdiFolderOpen : mdiFolder }}
+              </v-icon>
+            </template>
+          </v-treeview>
+          <p v-else class="text-center text-grey-darken-1">No process taxonomies found</p>
+        </v-expansion-panel-text>
+      </v-expansion-panel>
+    </v-expansion-panels>
 
     <v-autocomplete
       v-model="selectedSpatialZones"
@@ -76,7 +85,7 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { usePerceptualModelStore } from '@/stores/perceptual_models'
 import {
   useMapStore,
@@ -84,6 +93,7 @@ import {
   selectedTemporalZones,
   selectedProcesses,
   searchTerm,
+  userTouchedFilter,
   selectedFilters
 } from '@/stores/map'
 import { mdiFolderOpen, mdiFolder, mdiCloseCircleOutline } from '@mdi/js'
@@ -115,6 +125,14 @@ const textSearchFields = ref([
 const treeViewData = ref([])
 const selectedTreeItems = ref([])
 const searchTreeText = ref('')
+const debouncedSearchTreeText = ref('')
+const debounceTimeout = ref(null)
+
+// Fetch the process taxonomies, spatial zones, and temporal zones
+perceptualModelStore.fetchProcessTaxonomies().then((pt) => {
+  process_taxonomies.value = pt
+  treeViewData.value = buildTree(pt)
+})
 const processTaxonomiesMap = ref(new Map())
 const spatialZonesMap = ref(new Map())
 const temporalZonesMap = ref(new Map())
@@ -229,7 +247,6 @@ const logIdentifiers = async () => {
   const collectIdentifiersAsString = async (ids, map, category) => {
     const identifiers = []
     for (let id of ids) {
-      await nextTick()
       const selectedItem = map.get(id)
       if (selectedItem) {
         identifiers.push(selectedItem)
@@ -286,8 +303,7 @@ const logIdentifiers = async () => {
 
 async function filter() {
   filtering.value = true
-  await nextTick()
-  // reset search term if no text search fields are selected
+  userTouchedFilter.value = true
   if (textSearchFields.value.length === 0) {
     searchTerm.value = null
   }
@@ -304,7 +320,7 @@ async function filter() {
     const search = checkSearchTerm(searchTerm.value, textSearchFields.value, feature)
     return process && spatial && temporal && search
   }
-  await mapStore.filterFeatures(filterFunction)
+  mapStore.filterFeatures(filterFunction)
   const filteredFeatures = mapStore.currentFilteredData
   emit('onFilter', {
     selectedSpatialZones,
@@ -322,9 +338,44 @@ const updateMap = async () => {
   selectedTreeItems.value.forEach((item) => {
     selectedProcesses.value.push(item)
   })
-  await nextTick()
   filter()
 }
+const debouncedFilter = () => {
+  clearTimeout(debounceTimeout.value)
+  debounceTimeout.value = setTimeout(() => {
+    filter()
+  }, 300)
+}
+const filteredTreeData = computed(() => {
+  if (!searchTreeText.value || !treeViewData.value.length) {
+    return treeViewData.value
+  }
+
+  const searchLower = searchTreeText.value.toLowerCase()
+  const hasMatchingItems = (items) => {
+    return items.some((item) => {
+      const matchesTitle = item.title.toLowerCase().includes(searchLower)
+      const matchesChildren = item.children?.length ? hasMatchingItems(item.children) : false
+      return matchesTitle || matchesChildren
+    })
+  }
+
+  return hasMatchingItems(treeViewData.value) ? treeViewData.value : []
+})
+
+const debounceSearch = (query) => {
+  clearTimeout(debounceTimeout.value)
+  debounceTimeout.value = setTimeout(() => {
+    debouncedSearchTreeText.value = query
+  }, 300)
+}
+
+watch(
+  () => searchTreeText.value,
+  (newQuery) => {
+    debounceSearch(newQuery)
+  }
+)
 </script>
 
 <style scoped>
@@ -332,5 +383,9 @@ const updateMap = async () => {
   position: absolute;
   bottom: 30%;
   left: 110%;
+}
+
+:deep(.v-expansion-panel-text__wrapper) {
+  padding: 0 !important;
 }
 </style>
