@@ -60,12 +60,9 @@ import TheLeafletMap from '@/components/TheLeafletMap.vue'
 import { mdiChevronRight, mdiChevronLeft } from '@mdi/js'
 import { useMapStore } from '@/stores/map'
 import { useDisplay } from 'vuetify'
-import { storeToRefs } from 'pinia'
 
 const { mdAndDown } = useDisplay()
 const mapStore = useMapStore()
-
-const { leaflet } = storeToRefs(mapStore)
 
 const showFilterDrawer = ref(true)
 const showDataDrawer = ref(true)
@@ -94,21 +91,21 @@ const onFilter = (data) => {
 }
 
 const toggleFilterDrawer = async () => {
-  const center = leaflet.value.getCenter()
+  const center = mapStore.leaflet.getCenter()
   showFilterDrawer.value = !showFilterDrawer.value
   await nextTick()
-  leaflet.value.invalidateSize(true)
-  leaflet.value.setView(center)
+  mapStore.leaflet.invalidateSize(true)
+  mapStore.leaflet.setView(center)
 }
 
 const toggleDataDrawer = async () => {
   // get the center of the map before the drawer is toggled
-  const center = leaflet.value.getCenter()
+  const center = mapStore.leaflet.getCenter()
   showDataDrawer.value = !showDataDrawer.value
   await nextTick()
-  leaflet.value.invalidateSize(true)
+  mapStore.leaflet.invalidateSize(true)
   // set the center of the map after the drawer is toggled
-  leaflet.value.setView(center)
+  mapStore.leaflet.setView(center)
 }
 
 const getCols = computed(() => {

@@ -20,17 +20,16 @@ import { useMapStore } from '@/stores/map'
 import 'leaflet-iconmaterial/dist/leaflet.icon-material.css'
 
 const mapStore = useMapStore()
-const { leaflet, layerGroup, allAvailableCoordinates, mapLoaded, userTouchedFilter } = storeToRefs(mapStore)
-
+const { layerGroup, allAvailableCoordinates, mapLoaded, userTouchedFilter } = storeToRefs(mapStore)
 
 onUpdated(() => {
-  leaflet.value.invalidateSize()
+  mapStore.leaflet.invalidateSize()
 })
 
 onMounted(async () => {
-  leaflet.value = L.map('mapContainer', { minZoom: 2 }).setView([0, 11], 2)
+  mapStore.leaflet = L.map('mapContainer', { minZoom: 2 }).setView([0, 11], 2)
   layerGroup.value = new L.LayerGroup()
-  layerGroup.value.addTo(leaflet.value)
+  layerGroup.value.addTo(mapStore.leaflet)
 
   // Initial OSM tile layer
   let CartoDB_PositronNoLabels = L.tileLayer(
@@ -66,8 +65,8 @@ onMounted(async () => {
     Esri_WorldImagery
   }
 
-  Esri_WorldImagery.addTo(leaflet.value)
-  Esri_Hydro_Reference_Overlay.addTo(leaflet.value)
+  Esri_WorldImagery.addTo(mapStore.leaflet)
+  Esri_Hydro_Reference_Overlay.addTo(mapStore.leaflet)
 
   // query the api for the features
   await mapStore.fetchPerceptualModelsGeojson()
@@ -76,7 +75,7 @@ onMounted(async () => {
   const bounds = L.latLngBounds(allAvailableCoordinates.value)
 
   // Restrict panning to within bounds
-  leaflet.value.setMaxBounds(bounds)
+  mapStore.leaflet.setMaxBounds(bounds)
 
   // layer toggling
   let mixed = {
@@ -89,12 +88,12 @@ onMounted(async () => {
   //  */
 
   // Layer Control
-  L.control.layers(baselayers, mixed).addTo(leaflet.value)
+  L.control.layers(baselayers, mixed).addTo(mapStore.leaflet)
 
   /*
    * LEAFLET EVENT HANDLERS
    */
-  leaflet.value.on('click', function (e) {
+  mapStore.leaflet.on('click', function (e) {
     mapClick(e)
   })
 
