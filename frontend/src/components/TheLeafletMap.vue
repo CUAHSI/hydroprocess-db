@@ -20,7 +20,7 @@ import { useMapStore } from '@/stores/map'
 import 'leaflet-iconmaterial/dist/leaflet.icon-material.css'
 
 const mapStore = useMapStore()
-const { layerGroup, allAvailableCoordinates, mapLoaded, userTouchedFilter } = storeToRefs(mapStore)
+const { mapLoaded, userTouchedFilter } = storeToRefs(mapStore)
 
 onUpdated(() => {
   mapStore.leaflet.invalidateSize()
@@ -28,8 +28,8 @@ onUpdated(() => {
 
 onMounted(async () => {
   mapStore.leaflet = L.map('mapContainer', { minZoom: 2 }).setView([0, 11], 2)
-  layerGroup.value = new L.LayerGroup()
-  layerGroup.value.addTo(mapStore.leaflet)
+  mapStore.layerGroup = new L.LayerGroup()
+  mapStore.layerGroup.addTo(mapStore.leaflet)
 
   // Initial OSM tile layer
   let CartoDB_PositronNoLabels = L.tileLayer(
@@ -72,14 +72,14 @@ onMounted(async () => {
   await mapStore.fetchPerceptualModelsGeojson()
 
   // Convert to Leaflet LatLngBounds
-  const bounds = L.latLngBounds(allAvailableCoordinates.value)
+  const bounds = L.latLngBounds(mapStore.allAvailableCoordinates)
 
   // Restrict panning to within bounds
   mapStore.leaflet.setMaxBounds(bounds)
 
   // layer toggling
   let mixed = {
-    'Perceptual Models': layerGroup.value,
+    'Perceptual Models': mapStore.layerGroup,
     'Esri Hydro Reference Overlay': Esri_Hydro_Reference_Overlay
   }
 

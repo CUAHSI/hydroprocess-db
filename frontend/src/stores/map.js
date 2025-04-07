@@ -8,12 +8,12 @@ import citationMatchingFileNames from '@/assets/citation_and_images_matching.jso
 
 export const useMapStore = defineStore('map', () => {
   const leaflet = shallowRef(null)
-  const layerGroup = ref(null)
+  const layerGroup = shallowRef(null)
+  const allAvailableCoordinates = shallowRef([])
   const modelFeatures = ref({})
   const perceptualModelsGeojson = ref([])
   const mapLoaded = ref(false)
   let currentFilteredData = ref([])
-  const allAvailableCoordinates = ref([])
   const markerClusterGroup = L.markerClusterGroup({
     iconCreateFunction: (cluster) => {
       const childCount = cluster.getChildCount()
