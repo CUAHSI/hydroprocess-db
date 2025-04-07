@@ -15,22 +15,22 @@ import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import { storeToRefs } from 'pinia'
 import * as esriLeaflet from 'esri-leaflet'
-import { onMounted, onUpdated, toRaw } from 'vue'
+import { onMounted, onUpdated } from 'vue'
 import { useMapStore } from '@/stores/map'
 import 'leaflet-iconmaterial/dist/leaflet.icon-material.css'
 
 const mapStore = useMapStore()
 const { leaflet, layerGroup, allAvailableCoordinates, mapLoaded, userTouchedFilter } = storeToRefs(mapStore)
-let rawLeaflet = toRaw(leaflet)
+
 
 onUpdated(() => {
-  rawLeaflet.invalidateSize()
+  leaflet.value.invalidateSize()
 })
 
 onMounted(async () => {
-  rawLeaflet = L.map('mapContainer', { minZoom: 2 }).setView([0, 11], 2)
+  leaflet.value = L.map('mapContainer', { minZoom: 2 }).setView([0, 11], 2)
   layerGroup.value = new L.LayerGroup()
-  layerGroup.value.addTo(rawLeaflet)
+  layerGroup.value.addTo(leaflet.value)
 
   // Initial OSM tile layer
   let CartoDB_PositronNoLabels = L.tileLayer(
@@ -66,8 +66,8 @@ onMounted(async () => {
     Esri_WorldImagery
   }
 
-  Esri_WorldImagery.addTo(rawLeaflet)
-  Esri_Hydro_Reference_Overlay.addTo(rawLeaflet)
+  Esri_WorldImagery.addTo(leaflet.value)
+  Esri_Hydro_Reference_Overlay.addTo(leaflet.value)
 
   // query the api for the features
   await mapStore.fetchPerceptualModelsGeojson()
@@ -76,7 +76,7 @@ onMounted(async () => {
   const bounds = L.latLngBounds(allAvailableCoordinates.value)
 
   // Restrict panning to within bounds
-  rawLeaflet.setMaxBounds(bounds)
+  leaflet.value.setMaxBounds(bounds)
 
   // layer toggling
   let mixed = {
@@ -89,17 +89,16 @@ onMounted(async () => {
   //  */
 
   // Layer Control
-  L.control.layers(baselayers, mixed).addTo(rawLeaflet)
+  L.control.layers(baselayers, mixed).addTo(leaflet.value)
 
   /*
    * LEAFLET EVENT HANDLERS
    */
-  rawLeaflet.on('click', function (e) {
+  leaflet.value.on('click', function (e) {
     mapClick(e)
   })
 
   mapLoaded.value = true
-  leaflet.value = rawLeaflet
 })
 
 /**
