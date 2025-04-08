@@ -3,16 +3,12 @@
 </template>
 
 <script setup>
-import {
-  useMapStore,
-  selectedSpatialZones,
-  selectedTemporalZones,
-  selectedProcesses,
-  searchTerm
-} from '@/stores/map'
+import { useMapStore } from '@/stores/map'
 import Papa from 'papaparse'
+import { storeToRefs } from 'pinia'
 
 const mapStore = useMapStore()
+const { currentFilteredData, selectedFilters } = storeToRefs(mapStore)
 const renameColumnInCSV = {
   'figure num': 'Figure Number',
   'figure caption': 'Figure Caption',
@@ -56,7 +52,7 @@ function flattenItem(obj, parentKey = '', result = {}) {
         flattenItem(obj[key], newKey, result)
       } else if (Array.isArray(obj[key])) {
         if (obj[key].every((item) => typeof item === 'string' || typeof item === 'number')) {
-          result[newKey] = obj[key].join(', ')
+          result[newKey] = obj[key].join('|')
         } else {
           const arrayValues = {}
           obj[key].forEach((item) => {
@@ -103,16 +99,13 @@ function downloadMapData() {
   try {
     window.heap.track('Download', {
       downloadItem: 'Map',
-      selectedSpatialZones: selectedSpatialZones.value.join(', '),
-      selectedTemporalZones: selectedTemporalZones.value.join(', '),
-      selectedProcesses: selectedProcesses.value.join(', '),
-      searchTerm: searchTerm.value
+      ...selectedFilters
     })
   } catch (e) {
     console.warn('Heap is not available.')
   }
-  const mapData = mapStore.currentFilteredData
-  const flattenedMapData = flattenMapDataJSON(mapData)
+
+  const flattenedMapData = flattenMapDataJSON(currentFilteredData.value)
 
   const csv = Papa.unparse(flattenedMapData, {
     columns: csvColumns
