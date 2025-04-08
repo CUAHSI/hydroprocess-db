@@ -1,10 +1,7 @@
 <template>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   <div v-show="$route.meta.showMap" id="mapContainer">
-    <div
-      v-if="userTouchedFilter && mapStore.currentFilteredData.length === 0"
-      class="no-data-overlay"
-    >
+    <div v-if="userTouchedFilter && currentFilteredData.length === 0" class="no-data-overlay">
       <span>No data found</span>
     </div>
   </div>
@@ -13,23 +10,23 @@
 <script setup>
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
+import { storeToRefs } from 'pinia'
 import * as esriLeaflet from 'esri-leaflet'
 import { onMounted, onUpdated } from 'vue'
-import { useMapStore, userTouchedFilter } from '@/stores/map'
+import { useMapStore } from '@/stores/map'
 import 'leaflet-iconmaterial/dist/leaflet.icon-material.css'
 
 const mapStore = useMapStore()
+const { mapLoaded, userTouchedFilter, currentFilteredData } = storeToRefs(mapStore)
 
 onUpdated(() => {
   mapStore.leaflet.invalidateSize()
 })
 
 onMounted(async () => {
-  let leaflet = L.map('mapContainer', { minZoom: 2 }).setView([0, 11], 2)
-  mapStore.leaflet = leaflet
-  let layerGroup = new L.LayerGroup()
-  mapStore.layerGroup = layerGroup
-  layerGroup.addTo(leaflet)
+  mapStore.leaflet = L.map('mapContainer', { minZoom: 2 }).setView([0, 11], 2)
+  mapStore.layerGroup = new L.LayerGroup()
+  mapStore.layerGroup.addTo(mapStore.leaflet)
 
   // Initial OSM tile layer
   let CartoDB_PositronNoLabels = L.tileLayer(
@@ -65,8 +62,8 @@ onMounted(async () => {
     Esri_WorldImagery
   }
 
-  Esri_WorldImagery.addTo(leaflet)
-  Esri_Hydro_Reference_Overlay.addTo(leaflet)
+  Esri_WorldImagery.addTo(mapStore.leaflet)
+  Esri_Hydro_Reference_Overlay.addTo(mapStore.leaflet)
 
   // query the api for the features
   await mapStore.fetchPerceptualModelsGeojson()
@@ -75,11 +72,11 @@ onMounted(async () => {
   const bounds = L.latLngBounds(mapStore.allAvailableCoordinates)
 
   // Restrict panning to within bounds
-  leaflet.setMaxBounds(bounds)
+  mapStore.leaflet.setMaxBounds(bounds)
 
   // layer toggling
   let mixed = {
-    'Perceptual Models': layerGroup,
+    'Perceptual Models': mapStore.layerGroup,
     'Esri Hydro Reference Overlay': Esri_Hydro_Reference_Overlay
   }
 
@@ -88,16 +85,16 @@ onMounted(async () => {
   //  */
 
   // Layer Control
-  L.control.layers(baselayers, mixed).addTo(leaflet)
+  L.control.layers(baselayers, mixed).addTo(mapStore.leaflet)
 
   /*
    * LEAFLET EVENT HANDLERS
    */
-  leaflet.on('click', function (e) {
+  mapStore.leaflet.on('click', function (e) {
     mapClick(e)
   })
 
-  mapStore.mapLoaded = true
+  mapLoaded.value = true
 })
 
 /**

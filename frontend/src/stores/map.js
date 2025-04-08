@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, shallowRef } from 'vue'
 import { ENDPOINTS } from '@/constants'
 import L from 'leaflet'
 import 'leaflet-iconmaterial/dist/leaflet.icon-material'
@@ -7,13 +7,19 @@ import 'leaflet.markercluster'
 import citationMatchingFileNames from '@/assets/citation_and_images_matching.json'
 
 export const useMapStore = defineStore('map', () => {
-  const leaflet = ref(null)
-  const layerGroup = ref(null)
+  const selectedSpatialZones = ref([])
+  const selectedTemporalZones = ref([])
+  const selectedProcesses = ref([])
+  const searchTerm = ref(null)
+  const userTouchedFilter = ref(false)
+  const selectedFilters = ref({})
+  const leaflet = shallowRef(null)
+  const layerGroup = shallowRef(null)
+  const allAvailableCoordinates = shallowRef([])
   const modelFeatures = ref({})
   const perceptualModelsGeojson = ref([])
   const mapLoaded = ref(false)
   let currentFilteredData = ref([])
-  const allAvailableCoordinates = []
   const markerClusterGroup = L.markerClusterGroup({
     iconCreateFunction: (cluster) => {
       const childCount = cluster.getChildCount()
@@ -121,7 +127,7 @@ export const useMapStore = defineStore('map', () => {
       content += `${feature.properties.temporal_zone_type.temporal_property}`
     }
 
-    allAvailableCoordinates.push(
+    allAvailableCoordinates.value.push(
       adjustLatLon(feature.properties.location.lat, feature.properties.location.lon)
     )
 
@@ -234,12 +240,12 @@ export const useMapStore = defineStore('map', () => {
     filterFeatures,
     resetFilter,
     currentFilteredData,
-    allAvailableCoordinates
+    allAvailableCoordinates,
+    selectedSpatialZones,
+    selectedTemporalZones,
+    selectedProcesses,
+    searchTerm,
+    userTouchedFilter,
+    selectedFilters
   }
 })
-export const selectedSpatialZones = ref([])
-export const selectedTemporalZones = ref([])
-export const selectedProcesses = ref([])
-export const searchTerm = ref(null)
-export const userTouchedFilter = ref(false)
-export const selectedFilters = ref({})
