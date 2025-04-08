@@ -16,7 +16,7 @@ export const useMapStore = defineStore('map', () => {
   const leaflet = shallowRef(null)
   const layerGroup = shallowRef(null)
   const allAvailableCoordinates = shallowRef([])
-  const modelFeatures = ref({})
+  const modelFeatures = shallowRef({})
   const perceptualModelsGeojson = ref([])
   const mapLoaded = ref(false)
   let currentFilteredData = ref([])

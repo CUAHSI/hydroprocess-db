@@ -106,12 +106,11 @@ const {
 
 const emit = defineEmits(['selectModel', 'toggle', 'onFilter'])
 
-let modelFeatures = ref({})
 const filtering = ref()
 
 // query the api for the features
 perceptualModelStore.fetchPerceptualModels().then((perceptual_models) => {
-  modelFeatures.value = perceptual_models
+  mapStore.modelFeatures = perceptual_models
 })
 
 const process_taxonomies = ref([])
