@@ -21,7 +21,7 @@
       label="Process Taxonomies" @update:modelValue="filter" clearable chips multiple
       :loading="filtering"></v-autocomplete> -->
     <v-expansion-panels class="mx-0 mb-4" eager>
-      <v-expansion-panel class="px-0 py-0">
+      <v-expansion-panel class="px-0 py-0" style="max-height:400px; overflow-y: auto;">
         <v-expansion-panel-title>Process Taxonomies</v-expansion-panel-title>
         <v-expansion-panel-text class="pa-0">
           <v-text-field
