@@ -1,16 +1,16 @@
 <template>
   <v-text-field
-          @update:focused="debouncedFilter"
-          @keydown.enter.prevent="debouncedFilter"
-          @click:clear="debouncedFilter"
-          v-model="searchTerm"
-          label="Search Data..."
-          clearable
-          hide-details
-        >
-      </v-text-field>
+    @update:focused="debouncedFilter"
+    @keydown.enter.prevent="debouncedFilter"
+    @click:clear="debouncedFilter"
+    v-model="searchTerm"
+    label="Search Data..."
+    clearable
+    hide-details
+  >
+  </v-text-field>
   <v-sheet class="mx-auto" elevation="8">
-      <v-progress-linear v-if="filtering" indeterminate color="primary"></v-progress-linear>
+    <v-progress-linear v-if="filtering" indeterminate color="primary"></v-progress-linear>
     <h3 class="text-h6 ma-2 text-center">Filter Map</h3>
     <v-divider></v-divider>
     <!-- <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
