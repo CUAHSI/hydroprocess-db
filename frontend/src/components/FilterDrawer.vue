@@ -1,13 +1,9 @@
 <template>
-  <v-text-field
-    @update:focused="debouncedFilter"
-    @keydown.enter.prevent="debouncedFilter"
-    @click:clear="debouncedFilter"
-    v-model="searchTerm"
-    label="Search Data..."
-    clearable
-    hide-details
-  >
+  <v-text-field @update:focused="debouncedFilter" @keydown.enter.prevent="debouncedFilter"
+    @click:clear="debouncedFilter" v-model="searchTerm" label="Search Data..." clearable hide-details>
+    <template #append-inner>
+      <v-icon @click="debouncedFilter" class="cursor-pointer" :icon="mdiMagnify" />
+    </template>
   </v-text-field>
   <v-sheet class="mx-auto" elevation="8">
     <v-progress-linear v-if="filtering" indeterminate color="primary"></v-progress-linear>
@@ -20,28 +16,12 @@
       <v-expansion-panel class="px-0 py-0" style="max-height: 400px; overflow-y: auto">
         <v-expansion-panel-title>Process Taxonomies</v-expansion-panel-title>
         <v-expansion-panel-text class="pa-0">
-          <v-text-field
-            v-model="searchTreeText"
-            label="Search Process Taxonomies"
-            :clear-icon="mdiCloseCircleOutline"
-            clearable
-            dark
-            flat
-            hide-details
-            solo-inverted
-          >
+          <v-text-field v-model="searchTreeText" label="Search Process Taxonomies" :clear-icon="mdiCloseCircleOutline"
+            clearable dark flat hide-details solo-inverted>
           </v-text-field>
-          <v-treeview
-            v-if="filteredTreeData.length > 0"
-            v-model:selected="selectedTreeItems"
-            :items="treeViewData"
-            select-strategy="classic"
-            item-value="id"
-            selectable
-            :search="searchTreeText"
-            activatable
-            @update:modelValue="updateMap"
-          >
+          <v-treeview v-if="filteredTreeData.length > 0" v-model:selected="selectedTreeItems" :items="treeViewData"
+            select-strategy="classic" item-value="id" selectable :search="searchTreeText" activatable
+            @update:modelValue="updateMap">
             <template v-slot:prepend="{ isOpen }">
               <v-icon>
                 {{ isOpen ? mdiFolderOpen : mdiFolder }}
@@ -53,30 +33,11 @@
       </v-expansion-panel>
     </v-expansion-panels>
 
-    <v-autocomplete
-      v-model="selectedSpatialZones"
-      :items="spatialZones"
-      item-title="spatial_property"
-      item-value="id"
-      label="Spatial Zones"
-      @update:modelValue="filter"
-      clearable
-      chips
-      multiple
-      :loading="filtering"
-    ></v-autocomplete>
-    <v-autocomplete
-      v-model="selectedTemporalZones"
-      :items="temporalZones"
-      item-title="temporal_property"
-      item-value="id"
-      label="Temporal Zones"
-      @update:modelValue="filter"
-      clearable
-      chips
-      multiple
-      :loading="filtering"
-    ></v-autocomplete>
+    <v-autocomplete v-model="selectedSpatialZones" :items="spatialZones" item-title="spatial_property" item-value="id"
+      label="Spatial Zones" @update:modelValue="filter" clearable chips multiple :loading="filtering"></v-autocomplete>
+    <v-autocomplete v-model="selectedTemporalZones" :items="temporalZones" item-title="temporal_property"
+      item-value="id" label="Temporal Zones" @update:modelValue="filter" clearable chips multiple
+      :loading="filtering"></v-autocomplete>
   </v-sheet>
 </template>
 
@@ -85,7 +46,7 @@ import { ref, watch, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { usePerceptualModelStore } from '@/stores/perceptual_models'
 import { useMapStore } from '@/stores/map'
-import { mdiFolderOpen, mdiFolder, mdiCloseCircleOutline } from '@mdi/js'
+import { mdiFolderOpen, mdiFolder, mdiCloseCircleOutline, mdiMagnify } from '@mdi/js'
 
 const perceptualModelStore = usePerceptualModelStore()
 const mapStore = useMapStore()
