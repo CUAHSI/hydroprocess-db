@@ -1,5 +1,5 @@
 <template>
-  <v-sheet class="mx-auto" elevation="8">
+  <v-sheet class="mx-auto rounded" elevation="8">
     <v-card>
       <v-card-title>Model Type Counts</v-card-title>
       <v-card-text>
@@ -16,16 +16,22 @@
               <td>{{ modelType }}</td>
               <td>{{ count }}</td>
             </tr>
+            <tr>
+              <td><strong>Total</strong></td>
+              <td>
+                <strong>{{ totalModels }}</strong>
+              </td>
+            </tr>
           </tbody>
         </v-table>
       </v-card-text>
     </v-card>
-    <v-card>
+    <!-- <v-card>
       <v-card-title>Total Perceptual Models</v-card-title>
       <v-card-text>
         <p>{{ totalModels }}</p>
       </v-card-text>
-    </v-card>
+    </v-card> -->
     <v-card>
       <v-card-text>
         <DownloadMapData />
@@ -89,7 +95,7 @@ query()
 
 <style scoped>
 #chart {
-  height: 40vh;
+  height: 20vh;
 }
 
 .v-navigation-drawer--mini-variant,
