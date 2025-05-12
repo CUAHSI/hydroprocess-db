@@ -1,40 +1,24 @@
 <template>
-  <v-sheet class="mx-auto rounded" elevation="8">
-    <v-card>
-      <v-card-title>Model Type Counts</v-card-title>
-      <v-card-text>
-        <v-table>
-          <thead>
-            <tr>
-              <th class="text-left">Model Type</th>
-              <th class="text-left">Count</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- modelTypeCounds is an object -->
-            <tr v-for="(count, modelType) in modelTypeCounts" :key="modelType">
-              <td>{{ modelType }}</td>
-              <td>{{ count }}</td>
-            </tr>
-            <tr>
-              <td><strong>Total</strong></td>
-              <td>
-                <strong>{{ totalModels }}</strong>
-              </td>
-            </tr>
-          </tbody>
-        </v-table>
-      </v-card-text>
-    </v-card>
-    <!-- <v-card>
-      <v-card-title>Total Perceptual Models</v-card-title>
-      <v-card-text>
-        <p>{{ totalModels }}</p>
-      </v-card-text>
-    </v-card> -->
-    <v-card>
-      <v-card-text>
-        <DownloadMapData />
+  <v-sheet class="model-summary rounded-xl" elevation="8">
+    <v-card class="rounded-xl">
+      <v-card-text class="pa-4">
+        <div class="summary-row header">
+          <span>Model Type</span>
+          <span>Count</span>
+        </div>
+        <div v-for="(count, modelType) in modelTypeCounts" :key="modelType" class="summary-row">
+          <span>{{ modelType }}</span>
+          <span>{{ count }}</span>
+        </div>
+        <div class="summary-row total">
+          <strong>Total</strong>
+          <strong>{{ totalModels }}</strong>
+        </div>
+
+        <!-- Download Row -->
+        <div class="download-wrapper mt-2">
+          <DownloadMapData />
+        </div>
       </v-card-text>
     </v-card>
   </v-sheet>
@@ -101,5 +85,35 @@ query()
 .v-navigation-drawer--mini-variant,
 .v-navigation-drawer {
   overflow: visible !important;
+}
+
+.model-summary {
+  border: 1.5px solid #444;
+  max-width: 300px;
+  background-color: #f9f7f2;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 4px;
+  font-size: 14px;
+}
+
+.summary-row.header {
+  font-weight: 600;
+  border-bottom: 1.4px solid #444;
+}
+
+.summary-row.total {
+  border-top: 1.4px solid #444;
+  margin-top: 4px;
+  font-weight: bold;
+}
+
+.download-wrapper {
+  display: flex;
+  justify-content: center;
+  padding-top: 8px;
 }
 </style>
