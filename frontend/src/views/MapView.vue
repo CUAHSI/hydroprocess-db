@@ -1,54 +1,102 @@
 <template>
   <v-overlay :model-value="!mapStore.mapLoaded" class="align-center justify-center">
-    <v-progress-circular indeterminate :size="128"></v-progress-circular>
+    <v-progress-circular indeterminate :size="128" />
   </v-overlay>
+
   <v-container v-if="!mdAndDown" fluid>
-    <v-row fill-height style="height: 87vh">
+    <v-row no-gutters style="position: relative">
+      <div
+        v-if="showFilterDrawer"
+        ref="filterDrawerRef"
+        :style="{
+          minWidth: `${drawerWidth}px`,
+          height: '100%',
+          position: 'relative',
+          zIndex: 1
+        }"
+      >
+        <FilterDrawer @onFilter="onFilter" />
+      </div>
       <v-btn
         @click="toggleFilterDrawer"
         color="secondary"
-        location="left"
-        style="z-index: 9999"
-        :style="{ transform: translateFilter(), position: 'absolute' }"
         :icon="showFilterDrawer ? mdiChevronLeft : mdiChevronRight"
-        size="x-small"
-      >
-      </v-btn>
-      <v-col v-if="showFilterDrawer" :cols="3">
-        <FilterDrawer @onFilter="onFilter" />
-      </v-col>
-      <v-divider vertical></v-divider>
-      <v-col :cols="getCols" style="position: relative">
+        size="small"
+        :style="{
+          position: 'absolute',
+          top: '50%',
+          left: `${showFilterDrawer ? drawerWidth : 10}px`,
+          transform: 'translate(-50%, -50%)',
+          zIndex: 9999
+        }"
+      />
+      <v-col :style="{ height: '80vh', position: 'relative' }">
         <TheLeafletMap />
-
-        <!-- Floating DataViewDrawer in bottom-right -->
-        <div style="position: absolute; bottom: 32px; right: 24px; z-index: 1000; max-width: 300px">
+        <div style="position: absolute; bottom: 24px; right: 24px; z-index: 1000; max-width: 320px">
           <DataViewDrawer ref="dataDrawerRef" />
         </div>
       </v-col>
     </v-row>
   </v-container>
-  <v-container v-else>
-    <v-row style="height: 40vh">
+
+  <v-container v-else fluid>
+    <v-row style="height: 90vh; position: relative">
       <TheLeafletMap />
-    </v-row>
-    <v-row style="height: 50vh">
-      <v-col>
+      <v-btn
+        @click="toggleFilterDrawer"
+        color="secondary"
+        :icon="showFilterDrawer ? mdiChevronLeft : mdiChevronRight"
+        size="small"
+        :style="{
+          position: 'absolute',
+          left: `${showFilterDrawer ? drawerWidth : 10}px`,
+          top: '50%',
+          transform: 'translateY(-50%)',
+          zIndex: 1001
+        }"
+      />
+
+      <v-btn
+        @click="toggleDataDrawer"
+        color="secondary"
+        :icon="mdiInformationOutline"
+        size="small"
+        style="position: absolute; right: 8px; top: 72px; z-index: 1001"
+      >
+      </v-btn>
+
+      <div
+        v-if="showFilterDrawer"
+        :style="{
+          position: 'absolute',
+          top: '0',
+          left: '0',
+          minWidth: `${drawerWidth}px`,
+          height: '100%',
+          background: 'white',
+          zIndex: 1000,
+          overflowY: 'auto'
+        }"
+      >
         <FilterDrawer @onFilter="onFilter" />
-      </v-col>
-      <v-col>
+      </div>
+
+      <div
+        v-show="showDataDrawer"
+        style="position: absolute; top: 120px; right: 8px; z-index: 1000; max-width: 320px"
+      >
         <DataViewDrawer ref="dataDrawerRef" />
-      </v-col>
+      </div>
     </v-row>
   </v-container>
 </template>
 
 <script setup>
-import { ref, computed, nextTick } from 'vue'
+import { ref, nextTick, onMounted } from 'vue'
 import FilterDrawer from '@/components/FilterDrawer.vue'
 import DataViewDrawer from '@/components/DataViewDrawer.vue'
 import TheLeafletMap from '@/components/TheLeafletMap.vue'
-import { mdiChevronRight, mdiChevronLeft } from '@mdi/js'
+import { mdiChevronRight, mdiChevronLeft, mdiInformationOutline } from '@mdi/js'
 import { useMapStore } from '@/stores/map'
 import { useDisplay } from 'vuetify'
 
@@ -56,7 +104,15 @@ const { mdAndDown } = useDisplay()
 const mapStore = useMapStore()
 
 const showFilterDrawer = ref(true)
+const showDataDrawer = ref(true)
 const dataDrawerRef = ref(null)
+
+const drawerWidth = 350
+
+onMounted(() => {
+  showFilterDrawer.value = !mdAndDown.value
+  showDataDrawer.value = !mdAndDown.value
+})
 
 const onFilter = (data) => {
   const filters = {
@@ -65,12 +121,9 @@ const onFilter = (data) => {
     process_taxonomy_ids: data.selectedProcesses.value
   }
 
-  // Update counts with filtered features if provided
   if (data.filteredFeatures) {
     dataDrawerRef.value.updateCounts(data.filteredFeatures)
-  }
-  // Call query only if no filtered features and no filters are applied (initial state)
-  else if (
+  } else if (
     !data.searchTerm?.value &&
     data.selectedSpatialZones.value.length === 0 &&
     data.selectedTemporalZones.value.length === 0 &&
@@ -88,21 +141,8 @@ const toggleFilterDrawer = async () => {
   mapStore.leaflet.setView(center)
 }
 
-const getCols = computed(() => {
-  // if all drawers are open, the map should take up 7 columns
-  let cols = 12
-  if (showFilterDrawer.value) {
-    cols -= 3
-  }
-  return cols
-})
-
-const translateFilter = () => {
-  if (showFilterDrawer.value) {
-    return 'translate(24vw, 0)'
-  } else {
-    return 'translate(0, 0)'
-  }
+const toggleDataDrawer = () => {
+  showDataDrawer.value = !showDataDrawer.value
 }
 </script>
 
