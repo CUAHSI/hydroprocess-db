@@ -61,7 +61,7 @@
         color="secondary"
         :icon="mdiInformationOutline"
         size="small"
-        style="position: absolute; right: 8px; top: 72px; z-index: 1001"
+        style="position: absolute; right: 8px; bottom: 72px; z-index: 1001"
       >
       </v-btn>
 
@@ -83,7 +83,7 @@
 
       <div
         v-show="showDataDrawer"
-        style="position: absolute; top: 120px; right: 8px; z-index: 1000; max-width: 320px"
+        style="position: absolute; bottom: 120px; right: 8px; z-index: 1000; max-width: 320px"
       >
         <DataViewDrawer ref="dataDrawerRef" />
       </div>
