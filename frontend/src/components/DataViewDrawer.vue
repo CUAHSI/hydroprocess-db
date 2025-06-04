@@ -47,9 +47,17 @@ const query = async (filters = {}) => {
 
   // Delete the 'Figure model (Hand-drawn)' key
   delete counts['Figure model (Hand-drawn)']
+  let total = 0
+  const cleanedCounts = {}
 
-  modelTypeCounts.value = counts
-  totalModels.value = Object.values(counts).reduce((acc, count) => acc + count, 0)
+  for (const [key, value] of Object.entries(counts)) {
+    const cleanedKey = key.replace(' model', '')
+    cleanedCounts[cleanedKey] = value
+    total += value
+  }
+
+  totalModels.value = total
+  modelTypeCounts.value = cleanedCounts
   querying.value = false
 }
 
@@ -58,6 +66,7 @@ const updateCounts = (filteredFeatures) => {
   const counts = {}
   if (Array.isArray(filteredFeatures) && filteredFeatures.length > 0) {
     filteredFeatures.forEach((feature) => {
+      console.log('Feature properties:', feature.properties)
       const modelType = feature.properties?.model_type?.name
       if (modelType && modelType !== 'Figure model (Hand-drawn)') {
         counts[modelType] = (counts[modelType] || 0) + 1
