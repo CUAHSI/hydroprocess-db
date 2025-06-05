@@ -4,17 +4,15 @@
   </v-overlay>
 
   <v-container fluid class="pa-0 fill-height position-relative">
-    <!-- Filter Drawer -->
     <div
-      v-if="showFilterDrawer"
+      v-show="showFilterDrawer"
       ref="filterDrawerRef"
-      class="filter-drawer-overlay"
+      class="filter-drawer-overlay pa-2"
       :class="{ 'drawer-overlay-absolute': mdAndDown }"
     >
       <FilterDrawer @onFilter="onFilter" />
     </div>
 
-    <!-- Filter Drawer Toggle Button -->
     <v-btn
       @click="toggleFilterDrawer"
       color="secondary"
@@ -24,14 +22,11 @@
       :style="mdAndDown ? {} : { left: showFilterDrawer ? 'var(--drawer-width)' : '8px' }"
     />
 
-    <!-- Map & Drawers -->
     <v-row class="fill-height ma-0">
       <v-col class="map-container pa-0">
         <TheLeafletMap />
 
-        <!-- Info Button: only on medium and down -->
         <div class="bottom-right-container d-flex flex-column align-end ga-2">
-          <!-- Info icon: only on small/medium screens -->
           <v-btn
             v-if="mdAndDown"
             @click="toggleDataDrawer"
@@ -40,8 +35,7 @@
             size="small"
           />
 
-          <!-- Data Drawer: always visible on large, toggled on smaller -->
-          <div v-if="showDataDrawer || !mdAndDown" class="data-drawer">
+          <div v-show="!mdAndDown || showDataDrawer" class="data-drawer">
             <DataViewDrawer ref="dataDrawerRef" />
           </div>
         </div>
@@ -63,16 +57,16 @@ const { mdAndDown } = useDisplay()
 const mapStore = useMapStore()
 
 const showFilterDrawer = ref(true)
-const showDataDrawer = ref(true)
 const dataDrawerRef = ref(null)
-
-onMounted(() => {
-  showFilterDrawer.value = true
-  showDataDrawer.value = !mdAndDown.value
-})
+const showDataDrawer = ref(!mdAndDown.value)
 
 watch(mdAndDown, (val) => {
-  showDataDrawer.value = !val // if on large screen, show by default
+  showFilterDrawer.value = !val ? true : false
+  showDataDrawer.value = !val
+})
+
+onMounted(() => {
+  showFilterDrawer.value = !mdAndDown.value
 })
 
 const onFilter = (data) => {
@@ -110,7 +104,7 @@ const toggleDataDrawer = () => {
 <style scoped>
 :root {
   --drawer-width: 24vw;
-  --drawer-min-width: 220px;
+  --drawer-min-width: 100%;
   --drawer-max-width: 360px;
 }
 
@@ -133,6 +127,7 @@ const toggleDataDrawer = () => {
   position: absolute;
   width: 100vw;
   max-width: none;
+  z-index: 1001;
 }
 
 @media (min-width: 960px) {
@@ -157,9 +152,8 @@ const toggleDataDrawer = () => {
   bottom: 16px;
   right: 16px;
   z-index: 1001;
-
-  display: flex !important; /* 🛠 force apply */
-  flex-direction: column-reverse !important; /* 🛠 critical for order */
+  display: flex !important;
+  flex-direction: column-reverse !important;
   align-items: flex-end;
   gap: 12px;
 }
@@ -170,6 +164,6 @@ const toggleDataDrawer = () => {
 }
 
 .info-icon {
-  flex-shrink: 0; /* prevent icon from resizing or being pushed */
+  flex-shrink: 0;
 }
 </style>
