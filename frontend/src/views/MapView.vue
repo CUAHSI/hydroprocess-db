@@ -11,15 +11,22 @@
       :class="{ 'drawer-overlay-absolute': mdAndDown }"
     >
       <FilterDrawer @onFilter="onFilter" />
+      <v-btn
+        @click="toggleFilterDrawer"
+        color="secondary"
+        :icon="mdiChevronLeft"
+        size="small"
+        class="filter-toggle-btn-inside"
+      />
     </div>
 
     <v-btn
+      v-show="!showFilterDrawer"
       @click="toggleFilterDrawer"
       color="secondary"
-      :icon="showFilterDrawer ? mdiChevronLeft : mdiChevronRight"
+      :icon="mdiChevronRight"
       size="small"
-      class="filter-toggle-btn"
-      :style="mdAndDown ? {} : { left: showFilterDrawer ? 'var(--drawer-width)' : '8px' }"
+      class="filter-toggle-btn-outside"
     />
 
     <v-row class="fill-height ma-0">
@@ -103,9 +110,9 @@ const toggleDataDrawer = () => {
 
 <style scoped>
 :root {
-  --drawer-width: 24vw;
+  --drawer-width: 25vw;
   --drawer-min-width: 100%;
-  --drawer-max-width: 360px;
+  --drawer-max-width: 420px;
 }
 
 .map-container {
@@ -133,8 +140,8 @@ const toggleDataDrawer = () => {
 @media (min-width: 960px) {
   .filter-drawer-overlay {
     position: relative;
-    width: var(--drawer-width);
-    min-width: var(--drawer-min-width);
+    /* width: 25%; */
+    min-width: 25%;
     max-width: var(--drawer-max-width);
   }
 }
@@ -144,7 +151,7 @@ const toggleDataDrawer = () => {
   top: 50%;
   transform: translateY(-50%);
   z-index: 1001;
-  transition: left 0.3s ease;
+  transition: transform 0.3s ease;
 }
 
 .bottom-right-container {
@@ -165,5 +172,22 @@ const toggleDataDrawer = () => {
 
 .info-icon {
   flex-shrink: 0;
+}
+
+.filter-toggle-btn-inside {
+  position: absolute;
+  top: 50%;
+  right: 0px;
+  transform: translateY(-50%);
+  z-index: 1002;
+  transition: right 0.3s ease;
+}
+
+.filter-toggle-btn-outside {
+  position: absolute;
+  top: 50%;
+  left: 8px;
+  transform: translateY(-50%);
+  z-index: 1002;
 }
 </style>
