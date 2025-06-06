@@ -117,9 +117,6 @@ onMounted(async () => {
   })
   mapStore.leaflet.addControl(drawControl)
 
-  // Store original data for resetting
-  const originalData = [...currentFilteredData.value]
-
   // Handle rectangle creation
   mapStore.leaflet.on(L.Draw.Event.CREATED, function (e) {
     const layer = e.layer
@@ -129,8 +126,7 @@ onMounted(async () => {
     // Get rectangle bounds
     const bounds = layer.getBounds()
 
-    // Filter markers within bounds
-    const filteredMarkers = originalData.filter((feature) => {
+    mapStore.filterFeatures((feature) => {
       if (feature.geometry.type === 'Point') {
         const [lng, lat] = feature.geometry.coordinates
         return bounds.contains([lat, lng])
@@ -138,25 +134,15 @@ onMounted(async () => {
       return false
     })
 
-    // Update currentFilteredData directly
-    currentFilteredData.value = filteredMarkers
     userTouchedFilter.value = true
-
-    // Update the layer group with filtered markers
-    updateMarkers(filteredMarkers)
   })
 
   // Handle rectangle deletion
   mapStore.leaflet.on(L.Draw.Event.DELETED, function () {
     drawnItems.clearLayers()
-    // Reset to original data
-    currentFilteredData.value = [...originalData]
+    mapStore.resetFilter()
     userTouchedFilter.value = currentFilteredData.value.length === 0
-    updateMarkers(currentFilteredData.value)
   })
-
-  // Initial marker rendering
-  updateMarkers(currentFilteredData.value)
 
   mapStore.leaflet.on('click', function (e) {
     mapClick(e)
@@ -164,108 +150,6 @@ onMounted(async () => {
 
   mapLoaded.value = true
 })
-
-function updateMarkers(features) {
-  mapStore.layerGroup.clearLayers()
-  features.forEach((feature) => {
-    if (feature.geometry.type === 'Point') {
-      const [lng, lat] = feature.geometry.coordinates
-      // Log properties to debug field names
-      console.log('Feature properties:', feature.properties)
-
-      // Create citation-style popup content
-      let popupContent =
-        '<div style="max-width: 200px; max-height: 300px; overflow-y: auto; padding: 10px; font-size: 12px;">'
-
-      if (feature.properties) {
-        const props = feature.properties
-        let hasCitationFields = false
-
-        // Title (try common alternatives)
-        const title = props.title || props.name || props.study_title
-        if (title) {
-          popupContent += `<p><strong>${title}</strong></p>`
-          hasCitationFields = true
-        }
-
-        // URL/DOI
-        const url = props.doi || props.url || props.link
-        if (url) {
-          popupContent += `<p><a href="${url}" target="_blank">URL: ${url}</a></p>`
-          hasCitationFields = true
-        }
-
-        // Authors and publication details
-        let citation = ''
-        const authors = props.authors || props.author || props.contributors
-        if (authors) {
-          citation += authors
-        }
-        const articleTitle = props.article_title || props.paper_title || props.title
-        if (articleTitle && articleTitle !== title) {
-          citation += ` "${articleTitle}"`
-        }
-        const journal = props.journal || props.publication || props.source
-        if (journal) {
-          citation += ` <em>${journal}</em>`
-        }
-        const volume = props.volume || props.vol
-        if (volume) {
-          citation += ` ${volume}`
-        }
-        const issue = props.issue || props.no
-        if (issue) {
-          citation += `, no. ${issue}`
-        }
-        const year = props.year || props.publication_year || props.date
-        if (year) {
-          citation += ` (${year})`
-        }
-        const pages = props.pages || props.page_range || props.pagination
-        if (pages) {
-          citation += `: ${pages}`
-        }
-        if (citation) {
-          popupContent += `<p>${citation}.</p>`
-          hasCitationFields = true
-        }
-
-        // Section
-        const section = props.section || props.section_title || props.chapter
-        if (section) {
-          popupContent += `<p><strong>Section ${section}</strong></p>`
-          hasCitationFields = true
-        }
-
-        // Page
-        const page = props.page || props.specific_page || props.page_number
-        if (page) {
-          popupContent += `<p>(Page ${page})</p>`
-          hasCitationFields = true
-        }
-
-        // Fallback: if no citation fields are found, display all properties
-        if (!hasCitationFields && Object.keys(props).length > 0) {
-          popupContent += '<ul style="margin: 0; padding: 0; list-style: none;">'
-          for (const [key, value] of Object.entries(props)) {
-            if (value !== null && value !== undefined && typeof value !== 'object') {
-              popupContent += `<li><strong>${key}:</strong> ${value}</li>`
-            }
-          }
-          popupContent += '</ul>'
-        } else if (!hasCitationFields) {
-          popupContent += '<p>No details available</p>'
-        }
-      } else {
-        popupContent += '<p>No details available</p>'
-      }
-
-      popupContent += '</div>'
-      const marker = L.marker([lat, lng]).bindPopup(popupContent)
-      mapStore.layerGroup.addLayer(marker)
-    }
-  })
-}
 
 async function mapClick() {
   return

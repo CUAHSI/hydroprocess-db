@@ -192,25 +192,26 @@ export const useMapStore = defineStore('map', () => {
     currentFilteredData.value = []
     // TODO enable multiple filters at the same time
     // first remove all layers
-    layerGroup.value.removeLayer(modelFeatures.value)
+    layerGroup.value.clearLayers()
     markerClusterGroup.clearLayers()
 
-    // filter features
+    // Filter features
     modelFeatures.value = L.geoJSON(perceptualModelsGeojson.value, {
       filter: (feature) => {
-        return filterFunction(feature)
+        const include = filterFunction(feature)
+        if (include) {
+          currentFilteredData.value.push(feature)
+        }
+        return include
       },
       onEachFeature: (feature, layer) => {
         onEachFeature(feature, layer)
       },
       pointToLayer: pointToLayer
     })
-
-    // add filtered features
     markerClusterGroup.addLayer(modelFeatures.value)
     layerGroup.value.addLayer(markerClusterGroup)
   }
-
   function resetFilter() {
     layerGroup.value.removeLayer(modelFeatures.value)
     markerClusterGroup.clearLayers()
