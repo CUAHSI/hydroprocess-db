@@ -1,20 +1,19 @@
 <template>
+  <v-text-field
+    @update:focused="debouncedFilter"
+    @keydown.enter.prevent="debouncedFilter"
+    @click:clear="debouncedFilter"
+    v-model="searchTerm"
+    label="Search Data..."
+    clearable
+    hide-details
+  >
+    <template #append-inner>
+      <v-icon @click="debouncedFilter" class="cursor-pointer" :icon="mdiMagnify" />
+    </template>
+  </v-text-field>
   <v-sheet class="mx-auto" elevation="8">
-    <v-card order="1">
-      <v-card-text class="px-0">
-        <v-text-field
-          @update:focused="debouncedFilter"
-          @keydown.enter.prevent="debouncedFilter"
-          @click:clear="debouncedFilter"
-          v-model="searchTerm"
-          label="Search Data..."
-          clearable
-          hide-details
-        >
-        </v-text-field>
-      </v-card-text>
-      <v-progress-linear v-if="filtering" indeterminate color="primary"></v-progress-linear>
-    </v-card>
+    <v-progress-linear v-if="filtering" indeterminate color="primary"></v-progress-linear>
     <h3 class="text-h6 ma-2 text-center">Filter Map</h3>
     <v-divider></v-divider>
     <!-- <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
@@ -89,7 +88,7 @@ import { ref, watch, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { usePerceptualModelStore } from '@/stores/perceptual_models'
 import { useMapStore } from '@/stores/map'
-import { mdiFolderOpen, mdiFolder, mdiCloseCircleOutline } from '@mdi/js'
+import { mdiFolderOpen, mdiFolder, mdiCloseCircleOutline, mdiMagnify } from '@mdi/js'
 
 const perceptualModelStore = usePerceptualModelStore()
 const mapStore = useMapStore()
