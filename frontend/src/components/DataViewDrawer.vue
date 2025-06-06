@@ -66,8 +66,8 @@ const updateCounts = (filteredFeatures) => {
   const counts = {}
   if (Array.isArray(filteredFeatures) && filteredFeatures.length > 0) {
     filteredFeatures.forEach((feature) => {
-      const modelType = feature.properties?.model_type?.name
-      if (modelType && modelType !== 'Figure model (Hand-drawn)') {
+      const modelType = feature.properties?.model_type?.name.replace(' model', '')
+      if (modelType && modelType !== 'Figure (Hand-drawn)') {
         counts[modelType] = (counts[modelType] || 0) + 1
       }
     })
