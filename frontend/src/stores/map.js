@@ -48,6 +48,11 @@ export const useMapStore = defineStore('map', () => {
       })
     }
   })
+  const activeFilters = ref([])
+  function applyAllFilters(feature) {
+    return activeFilters.value.every((fn) => fn(feature))
+  }
+
   function onEachFeature(feature, layer) {
     let content = `<h3>Perceptual model of <strong>${feature.properties.location.long_name}</strong></h3>`
     if (feature.properties.citation.url) {
@@ -188,17 +193,26 @@ export const useMapStore = defineStore('map', () => {
     layerGroup.value.addLayer(markerClusterGroup)
   }
 
-  function filterFeatures(filterFunction) {
-    currentFilteredData.value = []
+  function filterFeatures(filterFunction, action = 'add') {
     // TODO enable multiple filters at the same time
-    // first remove all layers
+    if (action === 'add') {
+      activeFilters.value.push(filterFunction)
+    } else if (action === 'remove') {
+      const index = activeFilters.value.indexOf(filterFunction)
+      if (index > -1) activeFilters.value.splice(index, 1)
+    } else if (action === 'clear') {
+      activeFilters.value = []
+    }
+
+    currentFilteredData.value = []
+    allAvailableCoordinates.value = []
+
     layerGroup.value.clearLayers()
     markerClusterGroup.clearLayers()
 
-    // Filter features
     modelFeatures.value = L.geoJSON(perceptualModelsGeojson.value, {
       filter: (feature) => {
-        const include = filterFunction(feature)
+        const include = applyAllFilters(feature)
         if (include) {
           currentFilteredData.value.push(feature)
         }
@@ -209,18 +223,27 @@ export const useMapStore = defineStore('map', () => {
       },
       pointToLayer: pointToLayer
     })
+
     markerClusterGroup.addLayer(modelFeatures.value)
     layerGroup.value.addLayer(markerClusterGroup)
   }
+
   function resetFilter() {
-    layerGroup.value.removeLayer(modelFeatures.value)
+    activeFilters.value = [] // Clear all filters
+
+    currentFilteredData.value = []
+    allAvailableCoordinates.value = []
+
+    layerGroup.value.clearLayers()
     markerClusterGroup.clearLayers()
 
     modelFeatures.value = L.geoJSON(perceptualModelsGeojson.value, {
       onEachFeature: (feature, layer) => {
         onEachFeature(feature, layer)
-      }
+      },
+      pointToLayer: pointToLayer
     })
+
     markerClusterGroup.addLayer(modelFeatures.value)
     layerGroup.value.addLayer(markerClusterGroup)
   }
