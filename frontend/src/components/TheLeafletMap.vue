@@ -27,8 +27,18 @@ import { onMounted, onUpdated } from 'vue'
 import { useMapStore } from '@/stores/map'
 import 'leaflet-iconmaterial/dist/leaflet.icon-material.css'
 
+const emit = defineEmits(['onFilter'])
+
 const mapStore = useMapStore()
-const { mapLoaded, userTouchedFilter, currentFilteredData } = storeToRefs(mapStore)
+const {
+  mapLoaded,
+  userTouchedFilter,
+  currentFilteredData,
+  selectedSpatialZones,
+  selectedTemporalZones,
+  selectedProcesses,
+  searchTerm
+} = storeToRefs(mapStore)
 
 onUpdated(() => {
   mapStore.leaflet.invalidateSize()
@@ -36,7 +46,7 @@ onUpdated(() => {
 
 onMounted(async () => {
   mapStore.leaflet = L.map('mapContainer', { minZoom: 2, maxZoom: 20 }).setView([0, 11], 2)
-  mapStore.layerGroup = new L.MarkerClusterGroup()
+  mapStore.layerGroup = new L.LayerGroup()
   mapStore.layerGroup.addTo(mapStore.leaflet)
 
   // Initial OSM tile layer
@@ -90,6 +100,7 @@ onMounted(async () => {
 
   // Initialize draw control
   const drawnItems = new L.FeatureGroup()
+  mapStore.drawnItems = drawnItems
   mapStore.leaflet.addLayer(drawnItems)
   drawnItems.setZIndex(1000)
 
@@ -110,12 +121,44 @@ onMounted(async () => {
         showArea: false
       }
     },
-    edit: {
-      featureGroup: drawnItems,
-      remove: true
-    }
+    edit: false
   })
   mapStore.leaflet.addControl(drawControl)
+
+  L.Control.ClearFilters = L.Control.extend({
+    options: {
+      position: 'topleft'
+    },
+    onAdd: function () {
+      const container = L.DomUtil.create(
+        'div',
+        'leaflet-bar leaflet-control leaflet-control-custom'
+      )
+      container.innerHTML =
+        '<a title="Clear All Filters"><i class="material-icons">clear_all</i></a>'
+      container.style.backgroundColor = 'white'
+      container.style.width = '34px'
+      container.style.height = '34px'
+      container.style.cursor = 'pointer'
+      container.style.display = 'flex'
+      container.style.alignItems = 'center'
+      container.style.justifyContent = 'center'
+
+      L.DomEvent.on(container, 'click', () => {
+        mapStore.clearAllFilters()
+        emit('onFilter', {
+          selectedSpatialZones,
+          selectedTemporalZones,
+          selectedProcesses,
+          searchTerm,
+          filteredFeatures: currentFilteredData.value
+        })
+      })
+
+      return container
+    }
+  })
+  mapStore.leaflet.addControl(new L.Control.ClearFilters())
 
   // Handle rectangle creation
   mapStore.leaflet.on(L.Draw.Event.CREATED, function (e) {
@@ -126,22 +169,42 @@ onMounted(async () => {
     // Get rectangle bounds
     const bounds = layer.getBounds()
 
-    mapStore.filterFeatures((feature) => {
-      if (feature.geometry.type === 'Point') {
-        const [lng, lat] = feature.geometry.coordinates
-        return bounds.contains([lat, lng])
-      }
-      return false
-    })
+    mapStore.filterFeatures(
+      (feature) => {
+        if (feature.geometry.type === 'Point') {
+          const [lng, lat] = feature.geometry.coordinates
+          return bounds.contains([lat, lng])
+        }
+        return false
+      },
+      'add',
+      'rectangle'
+    )
 
     userTouchedFilter.value = true
+
+    emit('onFilter', {
+      selectedSpatialZones,
+      selectedTemporalZones,
+      selectedProcesses,
+      searchTerm,
+      filteredFeatures: currentFilteredData.value
+    })
   })
 
   // Handle rectangle deletion
   mapStore.leaflet.on(L.Draw.Event.DELETED, function () {
     drawnItems.clearLayers()
-    mapStore.resetFilter()
-    userTouchedFilter.value = currentFilteredData.value.length === 0
+    mapStore.filterFeatures(null, 'clear')
+    userTouchedFilter.value = false
+
+    emit('onFilter', {
+      selectedSpatialZones,
+      selectedTemporalZones,
+      selectedProcesses,
+      searchTerm,
+      filteredFeatures: currentFilteredData.value
+    })
   })
 
   mapStore.leaflet.on('click', function (e) {

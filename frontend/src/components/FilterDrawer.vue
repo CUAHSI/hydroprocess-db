@@ -105,7 +105,7 @@ const {
 
 const emit = defineEmits(['selectModel', 'toggle', 'onFilter'])
 
-const filtering = ref()
+const filtering = ref(false)
 
 // query the api for the features
 perceptualModelStore.fetchPerceptualModels().then((perceptual_models) => {
@@ -174,13 +174,12 @@ function buildTree(data) {
   // Convert tree object with nested children into desired array format
   const convertToArray = (node) => {
     return Object.values(node).map((child) => {
-      const childrenArray = convertToArray(child.children)
       const nodeObject = {
         id: child.id,
         title: child.title
       }
-      if (childrenArray.length > 0) {
-        nodeObject.children = childrenArray
+      if (Object.keys(child.children).length > 0) {
+        nodeObject.children = convertToArray(child.children)
       }
       return nodeObject
     })
@@ -217,25 +216,31 @@ const replaceNwithNone = (items, propName) => {
   return items
 }
 
-const checkSearchTerm = (searchTerm, fieldsToSearch, feature) => {
-  if (!searchTerm) {
-    return true
-  }
+const checkSearchTerm = (feature) => {
+  if (!searchTerm.value) return true
+  const fieldsToSearch = [
+    'long_name',
+    'citation',
+    'textmodel_snipped',
+    'processes_taxonomies',
+    'temporal_property',
+    'spatial_property'
+  ]
   return fieldsToSearch.some((field) => {
-    const long_name =
-      field === 'long_name'
-        ? feature.properties.location?.long_name.toLowerCase().includes(searchTerm.toLowerCase())
-        : false
-    const citation =
-      field === 'citation'
-        ? feature.properties.citation?.citation.toLowerCase().includes(searchTerm.toLowerCase())
-        : false
-    const textmodel_snipped =
-      field === 'textmodel_snipped'
-        ? feature.properties.textmodel_snipped.toLowerCase().includes(searchTerm.toLowerCase())
-        : false
-    return long_name || citation || textmodel_snipped
+    const value = getFieldValue(field, feature)
+    return value?.toLowerCase().includes(searchTerm.value.toLowerCase())
   })
+}
+
+const getFieldValue = (field, feature) => {
+  if (field === 'long_name') return feature.properties.location?.long_name
+  if (field === 'citation') return feature.properties.citation?.citation
+  if (field === 'textmodel_snipped') return feature.properties.textmodel_snipped
+  if (field === 'processes_taxonomies')
+    return feature.properties.process_taxonomies?.map((p) => p.process).join(' ')
+  if (field === 'temporal_property') return feature.properties.temporal_zone_type?.temporal_property
+  if (field === 'spatial_property') return feature.properties.spatial_zone_type?.spatial_property
+  return ''
 }
 
 const logIdentifiers = async () => {
@@ -255,10 +260,9 @@ const logIdentifiers = async () => {
         console.log(`${category} not found for ID:`, id)
       }
     }
-    selectedIdentifiers[category] = identifiers.join('|') // Join as a string
+    selectedIdentifiers[category] = identifiers.join('|')
   }
   selectedIdentifiers['searchTerm'] = searchTerm.value
-  // Collect identifiers for all categories as strings
   await collectIdentifiersAsString(
     selectedProcesses.value,
     processTaxonomiesMap.value,
@@ -310,25 +314,24 @@ async function filter() {
   }
   const filterFunction = (feature) => {
     const process =
-      selectedProcesses.value.length == 0 ||
+      selectedProcesses.value.length === 0 ||
       feature.properties.process_taxonomies.some((pt) => selectedProcesses.value.includes(pt.id))
     const spatial =
-      selectedSpatialZones.value.length == 0 ||
+      selectedSpatialZones.value.length === 0 ||
       selectedSpatialZones.value.includes(feature.properties.spatialzone_id)
     const temporal =
-      selectedTemporalZones.value.length == 0 ||
+      selectedTemporalZones.value.length === 0 ||
       selectedTemporalZones.value.includes(feature.properties.temporalzone_id)
-    const search = checkSearchTerm(searchTerm.value, textSearchFields.value, feature)
+    const search = checkSearchTerm(feature)
     return process && spatial && temporal && search
   }
-  mapStore.filterFeatures(filterFunction)
-  const filteredFeatures = currentFilteredData.value
+  mapStore.filterFeatures(filterFunction, 'add', 'modelFilter')
   emit('onFilter', {
     selectedSpatialZones,
     selectedTemporalZones,
     selectedProcesses,
     searchTerm,
-    filteredFeatures
+    filteredFeatures: currentFilteredData.value
   })
   logIdentifiers()
   filtering.value = false
@@ -341,12 +344,14 @@ const updateMap = async () => {
   })
   filter()
 }
+
 const debouncedFilter = () => {
   clearTimeout(debounceTimeout.value)
   debounceTimeout.value = setTimeout(() => {
     filter()
   }, 300)
 }
+
 const filteredTreeData = computed(() => {
   if (!searchTreeText.value || !treeViewData.value.length) {
     return treeViewData.value

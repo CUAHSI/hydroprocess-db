@@ -15,40 +15,41 @@ export const useMapStore = defineStore('map', () => {
   const selectedFilters = ref({})
   const leaflet = shallowRef(null)
   const layerGroup = shallowRef(null)
+  const drawnItems = shallowRef(null)
   const allAvailableCoordinates = shallowRef([])
   const modelFeatures = shallowRef({})
   const perceptualModelsGeojson = ref([])
   const mapLoaded = ref(false)
-  let currentFilteredData = ref([])
+  const currentFilteredData = ref([])
+  const activeFilters = ref([])
+
   const markerClusterGroup = L.markerClusterGroup({
     iconCreateFunction: (cluster) => {
       const childCount = cluster.getChildCount()
-
       let color = 'blue'
       if (childCount > 10) {
         color = 'red'
       }
-
       return L.divIcon({
         html: `
-        <div style="
-          background-color: ${color};
-          border-radius: 50%;
-          color: white;
-          text-align: center;
-          line-height: 40px;
-          width: 40px;
-          height: 40px;
-          box-shadow: 0 4px 10px ${color};
-        ">
-          ${childCount}
-        </div>`,
+          <div style="
+            background-color: ${color};
+            border-radius: 50%;
+            color: white;
+            text-align: center;
+            line-height: 40px;
+            width: 40px;
+            height: 40px;
+            box-shadow: 0 4px 10px ${color};
+          ">
+            ${childCount}
+          </div>`,
         className: 'custom-cluster-icon',
         iconSize: [40, 40]
       })
     }
   })
-  const activeFilters = ref([])
+
   function applyAllFilters(feature) {
     return activeFilters.value.every((fn) => fn(feature))
   }
@@ -141,7 +142,6 @@ export const useMapStore = defineStore('map', () => {
       maxHeight: 300,
       keepInView: true
     })
-    currentFilteredData.value.push(feature)
 
     layer.on('click', () => {
       try {
@@ -180,22 +180,32 @@ export const useMapStore = defineStore('map', () => {
   })
 
   const fetchPerceptualModelsGeojson = async () => {
-    const response = await fetch(ENDPOINTS.perceptual_models_geojson)
-    const geojson = await response.json()
-    perceptualModelsGeojson.value = geojson
-    modelFeatures.value = L.geoJSON(geojson, {
-      onEachFeature: (feature, layer) => {
-        onEachFeature(feature, layer)
-      },
-      pointToLayer: pointToLayer
-    })
-    markerClusterGroup.addLayer(modelFeatures.value) // Add features to the cluster group
-    layerGroup.value.addLayer(markerClusterGroup)
+    try {
+      const response = await fetch(ENDPOINTS.perceptual_models_geojson)
+      if (!response.ok) throw new Error('Failed to fetch GeoJSON')
+      const geojson = await response.json()
+      perceptualModelsGeojson.value = geojson
+      currentFilteredData.value = geojson.features
+      modelFeatures.value = L.geoJSON(geojson, {
+        onEachFeature,
+        pointToLayer
+      })
+      markerClusterGroup.addLayer(modelFeatures.value)
+      layerGroup.value.addLayer(markerClusterGroup)
+    } catch (error) {
+      console.error('Error fetching GeoJSON:', error)
+    }
   }
 
-  function filterFeatures(filterFunction, action = 'add') {
-    // TODO enable multiple filters at the same time
-    if (action === 'add') {
+  function filterFeatures(filterFunction, action = 'add', filterType = 'generic') {
+    if (filterType === 'modelFilter') {
+      activeFilters.value = activeFilters.value.filter((fn) => fn.filterType !== 'modelFilter')
+    } else if (filterType === 'rectangle') {
+      activeFilters.value = activeFilters.value.filter((fn) => fn.filterType !== 'rectangle')
+    }
+
+    if (action === 'add' && filterFunction) {
+      filterFunction.filterType = filterType
       activeFilters.value.push(filterFunction)
     } else if (action === 'remove') {
       const index = activeFilters.value.indexOf(filterFunction)
@@ -215,13 +225,14 @@ export const useMapStore = defineStore('map', () => {
         const include = applyAllFilters(feature)
         if (include) {
           currentFilteredData.value.push(feature)
+          allAvailableCoordinates.value.push(
+            adjustLatLon(feature.properties.location.lat, feature.properties.location.lon)
+          )
         }
         return include
       },
-      onEachFeature: (feature, layer) => {
-        onEachFeature(feature, layer)
-      },
-      pointToLayer: pointToLayer
+      onEachFeature,
+      pointToLayer
     })
 
     markerClusterGroup.addLayer(modelFeatures.value)
@@ -229,23 +240,39 @@ export const useMapStore = defineStore('map', () => {
   }
 
   function resetFilter() {
-    activeFilters.value = [] // Clear all filters
-
-    currentFilteredData.value = []
+    activeFilters.value = []
+    currentFilteredData.value = perceptualModelsGeojson.value.features || []
     allAvailableCoordinates.value = []
 
     layerGroup.value.clearLayers()
     markerClusterGroup.clearLayers()
 
     modelFeatures.value = L.geoJSON(perceptualModelsGeojson.value, {
-      onEachFeature: (feature, layer) => {
-        onEachFeature(feature, layer)
-      },
-      pointToLayer: pointToLayer
+      onEachFeature,
+      pointToLayer
     })
 
     markerClusterGroup.addLayer(modelFeatures.value)
     layerGroup.value.addLayer(markerClusterGroup)
+
+    perceptualModelsGeojson.value.features.forEach((feature) => {
+      allAvailableCoordinates.value.push(
+        adjustLatLon(feature.properties.location.lat, feature.properties.location.lon)
+      )
+    })
+  }
+
+  function clearAllFilters() {
+    selectedProcesses.value = []
+    selectedSpatialZones.value = []
+    selectedTemporalZones.value = []
+    searchTerm.value = null
+    userTouchedFilter.value = false
+    activeFilters.value = []
+    if (drawnItems.value) {
+      drawnItems.value.clearLayers()
+    }
+    resetFilter()
   }
 
   function adjustLatLon(lat, lon) {
@@ -255,14 +282,17 @@ export const useMapStore = defineStore('map', () => {
   function getImagePath(filename) {
     return new URL(`../assets/figure_model_images/${filename}`, import.meta.url).href
   }
+
   return {
     leaflet,
     modelFeatures,
     layerGroup,
+    drawnItems,
     mapLoaded,
     fetchPerceptualModelsGeojson,
     filterFeatures,
     resetFilter,
+    clearAllFilters,
     currentFilteredData,
     allAvailableCoordinates,
     selectedSpatialZones,
@@ -270,6 +300,7 @@ export const useMapStore = defineStore('map', () => {
     selectedProcesses,
     searchTerm,
     userTouchedFilter,
-    selectedFilters
+    selectedFilters,
+    activeFilters
   }
 })
