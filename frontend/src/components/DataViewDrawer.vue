@@ -15,7 +15,6 @@
           <strong>{{ totalModels }}</strong>
         </div>
 
-        <!-- Download Row -->
         <div class="download-wrapper mt-2">
           <DownloadMapData />
         </div>
@@ -25,40 +24,49 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useMapStore } from '@/stores/map'
 import { ENDPOINTS } from '../constants'
 import DownloadMapData from '@/components/DownloadMapData.vue'
 
-let querying = ref(true)
+const mapStore = useMapStore()
+const { currentFilteredData } = storeToRefs(mapStore)
 
+let querying = ref(true)
 let modelTypeCounts = ref({})
 let totalModels = ref(0)
 
 const query = async (filters = {}) => {
   querying.value = true
-  const response = await fetch(ENDPOINTS.model_type_count, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(filters)
-  })
-  const counts = await response.json()
+  try {
+    const response = await fetch(ENDPOINTS.model_type_count, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(filters)
+    })
+    if (!response.ok) throw new Error('Failed to fetch model type counts')
+    const counts = await response.json()
 
-  // Delete the 'Figure model (Hand-drawn)' key
-  delete counts['Figure model (Hand-drawn)']
-  let total = 0
-  const cleanedCounts = {}
+    delete counts['Figure model (Hand-drawn)']
+    let total = 0
+    const cleanedCounts = {}
 
-  for (const [key, value] of Object.entries(counts)) {
-    const cleanedKey = key.replace(' model', '')
-    cleanedCounts[cleanedKey] = value
-    total += value
+    for (const [key, value] of Object.entries(counts)) {
+      const cleanedKey = key.replace(' model', '')
+      cleanedCounts[cleanedKey] = value
+      total += value
+    }
+
+    totalModels.value = total
+    modelTypeCounts.value = cleanedCounts
+  } catch (error) {
+    console.error('Error fetching model type counts:', error)
+  } finally {
+    querying.value = false
   }
-
-  totalModels.value = total
-  modelTypeCounts.value = cleanedCounts
-  querying.value = false
 }
 
 const updateCounts = (filteredFeatures) => {
@@ -77,9 +85,17 @@ const updateCounts = (filteredFeatures) => {
   querying.value = false
 }
 
+watch(currentFilteredData, (newData) => {
+  updateCounts(newData)
+})
+
+// Handle onFilter event from parent component
 defineExpose({
   query,
-  updateCounts
+  updateCounts,
+  onFilter: (data) => {
+    updateCounts(data.filteredFeatures)
+  }
 })
 
 query()
