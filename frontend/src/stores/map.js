@@ -139,9 +139,11 @@ export const useMapStore = defineStore('map', () => {
     )
 
     layer.bindPopup(content, {
-      maxWidth: 400,
+      maxWidth: window.innerWidth < 600 ? 260 : 400, // Responsive width
+      minWidth: 220,
       maxHeight: 300,
-      keepInView: true
+      keepInView: true,
+      autoPan: true
     })
 
     layer.on('click', () => {
