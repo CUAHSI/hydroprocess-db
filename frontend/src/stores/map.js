@@ -5,6 +5,7 @@ import L from 'leaflet'
 import 'leaflet-iconmaterial/dist/leaflet.icon-material'
 import 'leaflet.markercluster'
 import citationMatchingFileNames from '@/assets/citation_and_images_matching.json'
+import { useAlertStore } from '@/stores/alerts'
 
 export const useMapStore = defineStore('map', () => {
   const selectedSpatialZones = ref([])
@@ -180,6 +181,7 @@ export const useMapStore = defineStore('map', () => {
   })
 
   const fetchPerceptualModelsGeojson = async () => {
+    const alertStore = useAlertStore()
     try {
       const response = await fetch(ENDPOINTS.perceptual_models_geojson)
       if (!response.ok) throw new Error('Failed to fetch GeoJSON')
@@ -194,6 +196,13 @@ export const useMapStore = defineStore('map', () => {
       layerGroup.value.addLayer(markerClusterGroup)
     } catch (error) {
       console.error('Error fetching GeoJSON:', error)
+      alertStore.displayAlert({
+        title: 'Error Loading Map Data',
+        text: 'We were unable to load the map data. Please try again later.',
+        type: 'error',
+        closable: true,
+        duration: 5
+      })
     }
   }
 
