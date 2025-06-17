@@ -1,24 +1,8 @@
 <template>
-  <v-text-field
-    @update:focused="debouncedFilter"
-    @keydown.enter.prevent="debouncedFilter"
-    @click:clear="debouncedFilter"
-    v-model="searchTerm"
-    label="Search Data..."
-    clearable
-    hide-details
-  >
-    <template #append-inner>
-      <v-icon @click="debouncedFilter" class="cursor-pointer" :icon="mdiMagnify" />
-    </template>
-  </v-text-field>
   <v-sheet class="mx-auto" elevation="8">
     <v-progress-linear v-if="filtering" indeterminate color="primary"></v-progress-linear>
     <h3 class="text-h6 ma-2 text-center">Filter Map</h3>
     <v-divider></v-divider>
-    <!-- <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
-      label="Process Taxonomies" @update:modelValue="filter" clearable chips multiple
-      :loading="filtering"></v-autocomplete> -->
     <v-expansion-panels class="mx-0 mb-4" eager>
       <v-expansion-panel class="px-0 py-0" style="max-height: 400px; overflow-y: auto">
         <v-expansion-panel-title>Process Taxonomies</v-expansion-panel-title>
@@ -88,7 +72,7 @@ import { ref, watch, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { usePerceptualModelStore } from '@/stores/perceptual_models'
 import { useMapStore } from '@/stores/map'
-import { mdiFolderOpen, mdiFolder, mdiCloseCircleOutline, mdiMagnify } from '@mdi/js'
+import { mdiFolderOpen, mdiFolder, mdiCloseCircleOutline } from '@mdi/js'
 
 const perceptualModelStore = usePerceptualModelStore()
 const mapStore = useMapStore()
@@ -103,49 +87,25 @@ const {
   selectedFilters
 } = storeToRefs(mapStore)
 
-const emit = defineEmits(['selectModel', 'toggle', 'onFilter'])
+const emit = defineEmits(['onFilter'])
 
 const filtering = ref()
-
-// query the api for the features
-perceptualModelStore.fetchPerceptualModels().then((perceptual_models) => {
-  mapStore.modelFeatures = perceptual_models
-})
-
 const process_taxonomies = ref([])
 const spatialZones = ref([])
 const temporalZones = ref([])
-const textSearchFields = ref([
-  'long_name',
-  'citation',
-  'textmodel_snipped',
-  'processes_taxonomies',
-  'temporal_property',
-  'spatial_property'
-])
 const treeViewData = ref([])
 const selectedTreeItems = ref([])
 const searchTreeText = ref('')
-const debouncedSearchTreeText = ref('')
 const debounceTimeout = ref(null)
-
-// Fetch the process taxonomies, spatial zones, and temporal zones
-perceptualModelStore.fetchProcessTaxonomies().then((pt) => {
-  process_taxonomies.value = pt
-  treeViewData.value = buildTree(pt)
-})
 const processTaxonomiesMap = ref(new Map())
 const spatialZonesMap = ref(new Map())
 const temporalZonesMap = ref(new Map())
 
 function buildTree(data) {
   const root = {}
-
-  // Helper function to insert item into the correct place in the tree
   const insert = (path, item) => {
     let current = root
     path.forEach((part, index) => {
-      // Check if part already exists as a child, if not create it
       if (!current[part]) {
         current[part] = {
           title: part,
@@ -153,7 +113,6 @@ function buildTree(data) {
           children: {}
         }
       }
-      // If it's the last part, assign the item values to the node
       if (index === path.length - 1) {
         current[part] = {
           id: item.id,
@@ -165,13 +124,11 @@ function buildTree(data) {
     })
   }
 
-  // Insert each item in data into the tree
   data.forEach((item) => {
     const path = item.identifier.split('.')
     insert(path, item)
   })
 
-  // Convert tree object with nested children into desired array format
   const convertToArray = (node) => {
     return Object.values(node).map((child) => {
       const childrenArray = convertToArray(child.children)
@@ -189,7 +146,10 @@ function buildTree(data) {
   return convertToArray(root)
 }
 
-// Fetch the process taxonomies, spatial zones, and temporal zones
+perceptualModelStore.fetchPerceptualModels().then((perceptual_models) => {
+  mapStore.modelFeatures = perceptual_models
+})
+
 perceptualModelStore.fetchProcessTaxonomies().then((pt) => {
   process_taxonomies.value = pt
   treeViewData.value = buildTree(pt)
@@ -201,6 +161,7 @@ perceptualModelStore.fetchSpatialZones().then((sz) => {
   spatialZones.value = sz
   spatialZonesMap.value = new Map(sz.map((item) => [item.id, item.spatial_property]))
 })
+
 perceptualModelStore.fetchTemporalZones().then((tz) => {
   replaceNwithNone(tz, 'temporal_property')
   temporalZones.value = tz
@@ -217,22 +178,28 @@ const replaceNwithNone = (items, propName) => {
   return items
 }
 
-const checkSearchTerm = (searchTerm, fieldsToSearch, feature) => {
-  if (!searchTerm) {
+const checkSearchTerm = (searchTermValue, fieldsToSearch, feature) => {
+  if (!searchTermValue) {
     return true
   }
   return fieldsToSearch.some((field) => {
     const long_name =
       field === 'long_name'
-        ? feature.properties.location?.long_name.toLowerCase().includes(searchTerm.toLowerCase())
+        ? feature.properties.location?.long_name
+            ?.toLowerCase()
+            ?.includes(searchTermValue.toLowerCase())
         : false
     const citation =
       field === 'citation'
-        ? feature.properties.citation?.citation.toLowerCase().includes(searchTerm.toLowerCase())
+        ? feature.properties.citation?.citation
+            ?.toLowerCase()
+            ?.includes(searchTermValue.toLowerCase())
         : false
     const textmodel_snipped =
       field === 'textmodel_snipped'
-        ? feature.properties.textmodel_snipped.toLowerCase().includes(searchTerm.toLowerCase())
+        ? feature.properties.textmodel_snipped
+            ?.toLowerCase()
+            ?.includes(searchTermValue.toLowerCase())
         : false
     return long_name || citation || textmodel_snipped
   })
@@ -242,12 +209,13 @@ const logIdentifiers = async () => {
   const selectedIdentifiers = {
     selectedProcesses: '',
     selectedSpatialZones: '',
-    selectedTemporalZones: ''
+    selectedTemporalZones: '',
+    searchTerm: searchTerm.value || ''
   }
 
   const collectIdentifiersAsString = async (ids, map, category) => {
     const identifiers = []
-    for (let id of ids) {
+    for (let id of ids || []) {
       const selectedItem = map.get(id)
       if (selectedItem) {
         identifiers.push(selectedItem)
@@ -255,10 +223,9 @@ const logIdentifiers = async () => {
         console.log(`${category} not found for ID:`, id)
       }
     }
-    selectedIdentifiers[category] = identifiers.join('|') // Join as a string
+    selectedIdentifiers[category] = identifiers.join('|')
   }
-  selectedIdentifiers['searchTerm'] = searchTerm.value
-  // Collect identifiers for all categories as strings
+
   await collectIdentifiersAsString(
     selectedProcesses.value,
     processTaxonomiesMap.value,
@@ -277,9 +244,7 @@ const logIdentifiers = async () => {
 
   try {
     if (selectedIdentifiers.selectedProcesses) {
-      window.heap.track('selectedProcesses', {
-        processes: selectedIdentifiers.selectedProcesses
-      })
+      window.heap.track('selectedProcesses', { processes: selectedIdentifiers.selectedProcesses })
     }
     if (selectedIdentifiers.selectedSpatialZones) {
       window.heap.track('selectedSpatialZones', {
@@ -292,9 +257,7 @@ const logIdentifiers = async () => {
       })
     }
     if (selectedIdentifiers.searchTerm) {
-      window.heap.track('Search', {
-        textSearched: selectedIdentifiers.searchTerm
-      })
+      window.heap.track('Search', { textSearched: selectedIdentifiers.searchTerm })
     }
   } catch (e) {
     console.warn('Heap is not available.')
@@ -305,29 +268,29 @@ const logIdentifiers = async () => {
 async function filter() {
   filtering.value = true
   userTouchedFilter.value = true
-  if (textSearchFields.value.length === 0) {
-    searchTerm.value = null
-  }
   const filterFunction = (feature) => {
     const process =
-      selectedProcesses.value.length == 0 ||
-      feature.properties.process_taxonomies.some((pt) => selectedProcesses.value.includes(pt.id))
+      (selectedProcesses.value?.length || 0) === 0 ||
+      feature.properties.process_taxonomies?.some((pt) => selectedProcesses.value?.includes(pt.id))
     const spatial =
-      selectedSpatialZones.value.length == 0 ||
-      selectedSpatialZones.value.includes(feature.properties.spatialzone_id)
+      (selectedSpatialZones.value?.length || 0) === 0 ||
+      selectedSpatialZones.value?.includes(feature.properties.spatialzone_id)
     const temporal =
-      selectedTemporalZones.value.length == 0 ||
-      selectedTemporalZones.value.includes(feature.properties.temporalzone_id)
-    const search = checkSearchTerm(searchTerm.value, textSearchFields.value, feature)
+      (selectedTemporalZones.value?.length || 0) === 0 ||
+      selectedTemporalZones.value?.includes(feature.properties.temporalzone_id)
+    const search = checkSearchTerm(
+      searchTerm.value,
+      ['long_name', 'citation', 'textmodel_snipped'],
+      feature
+    )
     return process && spatial && temporal && search
   }
   mapStore.filterFeatures(filterFunction)
   const filteredFeatures = currentFilteredData.value
   emit('onFilter', {
-    selectedSpatialZones,
-    selectedTemporalZones,
-    selectedProcesses,
-    searchTerm,
+    selectedSpatialZones: selectedSpatialZones.value,
+    selectedTemporalZones: selectedTemporalZones.value,
+    selectedProcesses: selectedProcesses.value,
     filteredFeatures
   })
   logIdentifiers()
@@ -335,18 +298,10 @@ async function filter() {
 }
 
 const updateMap = async () => {
-  selectedProcesses.value = []
-  selectedTreeItems.value.forEach((item) => {
-    selectedProcesses.value.push(item)
-  })
+  selectedProcesses.value = selectedTreeItems.value || []
   filter()
 }
-const debouncedFilter = () => {
-  clearTimeout(debounceTimeout.value)
-  debounceTimeout.value = setTimeout(() => {
-    filter()
-  }, 300)
-}
+
 const filteredTreeData = computed(() => {
   if (!searchTreeText.value || !treeViewData.value.length) {
     return treeViewData.value
@@ -367,7 +322,7 @@ const filteredTreeData = computed(() => {
 const debounceSearch = (query) => {
   clearTimeout(debounceTimeout.value)
   debounceTimeout.value = setTimeout(() => {
-    debouncedSearchTreeText.value = query
+    searchTreeText.value = query
   }, 300)
 }
 

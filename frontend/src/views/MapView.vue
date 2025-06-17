@@ -4,6 +4,8 @@
   </v-overlay>
 
   <v-container fluid class="pa-0 fill-height position-relative">
+    <SearchBar @onSearch="onSearch" />
+
     <div
       v-show="showFilterDrawer"
       ref="filterDrawerRef"
@@ -56,6 +58,7 @@ import { ref, nextTick, onMounted, watch } from 'vue'
 import FilterDrawer from '@/components/FilterDrawer.vue'
 import DataViewDrawer from '@/components/DataViewDrawer.vue'
 import TheLeafletMap from '@/components/TheLeafletMap.vue'
+import SearchBar from '@/components/SearchBar.vue'
 import { mdiChevronRight, mdiChevronLeft, mdiInformationOutline } from '@mdi/js'
 import { useMapStore } from '@/stores/map'
 import { useDisplay } from 'vuetify'
@@ -68,7 +71,7 @@ const dataDrawerRef = ref(null)
 const showDataDrawer = ref(!mdAndDown.value)
 
 watch(mdAndDown, (val) => {
-  showFilterDrawer.value = !val ? true : false
+  showFilterDrawer.value = !val
   showDataDrawer.value = !val
 })
 
@@ -78,29 +81,37 @@ onMounted(() => {
 
 const onFilter = (data) => {
   const filters = {
-    spatialzone_ids: data.selectedSpatialZones.value,
-    temporalzone_ids: data.selectedTemporalZones.value,
-    process_taxonomy_ids: data.selectedProcesses.value
+    spatialzone_ids: data.selectedSpatialZones?.length || 0,
+    temporalzone_ids: data.selectedTemporalZones?.length || 0,
+    process_taxonomy_ids: data.selectedProcesses?.length || 0
   }
 
   if (data.filteredFeatures) {
     dataDrawerRef.value.updateCounts(data.filteredFeatures)
   } else if (
-    !data.searchTerm?.value &&
-    data.selectedSpatialZones.value.length === 0 &&
-    data.selectedTemporalZones.value.length === 0 &&
-    data.selectedProcesses.value.length === 0
+    !mapStore.searchTerm &&
+    (data.selectedSpatialZones?.length || 0) === 0 &&
+    (data.selectedTemporalZones?.length || 0) === 0 &&
+    (data.selectedProcesses?.length || 0) === 0
   ) {
     dataDrawerRef.value.query(filters)
   }
 }
 
+const onSearch = (data) => {
+  if (data.filteredFeatures) {
+    dataDrawerRef.value.updateCounts(data.filteredFeatures)
+  }
+}
+
 const toggleFilterDrawer = async () => {
-  const center = mapStore.leaflet.getCenter()
+  const center = mapStore.leaflet?.getCenter()
   showFilterDrawer.value = !showFilterDrawer.value
   await nextTick()
-  mapStore.leaflet.invalidateSize(true)
-  mapStore.leaflet.setView(center)
+  if (mapStore.leaflet) {
+    mapStore.leaflet.invalidateSize(true)
+    mapStore.leaflet.setView(center)
+  }
 }
 
 const toggleDataDrawer = () => {
@@ -121,9 +132,8 @@ const toggleDataDrawer = () => {
 }
 
 .filter-drawer-overlay {
-  top: 0;
+  bottom: 0;
   left: 0;
-  height: 100%;
   background-color: white;
   z-index: 1000;
   overflow-y: auto;
@@ -140,7 +150,6 @@ const toggleDataDrawer = () => {
 @media (min-width: 960px) {
   .filter-drawer-overlay {
     position: relative;
-    /* width: 25%; */
     min-width: 25%;
     max-width: var(--drawer-max-width);
   }
@@ -170,15 +179,11 @@ const toggleDataDrawer = () => {
   width: 100%;
 }
 
-.info-icon {
-  flex-shrink: 0;
-}
-
 .filter-toggle-btn-inside {
   position: absolute;
-  top: 50%;
+  bottom: 30%;
   right: 0px;
-  transform: translateY(-50%);
+  transform: translateY(-30%);
   z-index: 1002;
   transition: right 0.3s ease;
 }
