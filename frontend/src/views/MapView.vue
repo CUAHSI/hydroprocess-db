@@ -3,34 +3,43 @@
     <v-progress-circular indeterminate :size="128" />
   </v-overlay>
 
-  <v-container fluid class="pa-0 fill-height position-relative">
+  <v-container fluid class="pa-0 fill-height position-relative overflow-hidden">
     <SearchBar @onSearch="onSearch" />
 
-    <div
-      v-show="showFilterDrawer"
-      ref="filterDrawerRef"
-      class="filter-drawer-overlay pa-2"
-      :class="{ 'drawer-overlay-absolute': mdAndDown }"
-    >
-      <FilterDrawer @onFilter="onFilter" />
-      <v-btn
-        @click="toggleFilterDrawer"
-        color="secondary"
-        :icon="mdiChevronLeft"
-        size="small"
-        class="filter-toggle-btn-inside"
-      />
-    </div>
+    <!-- Floating Filter Drawer -->
+    <transition name="slide-x">
+      <div
+        v-if="showFilterDrawer"
+        ref="filterDrawerRef"
+        class="filter-drawer-floating pa-2"
+        :class="{ 'drawer-floating-absolute': mdAndDown }"
+      >
+        <FilterDrawer @onFilter="onFilter" />
+        <v-btn
+          @click="toggleFilterDrawer"
+          icon
+          size="small"
+          class="filter-toggle-btn-inside"
+          color="secondary"
+        >
+          <v-icon>{{ mdiChevronLeft }}</v-icon>
+        </v-btn>
+      </div>
+    </transition>
 
+    <!-- Floating open button -->
     <v-btn
       v-show="!showFilterDrawer"
       @click="toggleFilterDrawer"
-      color="secondary"
-      :icon="mdiChevronRight"
+      icon
       size="small"
       class="filter-toggle-btn-outside"
-    />
+      color="secondary"
+    >
+      <v-icon>{{ mdiChevronRight }}</v-icon>
+    </v-btn>
 
+    <!-- Map + Data Drawer -->
     <v-row class="fill-height ma-0">
       <v-col class="map-container pa-0">
         <TheLeafletMap />
@@ -120,47 +129,47 @@ const toggleDataDrawer = () => {
 </script>
 
 <style scoped>
-:root {
-  --drawer-width: 25vw;
-  --drawer-min-width: 100%;
-  --drawer-max-width: 420px;
-}
-
 .map-container {
   height: 100%;
   position: relative;
 }
 
-.filter-drawer-overlay {
-  bottom: 0;
-  left: 0;
+.filter-drawer-floating {
+  position: fixed;
+  left: 16px;
+  width: 90vw;
+  max-width: 420px;
+  max-height: 300px;
   background-color: white;
-  z-index: 1000;
-  overflow-y: auto;
-  transition: transform 0.3s ease;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1100;
+
+  transition: all 0.3s ease;
 }
 
-.drawer-overlay-absolute {
+.drawer-floating-absolute {
+  width: 90vw;
+  left: 16px;
+  max-width: 420px;
+  height: auto;
+  border-radius: 10px;
+}
+
+.filter-toggle-btn-inside {
   position: absolute;
-  width: 100vw;
-  max-width: none;
-  z-index: 1001;
+  top: 40%;
+  right: -13px;
+  z-index: 1200;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-@media (min-width: 960px) {
-  .filter-drawer-overlay {
-    position: relative;
-    min-width: 25%;
-    max-width: var(--drawer-max-width);
-  }
-}
-
-.filter-toggle-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 1001;
-  transition: transform 0.3s ease;
+.filter-toggle-btn-outside {
+  position: fixed;
+  left: 10px;
+  z-index: 1200;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  background-color: white;
 }
 
 .bottom-right-container {
@@ -168,10 +177,6 @@ const toggleDataDrawer = () => {
   bottom: 16px;
   right: 16px;
   z-index: 1001;
-  display: flex !important;
-  flex-direction: column-reverse !important;
-  align-items: flex-end;
-  gap: 12px;
 }
 
 .data-drawer {
@@ -179,20 +184,10 @@ const toggleDataDrawer = () => {
   width: 100%;
 }
 
-.filter-toggle-btn-inside {
-  position: absolute;
-  bottom: 30%;
-  right: 0px;
-  transform: translateY(-30%);
-  z-index: 1002;
-  transition: right 0.3s ease;
-}
-
-.filter-toggle-btn-outside {
-  position: absolute;
-  top: 50%;
-  left: 8px;
-  transform: translateY(-50%);
-  z-index: 1002;
+@media (max-width: 960px) {
+  .filter-drawer-floating {
+    width: 90vw;
+    left: 5vw;
+  }
 }
 </style>

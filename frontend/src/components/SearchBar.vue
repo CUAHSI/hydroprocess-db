@@ -11,8 +11,8 @@
       class="search-bar"
     >
       <!-- <template #append-inner>
-                <v-icon @click="debouncedFilter" class="cursor-pointer" :icon="mdiMagnify" />
-            </template> -->
+                  <v-icon @click="debouncedFilter" class="cursor-pointer" :icon="mdiMagnify" />
+              </template> -->
     </v-text-field>
   </div>
 </template>
@@ -95,8 +95,8 @@ watch(
 <style scoped>
 .search-bar-container {
   position: absolute;
-  top: 13px;
-  left: 60px;
+  top: 10px;
+  left: 10px;
   z-index: 1002;
   width: 100%;
   max-width: 300px;
