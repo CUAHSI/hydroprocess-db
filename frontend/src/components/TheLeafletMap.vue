@@ -138,6 +138,5 @@ async function mapClick() {
 }
 :deep(.leaflet-control-zoom) {
   top: 80px !important;
-  border: 2px solid black;
 }
 </style>

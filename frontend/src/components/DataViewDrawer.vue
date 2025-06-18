@@ -96,7 +96,7 @@ query()
 }
 
 .model-summary {
-  border: 1.5px solid #444;
+  border: 1.5px solid #ccc;
   max-width: 300px;
   background-color: #f9f7f2;
 }

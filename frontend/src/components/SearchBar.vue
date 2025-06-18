@@ -99,13 +99,14 @@ watch(
   left: 10px;
   z-index: 1002;
   width: 100%;
-  max-width: 300px;
+  max-width: 420px;
 }
 
-.search-bar {
-  background-color: white;
-  border-radius: 4px;
-  border: 2px solid black;
+.search-bar >>> .v-input__control {
+  background-color: white !important;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
 }
 
 @media (max-width: 600px) {

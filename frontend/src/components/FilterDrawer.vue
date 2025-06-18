@@ -4,7 +4,7 @@
     <h3 class="text-h6 ma-2 text-center">Filter Map</h3>
     <v-divider></v-divider>
     <v-expansion-panels class="mx-0 mb-4" eager>
-      <v-expansion-panel class="px-0 py-0" style="max-height: 400px; overflow-y: auto">
+      <v-expansion-panel class="px-0 py-0" style="max-height: 300px; overflow-y: auto">
         <v-expansion-panel-title>Process Taxonomies</v-expansion-panel-title>
         <v-expansion-panel-text class="pa-0">
           <v-text-field
@@ -18,24 +18,28 @@
             solo-inverted
           >
           </v-text-field>
-          <v-treeview
-            v-if="filteredTreeData.length > 0"
-            v-model:selected="selectedTreeItems"
-            :items="treeViewData"
-            select-strategy="classic"
-            item-value="id"
-            selectable
-            :search="searchTreeText"
-            activatable
-            @update:modelValue="updateMap"
-          >
-            <template v-slot:prepend="{ isOpen }">
-              <v-icon>
-                {{ isOpen ? mdiFolderOpen : mdiFolder }}
-              </v-icon>
-            </template>
-          </v-treeview>
-          <p v-else class="text-center text-grey-darken-1">No process taxonomies found</p>
+          <div class="tree-scroll-wrapper">
+            <div class="tree-scroll-inner">
+              <v-treeview
+                v-if="filteredTreeData.length > 0"
+                v-model:selected="selectedTreeItems"
+                :items="treeViewData"
+                select-strategy="classic"
+                item-value="id"
+                selectable
+                :search="searchTreeText"
+                activatable
+                @update:modelValue="updateMap"
+              >
+                <template v-slot:prepend="{ isOpen }">
+                  <v-icon>
+                    {{ isOpen ? mdiFolderOpen : mdiFolder }}
+                  </v-icon>
+                </template>
+              </v-treeview>
+              <p v-else class="text-center text-grey-darken-1">No process taxonomies found</p>
+            </div>
+          </div>
         </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -339,6 +343,19 @@ watch(
   position: absolute;
   bottom: 30%;
   left: 110%;
+}
+.tree-scroll-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+}
+
+.tree-scroll-inner {
+  min-width: 500px; /* or any value that triggers overflow */
+}
+
+:deep(.v-treeview-node__label) {
+  white-space: nowrap;
 }
 
 :deep(.v-expansion-panel-text__wrapper) {
