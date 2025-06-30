@@ -98,6 +98,8 @@ onMounted(async () => {
   mapStore.leaflet.addLayer(drawnItems)
   drawnItems.setZIndex(1000)
 
+  L.drawLocal.draw.toolbar.buttons.rectangle = 'Draw a box'
+  L.drawLocal.draw.handlers.rectangle.tooltip.start = 'Click and drag to draw a box'
   const drawControl = new L.Control.Draw({
     draw: {
       polyline: false,
@@ -128,9 +130,13 @@ onMounted(async () => {
         'div',
         'leaflet-bar leaflet-control leaflet-control-custom'
       )
-      container.innerHTML =
-        '<a title="Clear All Filters"><i class="material-icons">clear_all</i></a>'
-      container.style.backgroundColor = 'white'
+      container.title = 'Reset Filters'
+
+      container.style.backgroundImage = "url('/ClearFilter.ico')"
+      container.style.backgroundRepeat = 'no-repeat'
+      container.style.backgroundSize = '60% 60%'
+      container.style.backgroundPosition = 'center'
+      container.style.borderRadius = '4px'
       container.style.width = '34px'
       container.style.height = '34px'
       container.style.cursor = 'pointer'
@@ -162,6 +168,7 @@ onMounted(async () => {
 
     // Get rectangle bounds
     const bounds = layer.getBounds()
+    mapStore.leaflet.fitBounds(bounds)
 
     mapStore.filterFeatures(
       (feature) => {
@@ -241,5 +248,28 @@ async function mapClick() {
   background: rgba(0, 0, 0, 0.7);
   padding: 10px 20px;
   border-radius: 5px;
+}
+</style>
+<style>
+.leaflet-draw-toolbar a.leaflet-draw-draw-rectangle {
+  background-image: url('/DrawIcon.ico') !important;
+  background-repeat: no-repeat !important;
+  background-size: 60% 60% !important;
+  background-position: center !important;
+  border-radius: 4px;
+}
+.leaflet-control-custom.clear-filters-btn {
+  background-image: url('/ClearFilters.png') !important;
+  background-repeat: no-repeat !important;
+  background-size: 60% 60% !important;
+  background-position: center !important;
+  background-color: #f44336 !important; /* Optional: Material Red */
+  border-radius: 4px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 </style>
