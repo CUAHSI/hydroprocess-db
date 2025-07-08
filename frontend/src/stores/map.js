@@ -11,6 +11,7 @@ export const useMapStore = defineStore('map', () => {
   const selectedSpatialZones = ref([])
   const selectedTemporalZones = ref([])
   const selectedProcesses = ref([])
+  const selectedTreeItems = ref([])
   const searchTerm = ref(null)
   const userTouchedFilter = ref(false)
   const selectedFilters = ref({})
@@ -139,7 +140,7 @@ export const useMapStore = defineStore('map', () => {
     )
 
     layer.bindPopup(content, {
-      maxWidth: window.innerWidth < 600 ? 260 : 400, // Responsive width
+      maxWidth: window.innerWidth < 600 ? 260 : 400,
       minWidth: 220,
       maxHeight: 300,
       keepInView: true,
@@ -165,12 +166,12 @@ export const useMapStore = defineStore('map', () => {
   }
 
   let textIcon = L.IconMaterial.icon({
-    icon: 'article', // Name of Material icon
-    iconColor: 'white', // Material icon color (could be rgba, hex, html name...)
-    markerColor: 'grey', // Marker fill color
-    outlineColor: 'black', // Marker outline color
-    outlineWidth: 1, // Marker outline width
-    iconSize: [31, 42] // Width and height of the icon
+    icon: 'article',
+    iconColor: 'white',
+    markerColor: 'grey',
+    outlineColor: 'black',
+    outlineWidth: 1,
+    iconSize: [31, 42]
   })
 
   let figureIcon = L.IconMaterial.icon({
@@ -251,14 +252,23 @@ export const useMapStore = defineStore('map', () => {
   }
 
   function resetFilter() {
-    activeFilters.value = []
-    currentFilteredData.value = perceptualModelsGeojson.value.features || []
+    currentFilteredData.value = []
     allAvailableCoordinates.value = []
 
     layerGroup.value.clearLayers()
     markerClusterGroup.clearLayers()
 
     modelFeatures.value = L.geoJSON(perceptualModelsGeojson.value, {
+      filter: (feature) => {
+        const include = applyAllFilters(feature)
+        if (include) {
+          currentFilteredData.value.push(feature)
+          allAvailableCoordinates.value.push(
+            adjustLatLon(feature.properties.location.lat, feature.properties.location.lon)
+          )
+        }
+        return include
+      },
       onEachFeature,
       pointToLayer
     })
@@ -266,23 +276,27 @@ export const useMapStore = defineStore('map', () => {
     markerClusterGroup.addLayer(modelFeatures.value)
     layerGroup.value.addLayer(markerClusterGroup)
 
-    perceptualModelsGeojson.value.features.forEach((feature) => {
-      allAvailableCoordinates.value.push(
-        adjustLatLon(feature.properties.location.lat, feature.properties.location.lon)
-      )
-    })
+    if (activeFilters.value.length === 0) {
+      perceptualModelsGeojson.value.features.forEach((feature) => {
+        allAvailableCoordinates.value.push(
+          adjustLatLon(feature.properties.location.lat, feature.properties.location.lon)
+        )
+      })
+    }
   }
 
   function clearAllFilters() {
     selectedProcesses.value = []
     selectedSpatialZones.value = []
     selectedTemporalZones.value = []
+    selectedTreeItems.value = []
     searchTerm.value = null
     userTouchedFilter.value = false
-    activeFilters.value = []
-    if (drawnItems.value) {
-      drawnItems.value.clearLayers()
-    }
+    selectedFilters.value = {}
+
+    const rectangleFilter = activeFilters.value.find((fn) => fn.filterType === 'rectangle')
+    activeFilters.value = rectangleFilter ? [rectangleFilter] : []
+
     resetFilter()
   }
 
@@ -309,6 +323,7 @@ export const useMapStore = defineStore('map', () => {
     selectedSpatialZones,
     selectedTemporalZones,
     selectedProcesses,
+    selectedTreeItems,
     searchTerm,
     userTouchedFilter,
     selectedFilters,

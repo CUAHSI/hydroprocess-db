@@ -98,6 +98,7 @@ const {
   selectedSpatialZones,
   selectedTemporalZones,
   selectedProcesses,
+  selectedTreeItems,
   searchTerm,
   userTouchedFilter,
   selectedFilters
@@ -124,7 +125,6 @@ const textSearchFields = ref([
   'spatial_property'
 ])
 const treeViewData = ref([])
-const selectedTreeItems = ref([])
 const searchTreeText = ref('')
 const debouncedSearchTreeText = ref('')
 const debounceTimeout = ref(null)
@@ -331,10 +331,7 @@ async function filter() {
 }
 
 const updateMap = async () => {
-  selectedProcesses.value = []
-  selectedTreeItems.value.forEach((item) => {
-    selectedProcesses.value.push(item)
-  })
+  selectedProcesses.value = [...selectedTreeItems.value]
   filter()
 }
 
