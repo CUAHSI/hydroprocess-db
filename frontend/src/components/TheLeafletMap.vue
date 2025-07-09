@@ -102,10 +102,11 @@ onMounted(async () => {
         'leaflet-bar leaflet-control leaflet-control-custom draw-toggle-btn'
       )
       updateDrawButton(container)
-
+      let drawer = null
       L.DomEvent.on(container, 'click', () => {
-        if (currentRectangle) {
+        if (currentRectangle || drawer) {
           drawnItems.clearLayers()
+          drawer.disable()
           currentRectangle = null
           mapStore.filterFeatures(null, 'clear')
           userTouchedFilter.value = false
@@ -118,7 +119,7 @@ onMounted(async () => {
           })
           updateDrawButton(container)
         } else {
-          const drawer = new L.Draw.Rectangle(mapStore.leaflet, {
+          drawer = new L.Draw.Rectangle(mapStore.leaflet, {
             shapeOptions: {
               color: '#3388ff',
               weight: 2,
