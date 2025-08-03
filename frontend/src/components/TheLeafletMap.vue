@@ -125,7 +125,8 @@ onMounted(async () => {
               weight: 2,
               opacity: 0.8,
               fillOpacity: 0.3
-            }
+            },
+            showArea: false
           })
           drawer.enable()
           currentRectangle = {}
@@ -136,6 +137,16 @@ onMounted(async () => {
             mapStore.leaflet.off(L.Draw.Event.CREATED, drawHandler)
             drawnItems.clearLayers()
             currentRectangle = e.layer
+            currentRectangle.feature = {
+              type: 'Feature',
+              geometry: {
+                type: 'Polygon',
+                coordinates: [
+                  currentRectangle.getLatLngs()[0].map((latLng) => [latLng.lng, latLng.lat])
+                ]
+              },
+              properties: {}
+            }
             drawnItems.addLayer(currentRectangle)
             mapStore.leaflet.fitBounds(currentRectangle.getBounds())
 
