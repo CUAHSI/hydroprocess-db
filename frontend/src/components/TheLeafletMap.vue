@@ -108,7 +108,17 @@ onMounted(async () => {
           drawnItems.clearLayers()
           drawer.disable()
           currentRectangle = null
-          mapStore.filterFeatures(null, 'clear')
+          mapStore.filterFeatures(
+            (feature) => {
+              if (feature.geometry.type === 'Point') {
+                const [lng, lat] = feature.geometry.coordinates
+                return currentRectangle.getBounds().contains([lat, lng])
+              }
+              return false
+            },
+            'remove',
+            'rectangle'
+          )
           userTouchedFilter.value = false
           emit('onFilter', {
             selectedSpatialZones,
