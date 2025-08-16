@@ -106,7 +106,6 @@ onMounted(async () => {
       L.DomEvent.on(container, 'click', () => {
         if (currentRectangle || drawer) {
           drawnItems.clearLayers()
-          drawer.disable()
           currentRectangle = null
           mapStore.filterFeatures(
             (feature) => {
@@ -129,7 +128,7 @@ onMounted(async () => {
           })
           updateDrawButton(container)
         } else {
-          drawer = new L.Draw.Rectangle(mapStore.leaflet, {
+          const drawer = new L.Draw.Rectangle(mapStore.leaflet, {
             shapeOptions: {
               color: '#3388ff',
               weight: 2,
@@ -142,8 +141,7 @@ onMounted(async () => {
           currentRectangle = {}
           updateDrawButton(container)
 
-          let drawHandler
-          drawHandler = (e) => {
+          const drawHandler = (e) => {
             mapStore.leaflet.off(L.Draw.Event.CREATED, drawHandler)
             drawnItems.clearLayers()
             currentRectangle = e.layer
