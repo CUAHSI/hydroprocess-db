@@ -39,7 +39,7 @@ onUpdated(() => {
 })
 
 onMounted(async () => {
-  mapStore.leaflet = L.map('mapContainer', { minZoom: 2, maxZoom: 20 }).setView([0, 11], 2)
+  mapStore.leaflet = L.map('mapContainer', { minZoom: 2, maxZoom: 9 }).setView([0, 11], 2)
   mapStore.layerGroup = new L.LayerGroup()
   mapStore.layerGroup.addTo(mapStore.leaflet)
 
