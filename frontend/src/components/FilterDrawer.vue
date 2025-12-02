@@ -218,7 +218,8 @@ const replaceNwithNone = (items, propName) => {
 
 const checkSearchTerm = (feature) => {
   if (!searchTerm.value) return true
-  const fieldsToSearch = ['long_name', 'citation', 'textmodel_snipped']
+  // TODO: revert back to searching all fields once done TS
+  const fieldsToSearch = ['long_name']
   return fieldsToSearch.some((field) => {
     const value = getFieldValue(field, feature)
     return value?.toLowerCase().includes(searchTerm.value.toLowerCase())
