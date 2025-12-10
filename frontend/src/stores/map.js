@@ -96,7 +96,7 @@ export const useMapStore = defineStore('map', () => {
         content += note + 'figure'
       } else {
         if (citationMatchingFileNames[feature.properties.citation.citation]) {
-          content += `<img src="${getImagePath(
+          content += `<image style='width:100%' src="${getImagePath(
             citationMatchingFileNames[feature.properties.citation.citation]
           )}" alt="Dynamic Image">`
         } else {
