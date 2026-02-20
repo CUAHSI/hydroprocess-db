@@ -3,6 +3,20 @@
     <v-progress-circular indeterminate :size="128" />
   </v-overlay>
 
+  <v-dialog v-model="showAdminLogin" persistent max-width="400">
+    <v-card>
+      <v-card-title>Admin Login</v-card-title>
+      <v-card-text>
+        <v-text-field v-model="adminUsername" label="Username" />
+        <v-text-field v-model="adminPassword" label="Password" type="password" />
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn color="primary" @click="handleAdminLogin">Login</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
   <v-container fluid class="pa-0 fill-height position-relative">
     <div
       v-show="showFilterDrawer"
@@ -53,6 +67,7 @@
 
 <script setup>
 import { ref, nextTick, onMounted, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import FilterDrawer from '@/components/FilterDrawer.vue'
 import DataViewDrawer from '@/components/DataViewDrawer.vue'
 import TheLeafletMap from '@/components/TheLeafletMap.vue'
@@ -60,8 +75,31 @@ import { mdiChevronRight, mdiChevronLeft, mdiInformationOutline } from '@mdi/js'
 import { useMapStore } from '@/stores/map'
 import { useDisplay } from 'vuetify'
 
+const route = useRoute()
+const router = useRouter()
 const { mdAndDown } = useDisplay()
 const mapStore = useMapStore()
+
+const showAdminLogin = ref(false)
+const adminUsername = ref('')
+const adminPassword = ref('')
+
+function updateAdminLoginVisibility() {
+  showAdminLogin.value = route.path === '/admin' && localStorage.getItem('hp_admin') !== 'true'
+}
+
+function handleAdminLogin() {
+  if (adminUsername.value === 'hydro' && adminPassword.value === 'process') {
+    localStorage.setItem('hp_admin', 'true')
+    showAdminLogin.value = false
+    router.replace('/')
+  }
+}
+
+watch(
+  () => route.path,
+  () => updateAdminLoginVisibility()
+)
 
 const showFilterDrawer = ref(true)
 const dataDrawerRef = ref(null)
@@ -73,6 +111,7 @@ watch(mdAndDown, (val) => {
 })
 
 onMounted(() => {
+  updateAdminLoginVisibility()
   showFilterDrawer.value = !mdAndDown.value
 })
 

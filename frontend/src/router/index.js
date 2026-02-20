@@ -14,6 +14,14 @@ const router = createRouter({
       }
     },
     {
+      path: '/admin',
+      name: 'admin',
+      component: MapView,
+      meta: {
+        showMap: true
+      }
+    },
+    {
       path: '/about',
       name: 'about',
       // route level code-splitting

@@ -74,7 +74,12 @@ function flattenItem(obj, parentKey = '', result = {}) {
         }
       } else {
         if (csvColumns.includes(newKey)) {
-          if (newKey === 'Textmodel Snippet' && obj.citation.attribution == 'Not open-access') {
+          const isAdmin = Boolean(localStorage.getItem('hp_admin'))
+          if (
+            newKey === 'Textmodel Snippet' &&
+            obj.citation.attribution == 'Not open-access' &&
+            !isAdmin
+          ) {
             result[newKey] = 'N/A'
           } else {
             result[newKey] = obj[key]

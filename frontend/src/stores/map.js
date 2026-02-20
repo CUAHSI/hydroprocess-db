@@ -70,8 +70,9 @@ export const useMapStore = defineStore('map', () => {
 
     const props = feature.properties
     const note = 'Not open access, see article for '
+    const isAdmin = Boolean(localStorage.getItem('hp_admin'))
     if (props.model_type.name === 'Text model') {
-      if (props.citation.attribution == 'Not open-access') {
+      if (props.citation.attribution == 'Not open-access' && !isAdmin) {
         content += note + 'text'
       } else {
         content += `<p>${feature.properties.textmodel_snipped}</p>`
@@ -92,11 +93,11 @@ export const useMapStore = defineStore('map', () => {
         }</p>`
       }
     } else {
-      if (props.citation.attribution == 'Not open-access') {
+      if (props.citation.attribution == 'Not open-access' && !isAdmin) {
         content += note + 'figure'
       } else {
         if (citationMatchingFileNames[feature.properties.citation.citation]) {
-          content += `<img src="${getImagePath(
+          content += `<image style='width:100%' src="${getImagePath(
             citationMatchingFileNames[feature.properties.citation.citation]
           )}" alt="Dynamic Image">`
         } else {
