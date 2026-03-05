@@ -45,6 +45,7 @@ services:
 
   postgres:
     image: postgis/postgis:16-master
+    platform: linux/amd64
     ports:
       - 5432:5432
     volumes:
