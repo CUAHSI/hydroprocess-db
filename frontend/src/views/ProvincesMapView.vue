@@ -26,7 +26,7 @@ import 'leaflet-groupedlayercontrol'
 import 'leaflet-groupedlayercontrol/dist/leaflet.groupedlayercontrol.min.css'
 
 onMounted(() => {
-  const map = L.map('simpleMapContainer', { minZoom: 2 }).setView([0, 0], 2)
+  const map = L.map('simpleMapContainer', { minZoom: 2 }).setView([54, -105], 3)
 
   // Define base and overlay layers
   const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -57,13 +57,10 @@ onMounted(() => {
   // Set up grouped layer control
   // Add the default base layer to the map before adding the control
 
-  const baseLayers = {
-    OpenStreetMap: osmLayer
-  }
   const groupedOverlays = {
     Regions: {
-      'Domains': wmsLayerDomain,
-      'Provinces': wmsLayerProvince
+      Domains: wmsLayerDomain,
+      Provinces: wmsLayerProvince
     }
   }
   const options = {
@@ -73,7 +70,11 @@ onMounted(() => {
     groupCheckboxes: true
   }
   // Move layer control to the left
-  const layerControl = new L.Control.GroupedLayers(null, groupedOverlays, { ...options, position: 'topleft', collapsed: false })
+  const layerControl = new L.Control.GroupedLayers(null, groupedOverlays, {
+    ...options,
+    position: 'topleft',
+    collapsed: false
+  })
   map.addControl(layerControl)
 
   // Move zoom control to the right

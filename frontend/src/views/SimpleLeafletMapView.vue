@@ -1,5 +1,5 @@
 <template>
-  <div id="world-leaflet-map" style="height: 100vh; width: 100vw;"></div>
+  <div id="world-leaflet-map" style="height: 100vh; width: 100vw"></div>
 </template>
 
 <script setup>
