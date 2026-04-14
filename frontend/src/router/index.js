@@ -7,6 +7,11 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      name: 'index',
+      component: () => import('../views/IndexView.vue')
+    },
+    {
+      path: '/map',
       name: 'map',
       component: MapView,
       meta: {
@@ -25,6 +30,11 @@ const router = createRouter({
       path: '/api',
       name: 'api',
       component: ApiView
+    },
+    {
+      path: '/world-map',
+      name: 'world-map',
+      component: () => import('../views/WorldMapView.vue')
     }
   ]
 })

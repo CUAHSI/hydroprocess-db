@@ -44,13 +44,17 @@ const alertStore = useAlertStore()
 let showMobileNavigation = ref(false)
 const paths = [
   {
-    attrs: { to: '/' },
-    label: 'Map'
+    attrs: { to: '/map' },
+    label: 'Database'
   },
-  // {
-  //   attrs: { to: "/api" },
-  //   label: "API",
-  // },
+  {
+    attrs: { to: '/world-map' },
+    label: 'Provinces'
+  },
+  {
+    attrs: { to: '/' },
+    label: 'Home'
+  },
   {
     attrs: { to: '/about' },
     label: 'About'

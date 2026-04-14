@@ -55,24 +55,24 @@ const { mdAndDown } = useDisplay()
 }
 
 .nav-items {
-  border-radius: 2rem !important;
+  border-radius: 0 !important;
   overflow: hidden;
   position: absolute;
   left: 43%;
 
   & > a.v-btn:first-child {
-    border-top-left-radius: 2rem !important;
-    border-bottom-left-radius: 2rem !important;
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
   }
 
   & > a.v-btn:last-child {
-    border-top-right-radius: 2rem !important;
-    border-bottom-right-radius: 2rem !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
   }
 
   .v-btn {
     margin: 0;
-    border-radius: 0;
+    border-radius: 0 !important;
     height: 39px !important;
   }
 }
