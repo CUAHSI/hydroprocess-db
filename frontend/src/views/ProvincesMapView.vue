@@ -202,7 +202,7 @@ onMounted(() => {
 <style>
 .leaflet-control-layers,
 .leaflet-control-groupedlayers {
-  background: transparent !important;
+  background: white !important;
   box-shadow: none !important;
 }
 </style>
