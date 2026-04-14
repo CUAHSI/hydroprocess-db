@@ -33,8 +33,7 @@
       </v-card>
       <v-spacer></v-spacer>
       <!-- <UserLogin @logged-in="login" v-if="!mdAndDown" :mobile="false" /> -->
-
-      <!-- <v-app-bar-nav-icon @click="$emit('toggleMobileNav')" v-else /> -->
+      <v-app-bar-nav-icon @click="$emit('toggleMobileNav')" v-if="mdAndDown" />
     </div>
   </v-app-bar>
 </template>
@@ -47,6 +46,9 @@ const { mdAndDown } = useDisplay()
 </script>
 
 <style lang="scss" scoped>
+.v-app-bar {
+  z-index: 1100 !important;
+}
 .v-toolbar.v-app-bar--is-scrolled > .v-toolbar__content > .container {
   align-items: center !important;
   will-change: padding;

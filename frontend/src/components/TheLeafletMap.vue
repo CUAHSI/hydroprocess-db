@@ -40,6 +40,8 @@ onUpdated(() => {
 
 onMounted(async () => {
   mapStore.leaflet = L.map('mapContainer', { minZoom: 2 }).setView([0, 11], 2)
+
+  // Use default zoom control position (topleft)
   mapStore.layerGroup = new L.LayerGroup()
   mapStore.layerGroup.addTo(mapStore.leaflet)
 

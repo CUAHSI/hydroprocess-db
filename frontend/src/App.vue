@@ -44,16 +44,16 @@ const alertStore = useAlertStore()
 let showMobileNavigation = ref(false)
 const paths = [
   {
+    attrs: { to: '/' },
+    label: 'Home'
+  },
+  {
     attrs: { to: '/map' },
     label: 'Database'
   },
   {
     attrs: { to: '/world-map' },
     label: 'Provinces'
-  },
-  {
-    attrs: { to: '/' },
-    label: 'Home'
   },
   {
     attrs: { to: '/about' },
@@ -65,7 +65,6 @@ function toggleMobileNav() {
   showMobileNavigation.value = !showMobileNavigation.value
 }
 </script>
-
 <style scoped>
 header {
   line-height: 1.5;

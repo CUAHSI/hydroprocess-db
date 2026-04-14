@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import MapView from '../views/MapView.vue'
+// import MapView from '../views/MapView.vue'
 import ApiView from '../views/ApiView.vue'
 
 const router = createRouter({
@@ -13,7 +13,7 @@ const router = createRouter({
     {
       path: '/map',
       name: 'map',
-      component: MapView,
+      component: () => import('../views/MapView.vue'),
       meta: {
         showMap: true
       }
@@ -34,7 +34,7 @@ const router = createRouter({
     {
       path: '/world-map',
       name: 'world-map',
-      component: () => import('../views/WorldMapView.vue')
+      component: () => import('../views/ProvincesMapView.vue')
     }
   ]
 })
