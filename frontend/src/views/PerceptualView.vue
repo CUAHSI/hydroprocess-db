@@ -8,20 +8,7 @@
       <v-col class="map-container pa-0">
         <TheLeafletMap />
 
-        <div
-          id="wms-legend"
-          style="
-            position: absolute;
-            bottom: 80px;
-            left: 10px;
-            background: white;
-            z-index: 1001;
-            padding: 8px;
-            border-radius: 4px;
-            min-width: 40px;
-            min-height: 40px;
-          "
-        ></div>
+        <div id="wms-legend"></div>
       </v-col>
     </v-row>
   </v-container>
@@ -98,13 +85,6 @@ onMounted(async () => {
   })
   mapStore.leaflet.addControl(layerControl)
 
-  // Move zoom control to the right
-  mapStore.leaflet.removeControl(mapStore.leaflet.zoomControl)
-  mapStore.leaflet.zoomControl = L.control.zoom({ position: 'topright' }).addTo(mapStore.leaflet)
-
-  mapStore.leaflet.on('overlayadd', updateLegend)
-  mapStore.leaflet.on('overlayremove', updateLegend)
-
   mapStore.leaflet.on('click', function (e) {
     if (!activeWmsLayer) return
     const url = getFeatureInfoUrl(mapStore.leaflet, activeWmsLayer, e.latlng)
@@ -114,6 +94,18 @@ onMounted(async () => {
         L.popup().setLatLng(e.latlng).setContent(data).openOn(mapStore.leaflet)
       })
   })
+
+  // Move zoom control to the right
+  mapStore.leaflet.removeControl(mapStore.leaflet.zoomControl)
+  mapStore.leaflet.zoomControl = L.control.zoom({ position: 'topright' }).addTo(mapStore.leaflet)
+
+  // add hooks to update the legend when layers are added or removed.
+  // Then call the updateLegend function manually. This is necessary
+  // because the overlayadd isn't called when initially adding the
+  // layers to the map.
+  mapStore.leaflet.on('overlayadd', updateLegend)
+  mapStore.leaflet.on('overlayremove', updateLegend)
+  updateLegend()
 
   // set the mapLoaded flag to true after the map and layers have been initialized
   // this will turn off the loading overlay and allow the map to be displayed
@@ -161,4 +153,42 @@ function getFeatureInfoUrl(map, layer, latlng) {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+/* Legend styles */
+#wms-legend {
+  position: absolute;
+  border: 2px solid #ccc;
+  min-width: 120px;
+  min-height: 120px;
+  max-width: 350px;
+  max-height: 300px;
+  overflow: auto;
+  padding: 6px;
+  font-size: 1.2em;
+  box-sizing: border-box;
+  z-index: 1001;
+  border-radius: 4px;
+  bottom: 10px;
+  left: 10px;
+  background: white;
+}
+
+@media (max-width: 600px) {
+  #wms-legend {
+    position: absolute;
+    border: 2px solid #ccc;
+    min-width: 80px;
+    min-height: 60px;
+    max-width: 90vw;
+    max-height: 120px;
+    padding: 6px;
+    font-size: 1em;
+    left: 4px !important;
+    right: 4px !important;
+    z-index: 1001;
+    bottom: 10px;
+    left: 10px;
+    background: white;
+  }
+}
+</style>
