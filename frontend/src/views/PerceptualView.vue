@@ -28,9 +28,6 @@ const mapStore = useMapStore()
 // Load map store properties as refs for reactivity
 const { mapLoaded } = storeToRefs(mapStore)
 
-// Track which WMS layer is currently active
-let activeWmsLayer = null
-
 // Define the perceptual models "Domain" WMS layer
 const wmsLayerDomain = L.tileLayer.wms(
   'https://arcgis.cuahsi.org/arcgis/services/HydroProcess/Domain/MapServer/WMSServer',
@@ -96,16 +93,6 @@ onMounted(async () => {
   })
   mapStore.leaflet.addControl(layerControl)
 
-  mapStore.leaflet.on('click', function (e) {
-    if (!activeWmsLayer) return
-    const url = getFeatureInfoUrl(mapStore.leaflet, activeWmsLayer, e.latlng)
-    fetch(url)
-      .then((response) => response.text())
-      .then((data) => {
-        L.popup().setLatLng(e.latlng).setContent(data).openOn(mapStore.leaflet)
-      })
-  })
-
   // Move zoom control to the right
   mapStore.leaflet.removeControl(mapStore.leaflet.zoomControl)
   mapStore.leaflet.zoomControl = L.control.zoom({ position: 'topright' }).addTo(mapStore.leaflet)
@@ -137,30 +124,6 @@ function updateLegend() {
     html += `<img src="${legendUrls.province}" alt="Province Legend" />`
   }
   document.getElementById('wms-legend').innerHTML = html
-}
-
-function getFeatureInfoUrl(map, layer, latlng) {
-  const point = map.latLngToContainerPoint(latlng, map.getZoom())
-  const size = map.getSize()
-  const params = {
-    request: 'GetFeatureInfo',
-    service: 'WMS',
-    srs: 'EPSG:4326',
-    styles: '',
-    transparent: true,
-    version: '1.1.1',
-    format: 'image/png',
-    bbox: map.getBounds().toBBoxString(),
-    height: size.y,
-    width: size.x,
-    layers: layer.wmsParams.layers,
-    query_layers: layer.wmsParams.layers,
-    info_format: 'text/html'
-  }
-  params[params.version === '1.3.0' ? 'i' : 'x'] = Math.round(point.x)
-  params[params.version === '1.3.0' ? 'j' : 'y'] = Math.round(point.y)
-  const baseUrl = layer._url
-  return baseUrl + L.Util.getParamString(params, baseUrl, true)
 }
 </script>
 
