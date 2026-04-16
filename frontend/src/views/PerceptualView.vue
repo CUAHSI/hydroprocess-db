@@ -165,12 +165,6 @@ function getFeatureInfoUrl(map, layer, latlng) {
 </script>
 
 <style scoped>
-/* img styles for legend */
-img {
-  display: block;
-  vertical-align: middle;
-}
-
 div {
   line-height: 0;
 }
