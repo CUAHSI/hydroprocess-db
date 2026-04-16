@@ -62,6 +62,17 @@ const legendUrls = {
 }
 
 onMounted(async () => {
+  // set the map bounds so that only North America is visible
+  // also set the minimum zoom level to prevent users from zooming
+  // out too far and seeing the entire world.
+  mapStore.leaflet.setMaxBounds(
+    L.latLngBounds([
+      [5, -170], // SW coordinate of bbox
+      [75, -50] // NE coordinate of bbox
+    ])
+  )
+  mapStore.leaflet.setMinZoom(3)
+
   // Add the perceptual models "Domain" layer to the map
   // Only adding the "Domain" layer by default to
   // control which layer is initially active.
