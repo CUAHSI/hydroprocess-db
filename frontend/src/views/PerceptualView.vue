@@ -131,7 +131,7 @@ function updateLegend() {
   const provinceOn = mapStore.leaflet.hasLayer(wmsLayerProvince)
   let html = ''
   if (domainOn) {
-    html += `<img src="${legendUrls.domain}" alt="Domain Legend" style="margin-bottom:8px;" />`
+    html += `<img src="${legendUrls.domain}" alt="Domain Legend" />`
   }
   if (provinceOn) {
     html += `<img src="${legendUrls.province}" alt="Province Legend" />`
@@ -165,20 +165,28 @@ function getFeatureInfoUrl(map, layer, latlng) {
 </script>
 
 <style scoped>
+/* img styles for legend */
+img {
+  display: block;
+  vertical-align: middle;
+}
+
+div {
+  line-height: 0;
+}
+
 /* Legend styles */
 #wms-legend {
+  z-index: 1001;
   position: absolute;
-  border: 2px solid #ccc;
-  min-width: 120px;
-  min-height: 120px;
+  overflow: auto;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  min-width: 90px;
   max-width: 350px;
   max-height: 300px;
-  overflow: auto;
   padding: 6px;
-  font-size: 1.2em;
-  box-sizing: border-box;
-  z-index: 1001;
-  border-radius: 4px;
+  font-size: 1em;
+  border-radius: 6px;
   bottom: 10px;
   left: 10px;
   background: white;
@@ -186,19 +194,18 @@ function getFeatureInfoUrl(map, layer, latlng) {
 
 @media (max-width: 600px) {
   #wms-legend {
+    z-index: 1001;
     position: absolute;
-    border: 2px solid #ccc;
-    min-width: 80px;
-    min-height: 60px;
-    max-width: 90vw;
+    overflow: auto;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    min-width: 90px;
+    max-width: 350px;
     max-height: 120px;
     padding: 6px;
     font-size: 1em;
-    left: 4px !important;
-    right: 4px !important;
-    z-index: 1001;
-    bottom: 10px;
-    left: 10px;
+    border-radius: 6px;
+    bottom: 4px;
+    left: 4px;
     background: white;
   }
 }
