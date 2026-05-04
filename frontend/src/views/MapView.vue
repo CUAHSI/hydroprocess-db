@@ -209,24 +209,16 @@ onMounted(async () => {
   }
   function updateDrawButton(container) {
     if (currentRectangle) {
+      container.classList.add('draw-btn--active')
+      container.classList.remove('draw-btn--inactive')
       container.innerHTML = '<span class="material-icons">close</span>'
-      container.style.background = 'white'
       container.title = 'Clear box'
     } else {
-      container.style.backgroundImage = "url('/DrawIcon.ico')"
+      container.classList.add('draw-btn--inactive')
+      container.classList.remove('draw-btn--active')
       container.innerHTML = ''
       container.title = 'Draw a box'
     }
-    container.style.backgroundRepeat = 'no-repeat'
-    container.style.backgroundSize = '60% 60%'
-    container.style.backgroundPosition = 'center'
-    container.style.borderRadius = '4px'
-    container.style.width = '34px'
-    container.style.height = '34px'
-    container.style.cursor = 'pointer'
-    container.style.display = 'flex'
-    container.style.alignItems = 'center'
-    container.style.justifyContent = 'center'
   }
   L.drawLocal.draw.handlers.rectangle.tooltip.start = 'Click and drag to draw a box'
   L.Control.ClearFilters = L.Control.extend({
@@ -238,18 +230,7 @@ onMounted(async () => {
       )
       container.title = 'Reset Filters'
 
-      container.style.backgroundImage = "url('/ClearFilter.ico')"
-      container.style.backgroundRepeat = 'no-repeat'
-      container.style.backgroundSize = '60% 60%'
-      container.style.backgroundColor = 'white'
-      container.style.backgroundPosition = 'center'
-      container.style.borderRadius = '4px'
-      container.style.width = '34px'
-      container.style.height = '34px'
-      container.style.cursor = 'pointer'
-      container.style.display = 'flex'
-      container.style.alignItems = 'center'
-      container.style.justifyContent = 'center'
+      container.classList.add('clear-filters-btn')
 
       L.DomEvent.on(container, 'click', () => {
         mapStore.clearAllFilters()

@@ -108,9 +108,6 @@ onMounted(async () => {
   // set the mapLoaded flag to true after the map and layers have been initialized
   // this will turn off the loading overlay and allow the map to be displayed
   mapLoaded.value = true
-
-  console.log(mapStore.leaflet.hasLayer(wmsLayerDomain))
-  console.log(mapStore.leaflet.hasLayer(wmsLayerProvince))
 })
 
 function updateLegend() {

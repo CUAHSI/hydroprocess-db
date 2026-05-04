@@ -1,2 +1,40 @@
 @import 'theme';
 @import '../font/font.css';
+
+.draw-toggle-btn {
+  background-repeat: no-repeat;
+  background-size: 60% 60%;
+  background-position: center;
+  border-radius: 4px;
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.draw-btn--inactive {
+  background-image: url('/DrawIcon.ico');
+  background-color: white;
+}
+
+.draw-btn--active {
+  background-image: none;
+  background-color: white;
+}
+
+.clear-filters-btn {
+  background-image: url('/ClearFilter.ico');
+  background-repeat: no-repeat;
+  background-size: 60% 60%;
+  background-color: white;
+  background-position: center;
+  border-radius: 4px;
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
