@@ -1,14 +1,23 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import MapView from '../views/MapView.vue'
+import PerceptualView from '../views/PerceptualView.vue'
 import ApiView from '../views/ApiView.vue'
 
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
     {
-      path: '/',
-      name: 'map',
+      path: '/hydrologic_processes',
+      name: 'Hydrologic Processes',
       component: MapView,
+      meta: {
+        showMap: true
+      }
+    },
+    {
+      path: '/perceptual_models',
+      name: 'Perceptual Models',
+      component: PerceptualView,
       meta: {
         showMap: true
       }
