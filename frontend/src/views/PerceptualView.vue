@@ -19,9 +19,57 @@ import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import TheLeafletMap from '@/components/TheLeafletMap.vue'
 import { useMapStore } from '@/stores/map'
+// import domainRegions from '../regions.json'
 import L from 'leaflet'
 import 'leaflet-groupedlayercontrol'
 import 'leaflet-groupedlayercontrol/dist/leaflet.groupedlayercontrol.min.css'
+
+const domainRegions = [
+  {
+    name: 'North Region',
+    bounds: [
+      [50, -170],
+      [75, -50]
+    ],
+    description:
+      'The dominant gradients across this domain are temperature (north to south), elevation (stark contrast between the mountains areas and the large plains) and geologic conditions (Canadian Shield and elsewhere). The transition of the northern domain into the western, centraland eastern domains is a gradual one.',
+    image: '/images/north.png',
+    pdf: '/pdfs/north.pdf'
+  },
+  {
+    name: 'West Region',
+    bounds: [
+      [25, -130],
+      [55, -100]
+    ],
+    description:
+      'The transition of the northern domain into the western, centraland eastern domains is a gradual one. In the east, the Gulf of St Lawrence provides a convenient boundary. In the center, a transition from forests into agriculture provides a reason to distinguish between the two domains. In the west the boundary is the most diffuse and the transition from northern mountains (N3, N4) into western mountains (W1, W4) should be seen as a broad transition zone along elevation, temperature and precipitation gradients, rather than a sharp transition from one biome into the next. The manifestation of hydrological conditions is strongly influenced by the water availability boundary that divides the continent between negative and positive P-PET. ',
+    image: '/images/west.png',
+    pdf: '/pdfs/west.pdf'
+  },
+  {
+    name: 'Central Region',
+    bounds: [
+      [25, -100],
+      [55, -80]
+    ],
+    description:
+      'In the center, a transition from forests into agriculture provides a reason to distinguish between the two domains. In the west the boundary is the most diffuse and the transition from northern mountains (N3, N4) into western mountains (W1, W4) should be seen as a broad transition zone along elevation, temperature and precipitation gradients, rather than a sharp transition from one biome into the next. The manifestation of hydrological conditions is strongly influenced by the water availability boundary that divides the continent between negative and positive P-PET. ',
+    image: '/images/central.png',
+    pdf: '/pdfs/central.pdf'
+  },
+  {
+    name: 'East Region',
+    bounds: [
+      [25, -80],
+      [50, -60]
+    ],
+    description:
+      'The manifestation of hydrological conditions is strongly influenced by the water availability boundary that divides the continent between negative and positive P-PET. ',
+    image: '/images/east.png',
+    pdf: '/pdfs/east.pdf'
+  }
+]
 
 const mapStore = useMapStore()
 
@@ -58,39 +106,41 @@ const legendUrls = {
     'https://arcgis.cuahsi.org/arcgis/services/HydroProcess/Province/MapServer/WMSServer?service=WMS&request=GetLegendGraphic&format=image/png&layer=0&version=1.1.1'
 }
 
-async function fetchRegionData(latlng) {
-  // const map = mapStore.leaflet
-  // const point = map.latLngToContainerPoint(latlng)
-  // const size = map.getSize()
-  // const bounds = map.getBounds()
-  // const sw = bounds.getSouthWest()
-  // const ne = bounds.getNorthEast()
-  // const bbox = `${sw.lng},${sw.lat},${ne.lng},${ne.lat}`
+// async function fetchRegionData(latlng) {
+//   const map = mapStore.leaflet
+//   const point = map.latLngToContainerPoint(latlng)
+//   const size = map.getSize()
+//   const bounds = map.getBounds()
+//   const sw = bounds.getSouthWest()
+//    const ne = bounds.getNorthEast()
+//    const bbox = `${sw.lng},${sw.lat},${ne.lng},${ne.lat}`
 
-  const url = '' //empty for now
+//   const url = '' //empty for now
 
-  try {
-    const res = await fetch(url)
-    const text = await res.text()
-    const xml = new DOMParser().parseFromString(text, 'text/xml')
+//   try {
+//     const res = await fetch(url)
+//     const text = await res.text()
+//     const xml = new DOMParser().parseFromString(text, 'text/xml')
 
-    // const field = xml.querySelector('FIELD[name="NAME"]')
-    const regionName = 'North Domain' //field?.getAttribute('value')
+//     const field = xml.querySelector('FIELD[name="NAME"]')
+//     const regionName = field?.getAttribute('value')
 
-    console.log('Clicked region name:', regionName, latlng)
-    console.log('All fields:', xml.querySelectorAll('FIELD'))
-    if (!regionName) return null
+//     console.log('Clicked region name:', regionName, latlng)
+//     console.log('All fields:', xml.querySelectorAll('FIELD'))
+//     if (!regionName) return null
 
-    return {
-      name: regionName,
-      image: 'path/to/image.png',
-      description: 'Description of the region',
-      pdf: 'path/to/fact-sheet.pdf'
-    } //domainRegions.find(r => r.name === regionName)
-  } catch (err) {
-    console.error(err)
-    return null
-  }
+//     return domainRegions.find(r => r.name === regionName)
+//   } catch (err) {
+//     console.error(err)
+//     return null
+//   }
+// }
+
+function findRegion(latlng) {
+  return domainRegions.find((region) => {
+    const bounds = L.latLngBounds(region.bounds)
+    return bounds.contains(latlng)
+  })
 }
 
 function createTooltip(region) {
@@ -162,11 +212,14 @@ onMounted(async () => {
   updateLegend()
 
   // Add click event listener to the map to fetch region data and show tooltip}
-  mapStore.leaflet.on('click', async (e) => {
+  mapStore.leaflet.on('click', (e) => {
     if (!mapStore.leaflet.hasLayer(wmsLayerDomain)) return
 
-    const region = await fetchRegionData(e.latlng)
+    const region = findRegion(e.latlng)
     if (!region) return
+    // domainRegions.forEach(r => {
+    //   L.rectangle(r.bounds, { color: 'black', weight: 1 }).addTo(mapStore.leaflet)
+    // })
 
     L.popup().setLatLng(e.latlng).setContent(createTooltip(region)).openOn(mapStore.leaflet)
   })
