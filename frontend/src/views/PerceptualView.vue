@@ -75,14 +75,14 @@ async function fetchRegionData(latlng) {
     const xml = new DOMParser().parseFromString(text, 'text/xml')
 
     // const field = xml.querySelector('FIELD[name="NAME"]')
-    const regionName = '' //field?.getAttribute('value')
+    const regionName = 'North Domain' //field?.getAttribute('value')
 
     console.log('Clicked region name:', regionName, latlng)
     console.log('All fields:', xml.querySelectorAll('FIELD'))
     if (!regionName) return null
 
     return {
-      name: 'test region name',
+      name: regionName,
       image: 'path/to/image.png',
       description: 'Description of the region',
       pdf: 'path/to/fact-sheet.pdf'
