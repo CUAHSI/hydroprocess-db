@@ -19,6 +19,7 @@ import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import TheLeafletMap from '@/components/TheLeafletMap.vue'
 import { useMapStore } from '@/stores/map'
+import northernDomain from '@/assets/northernDomain.jpg'
 // import domainRegions from '../regions.json'
 import L from 'leaflet'
 import 'leaflet-groupedlayercontrol'
@@ -32,8 +33,8 @@ const domainRegions = [
       [75, -50]
     ],
     description:
-      'The dominant gradients across this domain are temperature (north to south), elevation (stark contrast between the mountains areas and the large plains) and geologic conditions (Canadian Shield and elsewhere). The transition of the northern domain into the western, centraland eastern domains is a gradual one.',
-    image: '/images/north.png',
+      'The dominant gradients across this domain are temperature (north to south), elevation (stark contrast between the mountains areas and the large plains) and geologic conditions (Canadian Shield and elsewhere).',
+    image: northernDomain,
     pdf: '/pdfs/north.pdf'
   },
   {
@@ -43,8 +44,8 @@ const domainRegions = [
       [55, -100]
     ],
     description:
-      'The transition of the northern domain into the western, centraland eastern domains is a gradual one. In the east, the Gulf of St Lawrence provides a convenient boundary. In the center, a transition from forests into agriculture provides a reason to distinguish between the two domains. In the west the boundary is the most diffuse and the transition from northern mountains (N3, N4) into western mountains (W1, W4) should be seen as a broad transition zone along elevation, temperature and precipitation gradients, rather than a sharp transition from one biome into the next. The manifestation of hydrological conditions is strongly influenced by the water availability boundary that divides the continent between negative and positive P-PET. ',
-    image: '/images/west.png',
+      'In the west the boundary is the most diffuse and the transition from northern mountains (N3, N4) into western mountains (W1, W4) should be seen as a broad transition zone along elevation, temperature and precipitation gradients, rather than a sharp transition from one biome into the next. The manifestation of hydrological conditions is strongly influenced by the water availability boundary that divides the continent between negative and positive P-PET. ',
+    image: northernDomain,
     pdf: '/pdfs/west.pdf'
   },
   {
@@ -54,8 +55,8 @@ const domainRegions = [
       [55, -80]
     ],
     description:
-      'In the center, a transition from forests into agriculture provides a reason to distinguish between the two domains. In the west the boundary is the most diffuse and the transition from northern mountains (N3, N4) into western mountains (W1, W4) should be seen as a broad transition zone along elevation, temperature and precipitation gradients, rather than a sharp transition from one biome into the next. The manifestation of hydrological conditions is strongly influenced by the water availability boundary that divides the continent between negative and positive P-PET. ',
-    image: '/images/central.png',
+      'In the center, a transition from forests into agriculture provides a reason to distinguish between the two domains.',
+    image: northernDomain,
     pdf: '/pdfs/central.pdf'
   },
   {
@@ -66,7 +67,7 @@ const domainRegions = [
     ],
     description:
       'The manifestation of hydrological conditions is strongly influenced by the water availability boundary that divides the continent between negative and positive P-PET. ',
-    image: '/images/east.png',
+    image: northernDomain,
     pdf: '/pdfs/east.pdf'
   }
 ]
@@ -154,11 +155,11 @@ function createTooltip(region) {
 
       <img 
         src="${region.image}" 
-        style="width:100%; border-radius:4px; margin:6px 0;"
+        style="width:50%; height:50%; border-radius:4px; margin:6px 0;"
       />
 
       <a href="${region.pdf}" download target="_blank">
-        Download Fact Sheet (PDF)
+        <br>Download Fact Sheet (PDF)
       </a>
     </div>
   `
