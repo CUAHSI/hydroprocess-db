@@ -58,6 +58,62 @@ const legendUrls = {
     'https://arcgis.cuahsi.org/arcgis/services/HydroProcess/Province/MapServer/WMSServer?service=WMS&request=GetLegendGraphic&format=image/png&layer=0&version=1.1.1'
 }
 
+async function fetchRegionData(latlng) {
+  // const map = mapStore.leaflet
+  // const point = map.latLngToContainerPoint(latlng)
+  // const size = map.getSize()
+  // const bounds = map.getBounds()
+  // const sw = bounds.getSouthWest()
+  // const ne = bounds.getNorthEast()
+  // const bbox = `${sw.lng},${sw.lat},${ne.lng},${ne.lat}`
+
+  const url = '' //empty for now
+
+  try {
+    const res = await fetch(url)
+    const text = await res.text()
+    const xml = new DOMParser().parseFromString(text, 'text/xml')
+
+    // const field = xml.querySelector('FIELD[name="NAME"]')
+    const regionName = '' //field?.getAttribute('value')
+
+    console.log('Clicked region name:', regionName, latlng)
+    console.log('All fields:', xml.querySelectorAll('FIELD'))
+    if (!regionName) return null
+
+    return {
+      name: 'test region name',
+      image: 'path/to/image.png',
+      description: 'Description of the region',
+      pdf: 'path/to/fact-sheet.pdf'
+    } //domainRegions.find(r => r.name === regionName)
+  } catch (err) {
+    console.error(err)
+    return null
+  }
+}
+
+function createTooltip(region) {
+  return `
+    <div style="max-width: 250px;">
+      <h3>${region.name}</h3>
+
+      <p style="font-size: 0.9em;">
+        ${region.description}
+      </p>
+
+      <img 
+        src="${region.image}" 
+        style="width:100%; border-radius:4px; margin:6px 0;"
+      />
+
+      <a href="${region.pdf}" download target="_blank">
+        Download Fact Sheet (PDF)
+      </a>
+    </div>
+  `
+}
+
 onMounted(async () => {
   // set the map bounds so that only North America is visible
   // also set the minimum zoom level to prevent users from zooming
@@ -104,6 +160,16 @@ onMounted(async () => {
   mapStore.leaflet.on('overlayadd', updateLegend)
   mapStore.leaflet.on('overlayremove', updateLegend)
   updateLegend()
+
+  // Add click event listener to the map to fetch region data and show tooltip}
+  mapStore.leaflet.on('click', async (e) => {
+    if (!mapStore.leaflet.hasLayer(wmsLayerDomain)) return
+
+    const region = await fetchRegionData(e.latlng)
+    if (!region) return
+
+    L.popup().setLatLng(e.latlng).setContent(createTooltip(region)).openOn(mapStore.leaflet)
+  })
 
   // set the mapLoaded flag to true after the map and layers have been initialized
   // this will turn off the loading overlay and allow the map to be displayed
