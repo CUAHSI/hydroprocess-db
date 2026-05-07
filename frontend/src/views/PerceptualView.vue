@@ -9,18 +9,24 @@
         <TheLeafletMap />
 
         <div id="wms-legend"></div>
+        <tooltip
+          v-if="tooltipRegion"
+          :region="tooltipRegion"
+          :position="tooltipPosition"
+          @close="tooltipRegion = null"
+        />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import TheLeafletMap from '@/components/TheLeafletMap.vue'
+import tooltip from './TooltipPopup.vue'
 import { useMapStore } from '@/stores/map'
 import northernDomain from '@/assets/northernDomain.jpg'
-// import domainRegions from '../regions.json'
 import L from 'leaflet'
 import 'leaflet-groupedlayercontrol'
 import 'leaflet-groupedlayercontrol/dist/leaflet.groupedlayercontrol.min.css'
@@ -73,6 +79,8 @@ const domainRegions = [
 ]
 
 const mapStore = useMapStore()
+const tooltipRegion = ref(null)
+const tooltipPosition = ref(null)
 
 // Load map store properties as refs for reactivity
 const { mapLoaded } = storeToRefs(mapStore)
@@ -144,25 +152,29 @@ function findRegion(latlng) {
   })
 }
 
-function createTooltip(region) {
-  return `
-    <div style="max-width: 250px;">
-      <h3>${region.name}</h3>
+// function createTooltip(region) {
+//   return `
+//     <div style="max-width: 250px;">
+//       <h3>${region.name}</h3>
 
-      <p style="font-size: 0.9em;">
-        ${region.description}
-      </p>
+//       <p style="font-size: 0.9em; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+//         ${region.description}
+//       </p>
 
-      <img 
-        src="${region.image}" 
-        style="width:50%; height:50%; border-radius:4px; margin:6px 0;"
-      />
+//       <img
+//         src="${region.image}"
+//         style="width:50%; height:50%; border-radius:4px; margin:6px 0;"
+//       />
 
-      <a href="${region.pdf}" download target="_blank">
-        <br>Download Fact Sheet (PDF)
-      </a>
-    </div>
-  `
+//       <a href="${region.pdf}" download target="_blank">
+//         <br>Download Fact Sheet (PDF)
+//       </a>
+//     </div>
+//   `
+// }
+function updateTooltipPosition(latlng) {
+  const point = mapStore.leaflet.latLngToContainerPoint(latlng)
+  tooltipPosition.value = { x: point.x, y: point.y }
 }
 
 onMounted(async () => {
@@ -218,11 +230,9 @@ onMounted(async () => {
 
     const region = findRegion(e.latlng)
     if (!region) return
-    // domainRegions.forEach(r => {
-    //   L.rectangle(r.bounds, { color: 'black', weight: 1 }).addTo(mapStore.leaflet)
-    // })
-
-    L.popup().setLatLng(e.latlng).setContent(createTooltip(region)).openOn(mapStore.leaflet)
+    console.log('Clicked region:', region.name, e.latlng)
+    tooltipRegion.value = region
+    updateTooltipPosition(e.latlng)
   })
 
   // set the mapLoaded flag to true after the map and layers have been initialized
