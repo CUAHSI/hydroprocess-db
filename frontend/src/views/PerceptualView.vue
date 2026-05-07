@@ -78,6 +78,8 @@ const domainRegions = [
   }
 ]
 
+const provinceRegions = []
+
 const mapStore = useMapStore()
 const tooltipRegion = ref(null)
 const tooltipPosition = ref(null)
@@ -146,10 +148,22 @@ const legendUrls = {
 // }
 
 function findRegion(latlng) {
-  return domainRegions.find((region) => {
-    const bounds = L.latLngBounds(region.bounds)
-    return bounds.contains(latlng)
-  })
+  console.log('searching for regions...')
+  const domainOn = mapStore.leaflet.hasLayer(wmsLayerDomain)
+  const provinceOn = mapStore.leaflet.hasLayer(wmsLayerProvince)
+  if (domainOn) {
+    return domainRegions.find((region) => {
+      const bounds = L.latLngBounds(region.bounds)
+      return bounds.contains(latlng)
+    })
+  }
+
+  if (provinceOn) {
+    console.log('in here')
+    return provinceRegions.find((region) => {
+      return L.latLngBounds(region.bounds).contains(latlng)
+    })
+  }
 }
 
 // function createTooltip(region) {
@@ -224,10 +238,8 @@ onMounted(async () => {
   mapStore.leaflet.on('overlayremove', updateLegend)
   updateLegend()
 
-  // Add click event listener to the map to fetch region data and show tooltip}
+  // Add click event listener to the map to fetch region data and show tooltips
   mapStore.leaflet.on('click', (e) => {
-    if (!mapStore.leaflet.hasLayer(wmsLayerDomain)) return
-
     const region = findRegion(e.latlng)
     if (!region) return
     console.log('Clicked region:', region.name, e.latlng)

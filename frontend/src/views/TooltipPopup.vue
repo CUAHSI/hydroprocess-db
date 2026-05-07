@@ -1,5 +1,10 @@
 <template>
-  <div v-show="!isExpanded" class="tooltip-panel" :style="panelStyle">
+  <div
+    v-show="!isExpanded"
+    @click.self="((isExpanded = false), $emit('close'))"
+    class="tooltip-panel"
+    :style="panelStyle"
+  >
     <button class="close-btn" type="button" @click="$emit('close')">&#x2715;</button>
     <h3>{{ region.name }}</h3>
 
