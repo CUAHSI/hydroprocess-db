@@ -13,7 +13,7 @@
     </p>
 
     <button v-if="isTruncated" type="button" class="view-more" @click="isExpanded = !isExpanded">
-      {{ isExpanded ? 'View less' : 'View more' }}
+      View more
     </button>
 
     <div class="footer">
@@ -27,11 +27,7 @@
 
   <!-- pop up appears when user clicks to learn more about the region -->
   <Teleport to="body">
-    <div
-      v-if="isExpanded"
-      class="popup-overlay"
-      @click.self="((isExpanded = false), $emit('close'))"
-    >
+    <div v-show="isExpanded" class="popup-overlay" @click.self="$emit('close')">
       <div class="popup-panel">
         <button class="close-btn" type="button" @click="((isExpanded = false), $emit('close'))">
           &#x2715;
@@ -127,10 +123,10 @@ watch(
   position: fixed;
   inset: 0;
   z-index: 2000;
-  background: rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
+  animation: slideInFromRight 0.5s ease-out forwards;
 }
 
 .popup-panel {
@@ -140,10 +136,18 @@ watch(
   padding: 28px;
   width: 560px;
   max-width: 90vw;
-  max-height: 80vh;
+  height: calc(100vh - 130px);
   overflow-y: auto;
   line-height: 1.4;
   position: relative;
+}
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%); /* Start off-screen to the right */
+  }
+  to {
+    transform: translateX(0); /* End off-screen to the left */
+  }
 }
 
 .close-btn {
