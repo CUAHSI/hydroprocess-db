@@ -1,5 +1,5 @@
 <template>
-  <div class="tooltip-panel" :style="panelStyle">
+  <div v-show="!isExpanded" class="tooltip-panel" :style="panelStyle">
     <button class="close-btn" type="button" @click="$emit('close')">&#x2715;</button>
     <h3>{{ region.name }}</h3>
 
@@ -19,6 +19,31 @@
     <!-- Triangle pointer -->
     <div class="triangle" />
   </div>
+
+  <!-- pop up appears when user clicks to learn more about the region -->
+  <Teleport to="body">
+    <div
+      v-if="isExpanded"
+      class="popup-overlay"
+      @click.self="((isExpanded = false), $emit('close'))"
+    >
+      <div class="popup-panel">
+        <button class="close-btn" type="button" @click="((isExpanded = false), $emit('close'))">
+          &#x2715;
+        </button>
+        <h3>{{ region.name }}</h3>
+
+        <p class="description expanded">
+          {{ region.description }}
+        </p>
+
+        <div class="footer">
+          <img :src="region.image" :alt="region.name" class="image" />
+          <a :href="region.pdf" download target="_blank" class="download-link">Learn More</a>
+        </div>
+      </div>
+    </div>
+  </Teleport>
 </template>
 
 <script setup>
@@ -91,6 +116,29 @@ watch(
   border-top: 16px solid white;
   /* Match the box shadow on the triangle */
   filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.2));
+}
+
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-panel {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  padding: 28px;
+  width: 560px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  line-height: 1.4;
+  position: relative;
 }
 
 .close-btn {
