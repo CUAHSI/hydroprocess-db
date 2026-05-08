@@ -81,7 +81,6 @@ const checkTruncation = async () => {
 
 onMounted(() => {
   checkTruncation()
-  console.log('received props:', props.region, props.position)
 })
 
 watch(

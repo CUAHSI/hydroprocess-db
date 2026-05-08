@@ -117,38 +117,7 @@ const legendUrls = {
     'https://arcgis.cuahsi.org/arcgis/services/HydroProcess/Province/MapServer/WMSServer?service=WMS&request=GetLegendGraphic&format=image/png&layer=0&version=1.1.1'
 }
 
-// async function fetchRegionData(latlng) {
-//   const map = mapStore.leaflet
-//   const point = map.latLngToContainerPoint(latlng)
-//   const size = map.getSize()
-//   const bounds = map.getBounds()
-//   const sw = bounds.getSouthWest()
-//    const ne = bounds.getNorthEast()
-//    const bbox = `${sw.lng},${sw.lat},${ne.lng},${ne.lat}`
-
-//   const url = '' //empty for now
-
-//   try {
-//     const res = await fetch(url)
-//     const text = await res.text()
-//     const xml = new DOMParser().parseFromString(text, 'text/xml')
-
-//     const field = xml.querySelector('FIELD[name="NAME"]')
-//     const regionName = field?.getAttribute('value')
-
-//     console.log('Clicked region name:', regionName, latlng)
-//     console.log('All fields:', xml.querySelectorAll('FIELD'))
-//     if (!regionName) return null
-
-//     return domainRegions.find(r => r.name === regionName)
-//   } catch (err) {
-//     console.error(err)
-//     return null
-//   }
-// }
-
 function findRegion(latlng) {
-  console.log('searching for regions...')
   const domainOn = mapStore.leaflet.hasLayer(wmsLayerDomain)
   const provinceOn = mapStore.leaflet.hasLayer(wmsLayerProvince)
   if (domainOn) {
@@ -159,33 +128,12 @@ function findRegion(latlng) {
   }
 
   if (provinceOn) {
-    console.log('in here')
     return provinceRegions.find((region) => {
       return L.latLngBounds(region.bounds).contains(latlng)
     })
   }
 }
 
-// function createTooltip(region) {
-//   return `
-//     <div style="max-width: 250px;">
-//       <h3>${region.name}</h3>
-
-//       <p style="font-size: 0.9em; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-//         ${region.description}
-//       </p>
-
-//       <img
-//         src="${region.image}"
-//         style="width:50%; height:50%; border-radius:4px; margin:6px 0;"
-//       />
-
-//       <a href="${region.pdf}" download target="_blank">
-//         <br>Download Fact Sheet (PDF)
-//       </a>
-//     </div>
-//   `
-// }
 function updateTooltipPosition(latlng) {
   const point = mapStore.leaflet.latLngToContainerPoint(latlng)
   tooltipPosition.value = { x: point.x, y: point.y }
