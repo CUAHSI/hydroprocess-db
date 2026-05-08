@@ -26,41 +26,10 @@ import { storeToRefs } from 'pinia'
 import TheLeafletMap from '@/components/TheLeafletMap.vue'
 import tooltip from './TooltipPopup.vue'
 import { useMapStore } from '@/stores/map'
-import northernDomain from '@/assets/northernDomain.jpg'
+import { domainRegions } from '../constants'
 import L from 'leaflet'
 import 'leaflet-groupedlayercontrol'
 import 'leaflet-groupedlayercontrol/dist/leaflet.groupedlayercontrol.min.css'
-
-const domainRegions = [
-  {
-    name: 'North',
-    description:
-      'The dominant gradients across this domain are temperature (north to south), elevation (stark contrast between the mountains areas and the large plains) and geologic conditions (Canadian Shield and elsewhere).',
-    image: northernDomain,
-    pdf: '/pdfs/north.pdf'
-  },
-  {
-    name: 'West',
-    description:
-      'In the west the boundary is the most diffuse and the transition from northern mountains (N3, N4) into western mountains (W1, W4) should be seen as a broad transition zone along elevation, temperature and precipitation gradients, rather than a sharp transition from one biome into the next. The manifestation of hydrological conditions is strongly influenced by the water availability boundary that divides the continent between negative and positive P-PET. ',
-    image: northernDomain,
-    pdf: '/pdfs/west.pdf'
-  },
-  {
-    name: 'Central',
-    description:
-      'In the center, a transition from forests into agriculture provides a reason to distinguish between the two domains.',
-    image: northernDomain,
-    pdf: '/pdfs/central.pdf'
-  },
-  {
-    name: 'East',
-    description:
-      'The manifestation of hydrological conditions is strongly influenced by the water availability boundary that divides the continent between negative and positive P-PET. ',
-    image: northernDomain,
-    pdf: '/pdfs/east.pdf'
-  }
-]
 
 const provinceRegions = []
 

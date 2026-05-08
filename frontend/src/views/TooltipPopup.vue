@@ -1,24 +1,20 @@
 <template>
   <div
-    v-show="!isExpanded"
+    v-show="!isExpanded && region"
     @click.self="((isExpanded = false), $emit('close'))"
     class="tooltip-panel"
     :style="panelStyle"
   >
     <button class="close-btn" type="button" @click="$emit('close')">&#x2715;</button>
-    <h3>{{ region.name }}</h3>
+    <h3>{{ region.name }} Domain</h3>
 
     <p ref="descriptionRef" class="description" :class="{ expanded: isExpanded }">
-      {{ region.description }}
+      {{ region.summary }}
     </p>
-
-    <button v-if="isTruncated" type="button" class="view-more" @click="isExpanded = !isExpanded">
-      View more
-    </button>
 
     <div class="footer">
       <img :src="region.image" :alt="region.name" class="image" />
-      <a :href="region.pdf" download target="_blank" class="download-link">Learn More</a>
+      <button type="button" class="view-more" @click="isExpanded = !isExpanded">View more</button>
     </div>
 
     <!-- Triangle pointer -->
@@ -32,15 +28,31 @@
         <button class="close-btn" type="button" @click="((isExpanded = false), $emit('close'))">
           &#x2715;
         </button>
-        <h3>{{ region.name }}</h3>
+        <h3>{{ region.name }} Domain</h3>
 
-        <p class="description expanded">
-          {{ region.description }}
-        </p>
+        <div class="rich-content">
+          <template v-for="(block, index) in region.content" :key="index">
+            <p v-if="block.type === 'text'" class="description expanded">
+              {{ block.text }}
+            </p>
 
-        <div class="footer">
-          <img :src="region.image" :alt="region.name" class="image" />
-          <a :href="region.pdf" download target="_blank" class="download-link">Learn More</a>
+            <h4 v-else-if="block.type === 'heading'" class="section-heading">
+              {{ block.text }}
+            </h4>
+
+            <figure v-else-if="block.type === 'image'" class="content-image-wrapper">
+              <img :src="block.src" class="content-image" />
+
+              <figcaption v-if="block.caption">
+                {{ block.caption }}
+              </figcaption>
+            </figure>
+          </template>
+          <div class="footer">
+            <button @click="window.open(region.pdf, '_blank')" class="download-link">
+              Download Content
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -48,7 +60,7 @@
 </template>
 
 <script setup>
-import { nextTick, onMounted, ref, watch, computed } from 'vue'
+import { ref, watch, computed } from 'vue'
 
 const props = defineProps({
   region: { type: Object, required: true },
@@ -67,27 +79,12 @@ const panelStyle = computed(() => ({
 }))
 
 const descriptionRef = ref(null)
-const isTruncated = ref(false)
 const isExpanded = ref(false)
-
-const checkTruncation = async () => {
-  await nextTick()
-  if (!descriptionRef.value) {
-    isTruncated.value = false
-    return
-  }
-  isTruncated.value = descriptionRef.value.scrollHeight > descriptionRef.value.clientHeight
-}
-
-onMounted(() => {
-  checkTruncation()
-})
 
 watch(
   () => descriptionRef.value?.textContent,
   async () => {
     isExpanded.value = false
-    await checkTruncation()
   }
 )
 </script>
@@ -164,7 +161,93 @@ watch(
   color: #222;
 }
 
-h3 {
+h3,
+.popup-title {
+  margin: 0 0 12px;
+  font-weight: 600;
+}
+
+.popup-title {
+  font-size: 24px;
+}
+
+.description {
+  font-size: 12px;
+  color: #222;
+  overflow: hidden;
+}
+
+.view-more {
+  margin-top: 8px;
+  border: 0;
+  background: none;
+  color: #1a73e8;
+  cursor: pointer;
+  padding: 0;
+  font-size: 13px;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.image {
+  width: 160px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.download-link {
+  font-weight: 500;
+  padding: 5px;
+  background-color: darkgray;
+  border-radius: 8px;
+}
+
+.rich-content {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.popup-text {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #222;
+  margin: 0;
+}
+
+.section-heading {
+  margin: 12px 0 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.content-image-wrapper {
+  margin: 0;
+}
+
+.content-image {
+  width: 100%;
+  border-radius: 8px;
+  display: block;
+}
+
+figcaption {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #666;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* h3 {
   margin: 0 0 10px;
   font-size: 15px;
   font-weight: 600;
@@ -220,5 +303,5 @@ h3 {
   font-weight: 500;
   color: #1a73e8;
   text-decoration: underline;
-}
+} */
 </style>
