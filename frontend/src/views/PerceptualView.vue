@@ -33,44 +33,28 @@ import 'leaflet-groupedlayercontrol/dist/leaflet.groupedlayercontrol.min.css'
 
 const domainRegions = [
   {
-    name: 'North Region',
-    bounds: [
-      [50, -170],
-      [75, -50]
-    ],
+    name: 'North',
     description:
       'The dominant gradients across this domain are temperature (north to south), elevation (stark contrast between the mountains areas and the large plains) and geologic conditions (Canadian Shield and elsewhere).',
     image: northernDomain,
     pdf: '/pdfs/north.pdf'
   },
   {
-    name: 'West Region',
-    bounds: [
-      [25, -130],
-      [55, -100]
-    ],
+    name: 'West',
     description:
       'In the west the boundary is the most diffuse and the transition from northern mountains (N3, N4) into western mountains (W1, W4) should be seen as a broad transition zone along elevation, temperature and precipitation gradients, rather than a sharp transition from one biome into the next. The manifestation of hydrological conditions is strongly influenced by the water availability boundary that divides the continent between negative and positive P-PET. ',
     image: northernDomain,
     pdf: '/pdfs/west.pdf'
   },
   {
-    name: 'Central Region',
-    bounds: [
-      [25, -100],
-      [55, -80]
-    ],
+    name: 'Central',
     description:
       'In the center, a transition from forests into agriculture provides a reason to distinguish between the two domains.',
     image: northernDomain,
     pdf: '/pdfs/central.pdf'
   },
   {
-    name: 'East Region',
-    bounds: [
-      [25, -80],
-      [50, -60]
-    ],
+    name: 'East',
     description:
       'The manifestation of hydrological conditions is strongly influenced by the water availability boundary that divides the continent between negative and positive P-PET. ',
     image: northernDomain,
@@ -117,22 +101,65 @@ const legendUrls = {
     'https://arcgis.cuahsi.org/arcgis/services/HydroProcess/Province/MapServer/WMSServer?service=WMS&request=GetLegendGraphic&format=image/png&layer=0&version=1.1.1'
 }
 
-function findRegion(latlng) {
-  const domainOn = mapStore.leaflet.hasLayer(wmsLayerDomain)
-  const provinceOn = mapStore.leaflet.hasLayer(wmsLayerProvince)
-  if (domainOn) {
-    return domainRegions.find((region) => {
-      const bounds = L.latLngBounds(region.bounds)
-      return bounds.contains(latlng)
-    })
+function getFeatureInfoUrl(layer, latlng) {
+  const map = mapStore.leaflet
+  const point = map.latLngToContainerPoint(latlng)
+  const size = map.getSize()
+
+  const params = {
+    request: 'GetFeatureInfo',
+    service: 'WMS',
+    srs: 'EPSG:4326',
+    styles: '',
+    transparent: true,
+    version: '1.1.1',
+    format: 'image/png',
+    bbox: map.getBounds().toBBoxString(),
+    height: size.y,
+    width: size.x,
+    layers: layer.wmsParams.layers,
+    query_layers: layer.wmsParams.layers,
+    info_format: 'text/xml'
   }
 
-  if (provinceOn) {
-    return provinceRegions.find((region) => {
-      return L.latLngBounds(region.bounds).contains(latlng)
-    })
-  }
+  params.x = Math.round(point.x)
+  params.y = Math.round(point.y)
+
+  const baseUrl = layer._url
+  return baseUrl + L.Util.getParamString(params, baseUrl, true)
 }
+
+function getRegionFromXml(xmlText, regions) {
+  const xml = new DOMParser().parseFromString(xmlText, 'text/xml')
+
+  // Log this the first time so you can confirm the field name
+  console.log('XML response:', xmlText)
+
+  // Adjust 'NAME' to whatever field the WMS returns for the region name
+  const field = xml.querySelector('FIELDS')
+  const regionName = field?.getAttribute('LVL1_NAME')
+  console.log('Extracted region name:', regionName)
+
+  if (!regionName) return null
+  return regions.find((r) => r.name === regionName) ?? null
+}
+
+// function findRegion(latlng) {
+//   const domainOn = mapStore.leaflet.hasLayer(wmsLayerDomain)
+//   const provinceOn = mapStore.leaflet.hasLayer(wmsLayerProvince)
+//   if (domainOn) {
+//     return domainRegions.find((region) => {
+//       const bounds = L.latLngBounds(region.bounds)
+//       return bounds.contains(latlng)
+//     })
+//   }
+
+//   if (provinceOn) {
+//     return provinceRegions.find((region) => {
+//       return L.latLngBounds(region.bounds).contains(latlng)
+//     })
+//   }
+// }
 
 function updateTooltipPosition(latlng) {
   const point = mapStore.leaflet.latLngToContainerPoint(latlng)
@@ -187,12 +214,25 @@ onMounted(async () => {
   updateLegend()
 
   // Add click event listener to the map to fetch region data and show tooltips
-  mapStore.leaflet.on('click', (e) => {
-    const region = findRegion(e.latlng)
-    if (!region) return
-    console.log('Clicked region:', region.name, e.latlng)
-    tooltipRegion.value = region
-    updateTooltipPosition(e.latlng)
+  mapStore.leaflet.on('click', async (e) => {
+    const domainOn = mapStore.leaflet.hasLayer(wmsLayerDomain)
+    const provinceOn = mapStore.leaflet.hasLayer(wmsLayerProvince)
+    const activeLayer = domainOn ? wmsLayerDomain : provinceOn ? wmsLayerProvince : null
+    if (!activeLayer) return
+
+    try {
+      const url = getFeatureInfoUrl(activeLayer, e.latlng)
+      const response = await fetch(url)
+      console.log('Feature info URL:', response)
+      const text = await response.text()
+      const region = getRegionFromXml(text, domainOn ? domainRegions : provinceRegions)
+      if (!region) return
+      console.log('Clicked region:', region, e.latlng)
+      tooltipRegion.value = region
+      updateTooltipPosition(e.latlng)
+    } catch (error) {
+      console.error('Error fetching feature info:', error)
+    }
   })
 
   // set the mapLoaded flag to true after the map and layers have been initialized
