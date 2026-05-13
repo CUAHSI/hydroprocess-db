@@ -32,7 +32,7 @@ import W7 from './assets/Provinces/West/W7.png'
 import W8 from './assets/Provinces/West/W8.png'
 import W9 from './assets/Provinces/West/W9.png'
 
-import northernDomain from '@/assets/NorthernDomain.png'
+import northernDomain from './assets/northernDomain.jpg'
 export const domainRegions = [
   {
     name: 'North',
