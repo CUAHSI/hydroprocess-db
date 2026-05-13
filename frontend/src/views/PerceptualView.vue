@@ -113,23 +113,6 @@ function getRegionFromXml(xmlText, regions) {
   return regions.find((r) => r.name === regionName) ?? null
 }
 
-// function findRegion(latlng) {
-//   const domainOn = mapStore.leaflet.hasLayer(wmsLayerDomain)
-//   const provinceOn = mapStore.leaflet.hasLayer(wmsLayerProvince)
-//   if (domainOn) {
-//     return domainRegions.find((region) => {
-//       const bounds = L.latLngBounds(region.bounds)
-//       return bounds.contains(latlng)
-//     })
-//   }
-
-//   if (provinceOn) {
-//     return provinceRegions.find((region) => {
-//       return L.latLngBounds(region.bounds).contains(latlng)
-//     })
-//   }
-// }
-
 function updateTooltipPosition(latlng) {
   const point = mapStore.leaflet.latLngToContainerPoint(latlng)
   tooltipPosition.value = { x: point.x, y: point.y }

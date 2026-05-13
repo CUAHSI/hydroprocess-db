@@ -12,7 +12,27 @@ export const ENDPOINTS = {
   spatial_zones: `${APP_API_URL}/filters/spatial_zones`,
   temporal_zones: `${APP_API_URL}/filters/temporal_zones`
 }
-import northernDomain from '@/assets/northernDomain.jpg'
+import N1 from './assets/Provinces/North/N1.png'
+import N2 from './assets/Provinces/North/N2.png'
+import N3 from './assets/Provinces/North/N3.png'
+import N4 from './assets/Provinces/North/N4.png'
+import N5 from './assets/Provinces/North/N5.png'
+import N6 from './assets/Provinces/North/N6.png'
+import N7 from './assets/Provinces/North/N7.png'
+import N8 from './assets/Provinces/North/N8.png'
+import N9 from './assets/Provinces/North/N9.png'
+import N10 from './assets/Provinces/North/N10.png'
+import W1 from './assets/Provinces/West/W1.png'
+import W2 from './assets/Provinces/West/W2.png'
+import W3 from './assets/Provinces/West/W3.png'
+import W4 from './assets/Provinces/West/W4.png'
+import W5 from './assets/Provinces/West/W5.png'
+import W6 from './assets/Provinces/West/W6.png'
+import W7 from './assets/Provinces/West/W7.png'
+import W8 from './assets/Provinces/West/W8.png'
+import W9 from './assets/Provinces/West/W9.png'
+
+import northernDomain from '@/assets/NorthernDomain.png'
 export const domainRegions = [
   {
     name: 'North',
@@ -58,7 +78,7 @@ export const domainRegions = [
   {
     name: 'West',
     summary:
-      'In the west the boundary is the most diffuse and the transition from northern mountains (N3, N4) into western mountains (W1, W4) should be seen as a broad transition zone along elevation, temperature and precipitation gradients, rather than a sharp transition from one biome into the next. The manifestation of hydrological conditions is strongly influenced by the water availability boundary that divides the continent between negative and positive P-PET. ',
+      'This domain is characterized by cold-region processes and is uniquely vulnerable to climate warming. The main feature is that it is cold. This strongly affects the hydrological conditions in this domain, emphasizing a need to consider water phase, heat deficits, and how frozen conditions affect water pathways through the landscape. Most of the Northern domain is very sparsely populated and large wildfires are common.',
     image: northernDomain,
     pdf: '/pdfs/west.pdf',
     content: [
@@ -100,7 +120,7 @@ export const domainRegions = [
   {
     name: 'Central',
     summary:
-      'In the west the boundary is the most diffuse and the transition from northern mountains (N3, N4) into western mountains (W1, W4) should be seen as a broad transition zone along elevation, temperature and precipitation gradients, rather than a sharp transition from one biome into the next. The manifestation of hydrological conditions is strongly influenced by the water availability boundary that divides the continent between negative and positive P-PET. ',
+      'This domain is characterized by cold-region processes and is uniquely vulnerable to climate warming. The main feature is that it is cold. This strongly affects the hydrological conditions in this domain, emphasizing a need to consider water phase, heat deficits, and how frozen conditions affect water pathways through the landscape. Most of the Northern domain is very sparsely populated and large wildfires are common.',
     image: northernDomain,
     pdf: '/pdfs/west.pdf',
     content: [
@@ -187,9 +207,9 @@ export const provinceRegions = [
   {
     province: 'N1',
     name: 'Tundra',
-    chacteristics: 'Continuous permafrost and seasonal thaw of upper layers, low vegetation.',
+    characteristics: 'Continuous permafrost and seasonal thaw of upper layers, low vegetation.',
     processes: ['Snow accumulation/melt', 'Overland flow over frozen ground', 'River ice'],
-    image: northernDomain,
+    image: N1,
     pdf: '/pdfs/north.pdf'
   },
   {
@@ -198,7 +218,7 @@ export const provinceRegions = [
     characteristics:
       'Discontinuous permafrost, seasonal thaw and complex surface-groundwater connections through taliks.',
     processes: ['Wetlands', 'Shallow water tables', 'Lake–river connectivity'],
-    image: northernDomain,
+    image: N2,
     pdf: '/pdfs/west.pdf'
   },
   {
@@ -206,7 +226,7 @@ export const provinceRegions = [
     name: 'Northern High Mountains',
     characteristics: 'Discontinuous permafrost, glaciers and very high precipitation.',
     processes: ['Snow accumulation/melt', 'Glacier melt', 'Rapid runoff'],
-    image: northernDomain,
+    image: N3,
     pdf: '/pdfs/central.pdf'
   },
   {
@@ -215,7 +235,7 @@ export const provinceRegions = [
     characteristics:
       'Permafrost variability, shallow soils, lower precipitation and taller vegetation than N3.',
     processes: ['Snow accumulation/melt', 'subsurface flow'],
-    image: northernDomain,
+    image: N4,
     pdf: '/pdfs/east.pdf'
   },
   {
@@ -224,7 +244,7 @@ export const provinceRegions = [
     characteristics:
       'Discontinuous permafrost, large lakes, organic soils, dry due to rain shadow of N4.',
     processes: ['Plateau-wetland systems', 'bogs', 'channel fens'],
-    image: northernDomain,
+    image: N5,
     pdf: '/pdfs/north.pdf'
   },
   {
@@ -232,7 +252,7 @@ export const provinceRegions = [
     name: 'Taiga Shield',
     characteristics: 'Discontinuous permafrost, thin soils with exposed bedrock, wetlands.',
     processes: ['Shallow flow', 'Bedrock control', 'Wetlands', 'Thermokarst', 'Limited Storage'],
-    image: northernDomain,
+    image: N6,
     pdf: '/pdfs/west.pdf'
   },
   {
@@ -240,7 +260,7 @@ export const provinceRegions = [
     name: 'Hudson Plain',
     characteristics: 'Discontinuous permafrost, organic soils, extensive wetlands, low and flat.',
     processes: ['Wetland storage', 'Slow drainage'],
-    image: northernDomain,
+    image: N7,
     pdf: '/pdfs/central.pdf'
   },
   {
@@ -249,16 +269,16 @@ export const provinceRegions = [
     characteristics:
       'Sporadic permafrost, thin soils with exposed bedrock, denser vegetation than N6.',
     processes: ['Fill-and-spill lakes (bedrock-lake systems)', 'Lateral flow'],
-    image: northernDomain,
+    image: N8,
     pdf: '/pdfs/east.pdf'
   },
   {
     province: 'N9',
     name: 'Boreal Plain',
-    chacteristics:
+    characteristics:
       'Seasonally frozen ground, lower elevation, deeper soils, dry, some agriculture reliant on surface water.',
     processes: ['Groundwater flow', 'recharge/storage'],
-    image: northernDomain,
+    image: N9,
     pdf: '/pdfs/north.pdf'
   },
   {
@@ -266,6 +286,83 @@ export const provinceRegions = [
     name: 'Great Lakes Forests',
     characteristics:
       'Seasonally frozen ground, dense forest cover, southern edge of transition zone from N6 to N8 to N10.',
-    processes: ['Lake-groundwater interaction', 'evapotranspiration']
+    processes: ['Lake-groundwater interaction', 'evapotranspiration'],
+    image: N10
+  },
+  {
+    province: 'W1',
+    name: 'British Columbia Coastal Mountains',
+    characteristics:
+      'Very high precipitation, extensive ice cover on peaks, classic mountain environment (bare peaks, forested slopes and valleys)',
+    processes: ['Rain-fed near-surface groundwater', 'shallow flow paths', 'surface storage'],
+    image: W1
+  },
+  {
+    province: 'W2',
+    name: 'Pacific Forests',
+    characteristics:
+      'Very high precipitation, densely forested with relatively high population density compared to most other provinces in this domain. Deep soils.',
+    processes: ['Seasonal rain feeds groundwater', 'evapotranspiration', 'subsurface flow'],
+    image: W2
+  },
+  {
+    province: 'W3',
+    name: 'Northern Intermontane Plateaus',
+    characteristics:
+      'Intermediate elevation, volcanic and sedimentary formations, major aquifers. Dry due to rain shadows of W1 and W5, variable land cover and subsurface along three main plateaus.',
+    processes: ['Groundwater storage in bedrock/regolith', 'delayed flow', 'irrigation support'],
+    image: W3
+  },
+  {
+    province: 'W4',
+    name: 'Western Mountains',
+    characteristics:
+      'High elevation, cold, seasonal snow. Inland mountain ranges are much drier than W1 & W5, classic mountain environments (bare peaks, forested slopes and valleys)',
+    processes: ['Snow accumulation/melt', 'sublimation', 'rapid runoff'],
+    image: W4
+  },
+  {
+    province: 'W5',
+    name: 'Pacific Mountains',
+    characteristics:
+      'Southern continuation of W1, becoming warmer and wetter. Extensive forest cover with very limited permanent snow/ice.<br>Strong elevation gradients, mixed lithology, high snow accumulation.',
+    processes: ['Snowmelt-driven flow', 'subsurface storage', 'mountain block recharge'],
+    image: W5
+  },
+  {
+    province: 'W6',
+    name: 'Basin and Range',
+    characteristics:
+      'Arid to semi-arid basins with internal drainage. Very dry with large local heterogeneity due to topographic relief, mostly internal draining, limited tall vegetation.',
+    processes: ['Local flows from mountains', 'groundwater recharge in basins'],
+    image: W6
+  },
+  {
+    province: 'W7',
+    name: 'California Coast',
+    characteristics:
+      'Mediterranean climate, strong seasonality, complex subsurface. Dry and warm, locally very densely populated, extensive irrigated agriculture in the Central Valley.',
+    processes: [
+      'Surface-dominated flow',
+      'shallow soils',
+      'infiltration and saturation excess runoff'
+    ],
+    image: W7
+  },
+  {
+    province: 'W8',
+    name: 'Southern Deserts',
+    characteristics:
+      'Arid climate, deep groundwater, low runoff efficiency. Very dry and warm with predominantly low vegetation. A number of large settlements heavily reliant on upstream water sources.',
+    processes: ['Infiltration excess flow', 'channel losses', 'deep groundwater recharge'],
+    image: W8
+  },
+  {
+    province: 'W9',
+    name: 'Colorado Plateau',
+    characteristics:
+      'Semi-arid plateau, monsoon influence, limited runoff efficiency. Dry and warm, predominantly low vegetation but with strong local heterogeneity.',
+    processes: ['Local flows', 'infiltration excess', 'limited runoff generation'],
+    image: W9
   }
 ]
