@@ -13,6 +13,13 @@
           v-if="tooltipRegion"
           :region="tooltipRegion"
           :position="tooltipPosition"
+          :LayerType="
+            mapStore.leaflet.hasLayer(wmsLayerDomain)
+              ? 'Domain'
+              : mapStore.leaflet.hasLayer(wmsLayerProvince)
+                ? 'Province'
+                : null
+          "
           @close="tooltipRegion = null"
         />
       </v-col>
@@ -26,12 +33,10 @@ import { storeToRefs } from 'pinia'
 import TheLeafletMap from '@/components/TheLeafletMap.vue'
 import tooltip from './TooltipPopup.vue'
 import { useMapStore } from '@/stores/map'
-import { domainRegions } from '../constants'
+import { domainRegions, provinceRegions } from '../constants'
 import L from 'leaflet'
 import 'leaflet-groupedlayercontrol'
 import 'leaflet-groupedlayercontrol/dist/leaflet.groupedlayercontrol.min.css'
-
-const provinceRegions = []
 
 const mapStore = useMapStore()
 const tooltipRegion = ref(null)
@@ -103,10 +108,16 @@ function getRegionFromXml(xmlText, regions) {
 
   // Log this the first time so you can confirm the field name
   console.log('XML response:', xmlText)
+  console.log(
+    mapStore.leaflet.hasLayer(wmsLayerDomain),
+    mapStore.leaflet.hasLayer(wmsLayerProvince)
+  )
 
-  // Adjust 'NAME' to whatever field the WMS returns for the region name
+  // LVL1_NAME is used by the Domain WMS; LVL2_NAME by the Province WMS
   const field = xml.querySelector('FIELDS')
-  const regionName = field?.getAttribute('LVL1_NAME')
+  const regionName = mapStore.leaflet.hasLayer(wmsLayerDomain)
+    ? field?.getAttribute('LVL1_NAME')
+    : field?.getAttribute('LVL2_NAME')
   console.log('Extracted region name:', regionName)
 
   if (!regionName) return null

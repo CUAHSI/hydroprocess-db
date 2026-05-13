@@ -6,15 +6,32 @@
     :style="panelStyle"
   >
     <button class="close-btn" type="button" @click="$emit('close')">&#x2715;</button>
-    <h3>{{ region.name }} Domain</h3>
+    <h3>{{ region.name }}</h3>
 
     <p ref="descriptionRef" class="description" :class="{ expanded: isExpanded }">
-      {{ region.summary }}
+      {{ LayerType === 'Domain' ? region.summary : region.characteristics }}
     </p>
+    <div v-if="LayerType === 'Province'" class="tags">
+      <span class="tag" v-for="(tag, index) in region.processes" :key="index">{{ tag }}</span>
+    </div>
 
     <div class="footer">
-      <img :src="region.image" :alt="region.name" class="image" />
-      <button type="button" class="view-more" @click="isExpanded = !isExpanded">View more</button>
+      <img
+        :src="region.image"
+        :alt="region.name"
+        :class="{
+          'domain-image': LayerType === 'Domain',
+          'province-image': LayerType === 'Province'
+        }"
+      />
+      <button
+        v-if="LayerType === 'Domain'"
+        type="button"
+        class="view-more"
+        @click="isExpanded = !isExpanded"
+      >
+        View more
+      </button>
     </div>
 
     <!-- Triangle pointer -->
@@ -60,9 +77,10 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, onMounted } from 'vue'
 
 const props = defineProps({
+  LayerType: { type: String, required: true },
   region: { type: Object, required: true },
   position: { type: Object, required: true } // { x, y } in pixels of the click position on the map container
 })
@@ -77,6 +95,10 @@ const panelStyle = computed(() => ({
   top: `${props.position.y - PANEL_OFFSET}px`,
   transform: 'translateY(-100%)'
 }))
+
+onMounted(() => {
+  console.log('received props:', props.region, props.position, props.LayerType)
+})
 
 const descriptionRef = ref(null)
 const isExpanded = ref(false)
@@ -195,12 +217,34 @@ h3,
   margin-top: 16px;
 }
 
-.image {
+.domain-image {
   width: 160px;
   height: 100px;
   object-fit: cover;
   border-radius: 6px;
   flex-shrink: 0;
+}
+
+.province-image {
+  height: 200px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.tags {
+  font-size: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.tag {
+  background-color: #1a73e8;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
 .download-link {
@@ -246,62 +290,4 @@ figcaption {
   line-height: 1.5;
   text-align: center;
 }
-
-/* h3 {
-  margin: 0 0 10px;
-  font-size: 15px;
-  font-weight: 600;
-  padding-right: 20px;
-}
-
-.description {
-  font-size: 15px;
-  line-height: 1.7;
-  margin: 0;
-  color: #222;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.description.expanded {
-  display: block;
-  -webkit-line-clamp: unset;
-  overflow: visible;
-}
-
-.view-more {
-  margin-top: 6px;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: #1a73e8;
-  cursor: pointer;
-  font-size: 13px;
-}
-
-.footer {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-top: 14px;
-}
-
-.image {
-  width: 160px;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 4px;
-  flex-shrink: 0;
-}
-
-.download-link {
-  flex: 1;
-  text-align: center;
-  font-size: 16px;
-  font-weight: 500;
-  color: #1a73e8;
-  text-decoration: underline;
-} */
 </style>
