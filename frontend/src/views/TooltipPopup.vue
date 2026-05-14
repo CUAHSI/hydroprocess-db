@@ -17,6 +17,8 @@
 
     <div class="footer">
       <img
+        @mousemove="zoom($event)"
+        @mouseleave="resetZoom"
         :src="region.image"
         :alt="region.name"
         :class="{
@@ -35,7 +37,7 @@
     </div>
 
     <!-- Triangle pointer -->
-    <div class="triangle" />
+    <div class="triangle" :class="{ flipped: isFlipped }" />
   </div>
 
   <!-- pop up appears when user clicks to learn more about the region -->
@@ -89,12 +91,43 @@ defineEmits(['close'])
 
 const PANEL_WIDTH = 380
 const PANEL_OFFSET = 16 // gap between triangle tip and click point
+const PANEL_HEIGHT = 320
+const VIEWPORT_PADDING = 20
+const NAVBAR_HEIGHT = 80
+const isFlipped = computed(() => props.position.y - PANEL_HEIGHT - PANEL_OFFSET < NAVBAR_HEIGHT)
 
-const panelStyle = computed(() => ({
-  left: `${props.position.x - PANEL_WIDTH / 2}px`,
-  top: `${props.position.y - PANEL_OFFSET}px`,
-  transform: 'translateY(-100%)'
-}))
+const panelStyle = computed(() => {
+  const viewportWidth = window.innerWidth
+  const viewportHeight = window.innerHeight
+
+  let left = props.position.x - PANEL_WIDTH / 2
+  let top = props.position.y - PANEL_HEIGHT - PANEL_OFFSET
+
+  // Prevent overflow on left side
+  if (left < VIEWPORT_PADDING) {
+    left = VIEWPORT_PADDING
+  }
+
+  // Prevent overflow on right side
+  if (left + PANEL_WIDTH > viewportWidth - VIEWPORT_PADDING) {
+    left = viewportWidth - PANEL_WIDTH - VIEWPORT_PADDING
+  }
+
+  // Prevent overlap with navbar/top
+  if (top < NAVBAR_HEIGHT) {
+    top = props.position.y + PANEL_OFFSET + 24
+  }
+
+  // Prevent bottom overflow
+  if (top + PANEL_HEIGHT > viewportHeight - VIEWPORT_PADDING) {
+    top = viewportHeight - PANEL_HEIGHT - VIEWPORT_PADDING
+  }
+
+  return {
+    left: `${left}px`,
+    top: `${top}px`
+  }
+})
 
 onMounted(() => {
   console.log('received props:', props.region, props.position, props.LayerType)
@@ -109,6 +142,16 @@ watch(
     isExpanded.value = false
   }
 )
+
+const zoom = (event) => {
+  const zoomer = event.currentTarget
+  zoomer.style.transform = 'scale(2.5)'
+}
+
+const resetZoom = (event) => {
+  const zoomer = event.currentTarget
+  zoomer.style.transform = 'scale(1)'
+}
 </script>
 
 <style scoped>
@@ -127,6 +170,7 @@ watch(
   position: absolute;
   bottom: -16px;
   left: 50%;
+  z-index: -1;
   transform: translateX(-50%);
   width: 0;
   height: 0;
@@ -135,6 +179,13 @@ watch(
   border-top: 16px solid white;
   /* Match the box shadow on the triangle */
   filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.2));
+}
+
+.triangle.flipped {
+  bottom: auto;
+  top: -16px;
+  border-top: none;
+  border-bottom: 16px solid white;
 }
 
 .popup-overlay {
@@ -218,18 +269,22 @@ h3,
 }
 
 .domain-image {
+  cursor: zoom-in;
   width: 160px;
   height: 100px;
   object-fit: cover;
   border-radius: 6px;
   flex-shrink: 0;
+  transition: transform 0.2s ease;
 }
 
 .province-image {
+  cursor: zoom-in;
   height: 200px;
   object-fit: cover;
   border-radius: 6px;
   flex-shrink: 0;
+  transition: transform 0.2s ease;
 }
 
 .tags {

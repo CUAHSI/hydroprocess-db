@@ -36,6 +36,7 @@ import northernDomain from './assets/northernDomain.jpg'
 export const domainRegions = [
   {
     name: 'North',
+    image: northernDomain,
     summary:
       'This domain is characterized by cold-region processes and is uniquely vulnerable to climate warming. The main feature is that it is cold. This strongly affects the hydrological conditions in this domain, emphasizing a need to consider water phase, heat deficits, and how frozen conditions affect water pathways through the landscape. Most of the Northern domain is very sparsely populated and large wildfires are common.',
     pdf: '/pdfs/north.pdf',
