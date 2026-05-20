@@ -27,6 +27,14 @@ import 'leaflet-groupedlayercontrol/dist/leaflet.groupedlayercontrol.min.css'
 
 onMounted(() => {
   const map = L.map('simpleMapContainer', { minZoom: 2 }).setView([54, -105], 3)
+  let highlightLayer = null
+  let highlightAbortController = null
+  const domainWfsUrl =
+    'https://arcgis.cuahsi.org/arcgis/services/HydroProcess/Domain/MapServer/WFSServer'
+  const provinceWfsUrl =
+    'https://arcgis.cuahsi.org/arcgis/services/HydroProcess/Province/MapServer/WFSServer'
+  let domainTypeName = null
+  let provinceTypeName = null
 
   // Define base and overlay layers
   const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -53,6 +61,8 @@ onMounted(() => {
       attribution: 'Tiles © Esri'
     }
   )
+
+  loadWfsTypeNames()
 
   // Set up grouped layer control
   // Add the default base layer to the map before adding the control
@@ -115,39 +125,168 @@ onMounted(() => {
   }
   map.on('overlayadd', updateLegend)
   map.on('overlayremove', updateLegend)
+  updateLegend()
 
   map.on('click', function (e) {
     if (!activeWmsLayer) return
-    const url = getFeatureInfoUrl(map, activeWmsLayer, e.latlng)
-    fetch(url)
-      .then((response) => response.text())
-      .then((data) => {
-        L.popup().setLatLng(e.latlng).setContent(data).openOn(map)
-      })
+    highlightFeatureAtClick(activeWmsLayer, e.latlng)
   })
 
-  function getFeatureInfoUrl(map, layer, latlng) {
-    const point = map.latLngToContainerPoint(latlng, map.getZoom())
-    const size = map.getSize()
-    const params = {
-      request: 'GetFeatureInfo',
-      service: 'WMS',
-      srs: 'EPSG:4326',
-      styles: '',
-      transparent: true,
-      version: '1.1.1',
-      format: 'image/png',
-      bbox: map.getBounds().toBBoxString(),
-      height: size.y,
-      width: size.x,
-      layers: layer.wmsParams.layers,
-      query_layers: layer.wmsParams.layers,
-      info_format: 'text/html'
+  async function highlightFeatureAtClick(layer, latlng) {
+    if (layer === wmsLayerDomain && domainTypeName) {
+      await highlightFromWfs(latlng, domainWfsUrl, domainTypeName, 'domain')
+      return
     }
-    params[params.version === '1.3.0' ? 'i' : 'x'] = Math.round(point.x)
-    params[params.version === '1.3.0' ? 'j' : 'y'] = Math.round(point.y)
-    const baseUrl = layer._url
-    return baseUrl + L.Util.getParamString(params, baseUrl, true)
+
+    if (layer === wmsLayerProvince && provinceTypeName) {
+      await highlightFromWfs(latlng, provinceWfsUrl, provinceTypeName, 'province')
+      return
+    }
+  }
+
+  async function loadWfsTypeNames() {
+    domainTypeName = await loadWfsTypeName(domainWfsUrl, 'Domain')
+    provinceTypeName = await loadWfsTypeName(provinceWfsUrl, 'Province')
+  }
+
+  async function loadWfsTypeName(wfsUrl, label) {
+    const params = new URLSearchParams({
+      service: 'WFS',
+      request: 'GetCapabilities',
+      version: '2.0.0'
+    })
+
+    try {
+      const response = await fetch(`${wfsUrl}?${params.toString()}`)
+      const xmlText = await response.text()
+      const parser = new DOMParser()
+      const xmlDoc = parser.parseFromString(xmlText, 'text/xml')
+      const featureTypes = xmlDoc.getElementsByTagNameNS('*', 'FeatureType')
+
+      if (!featureTypes.length) {
+        return null
+      }
+
+      const firstFeatureType = featureTypes[0]
+      const nameNode = firstFeatureType.getElementsByTagNameNS('*', 'Name')[0]
+      return nameNode?.textContent?.trim() || null
+    } catch (error) {
+      console.error(`Failed to load WFS capabilities for ${label} layer`, error)
+      return null
+    }
+  }
+
+  async function highlightFromWfs(latlng, wfsUrl, typeName, label) {
+    // Use a tiny pixel buffer around click to keep feature retrieval small.
+    const clickPoint = map.latLngToContainerPoint(latlng)
+    const minLatLng = map.containerPointToLatLng(L.point(clickPoint.x - 4, clickPoint.y + 4))
+    const maxLatLng = map.containerPointToLatLng(L.point(clickPoint.x + 4, clickPoint.y - 4))
+
+    const minX = Math.min(minLatLng.lng, maxLatLng.lng)
+    const minY = Math.min(minLatLng.lat, maxLatLng.lat)
+    const maxX = Math.max(minLatLng.lng, maxLatLng.lng)
+    const maxY = Math.max(minLatLng.lat, maxLatLng.lat)
+
+    const baseParams = {
+      service: 'WFS',
+      version: '2.0.0',
+      request: 'GetFeature',
+      typeNames: typeName,
+      outputFormat: 'geojson',
+      srsName: 'EPSG:4326',
+      count: '1',
+      maxFeatures: '1',
+      maxAllowableOffset: '0.02'
+    }
+
+    const bboxLonLat = `${minX},${minY},${maxX},${maxY},EPSG:4326`
+    const bboxLatLon = `${minY},${minX},${maxY},${maxX},EPSG:4326`
+
+    try {
+      if (highlightAbortController) {
+        highlightAbortController.abort()
+      }
+      highlightAbortController = new AbortController()
+
+      let features = await fetchWfsFeatures(wfsUrl, { ...baseParams, bbox: bboxLonLat })
+
+      // Some WFS implementations expect EPSG:4326 axis order as lat,lon.
+      if (!features.length) {
+        features = await fetchWfsFeatures(wfsUrl, { ...baseParams, bbox: bboxLatLon })
+      }
+
+      clearHighlight()
+
+      if (!features.length) {
+        return
+      }
+
+      const clickedFeature = features[0]
+
+      highlightLayer = L.geoJSON(clickedFeature, {
+        style: {
+          color: '#1976d2',
+          weight: 3,
+          fillColor: '#90caf9',
+          fillOpacity: 0.24
+        }
+      }).addTo(map)
+
+      highlightLayer.bringToFront()
+
+      const popupHtml = buildPopupHtml(clickedFeature.properties)
+      L.popup().setLatLng(latlng).setContent(popupHtml).openOn(map)
+    } catch (error) {
+      if (error?.name === 'AbortError') {
+        return
+      }
+      console.error(`Failed to highlight ${label} feature from WFS`, error)
+      clearHighlight()
+    }
+  }
+
+  async function fetchWfsFeatures(wfsUrl, paramsObj) {
+    const params = new URLSearchParams(paramsObj)
+    const response = await fetch(`${wfsUrl}?${params.toString()}`, {
+      signal: highlightAbortController?.signal
+    })
+    const geojson = await response.json()
+    return geojson?.features || []
+  }
+
+  function buildPopupHtml(properties) {
+    if (!properties || Object.keys(properties).length === 0) {
+      return '<div>No feature attributes found.</div>'
+    }
+
+    const rows = Object.entries(properties)
+      .filter(([, value]) => value !== null && value !== undefined && value !== '')
+      .slice(0, 20)
+      .map(
+        ([key, value]) =>
+          `<tr><th style="text-align:left; padding-right:8px; vertical-align:top;">${escapeHtml(
+            key
+          )}</th><td>${escapeHtml(String(value))}</td></tr>`
+      )
+      .join('')
+
+    return rows ? `<table>${rows}</table>` : '<div>No feature attributes found.</div>'
+  }
+
+  function escapeHtml(value) {
+    return value
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#39;')
+  }
+
+  function clearHighlight() {
+    if (highlightLayer) {
+      map.removeLayer(highlightLayer)
+      highlightLayer = null
+    }
   }
 })
 </script>
