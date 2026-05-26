@@ -52,7 +52,7 @@ const paths = [
     label: 'Database'
   },
   {
-    attrs: { to: '/world-map' },
+    attrs: { to: '/provinces-map' },
     label: 'Provinces'
   },
   {

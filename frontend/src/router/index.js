@@ -32,8 +32,8 @@ const router = createRouter({
       component: ApiView
     },
     {
-      path: '/world-map',
-      name: 'world-map',
+      path: '/provinces-map',
+      name: 'provinces-map',
       component: () => import('../views/ProvincesMapView.vue')
     }
   ]

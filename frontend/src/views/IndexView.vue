@@ -39,9 +39,13 @@
           </v-card>
         </router-link>
       </v-col>
-      <!-- World Map Link Panel -->
+      <!-- Provinces Map Link Panel -->
       <v-col cols="12" md="6">
-        <router-link :to="{ name: 'world-map' }" class="panel-link" style="text-decoration: none">
+        <router-link
+          :to="{ name: 'provinces-map' }"
+          class="panel-link"
+          style="text-decoration: none"
+        >
           <v-card class="pa-2 text-center link-panel rounded-xl" elevation="4">
             <p class="nsf-button">CIROH Supported</p>
             <h3 class="mb-2">Hydrologic Provinces and Perceptual Models</h3>

@@ -1,71 +1,105 @@
-<template>
-  <div>
-    <div id="simpleMapContainer"></div>
-    <div
-      id="wms-legend"
-      style="
-        position: absolute;
-        bottom: 80px;
-        left: 10px;
-        background: white;
-        z-index: 1001;
-        padding: 8px;
-        border-radius: 4px;
-        min-width: 40px;
-        min-height: 40px;
-      "
-    ></div>
-  </div>
-</template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import L from 'leaflet'
+import proj4 from 'proj4'
+import 'proj4leaflet'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-groupedlayercontrol'
 import 'leaflet-groupedlayercontrol/dist/leaflet.groupedlayercontrol.min.css'
 
-onMounted(() => {
-  const map = L.map('simpleMapContainer', { minZoom: 2 }).setView([54, -105], 3)
-  let highlightLayer = null
-  let highlightAbortController = null
-  const domainWfsUrl =
-    'https://arcgis.cuahsi.org/arcgis/services/HydroProcess/Domain/MapServer/WFSServer'
-  const provinceWfsUrl =
-    'https://arcgis.cuahsi.org/arcgis/services/HydroProcess/Province/MapServer/WFSServer'
-  let domainTypeName = null
-  let provinceTypeName = null
+const legendCollapsed = ref(false)
+const domainOn = ref(true)
+const provinceOn = ref(false)
 
-  // Define base and overlay layers
-  const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors',
-    maxZoom: 19
+const lambertMapServerUrl =
+  'https://arcgis.cuahsi.org/arcgis/rest/services/HydroProcess/hydroprocess_lambert/MapServer'
+const lambertWmsUrl =
+  'https://arcgis.cuahsi.org/arcgis/services/HydroProcess/hydroprocess_lambert/MapServer/WMSServer'
+
+function getLegendGraphicUrl(layerId) {
+  const params = new URLSearchParams({
+    service: 'WMS',
+    request: 'GetLegendGraphic',
+    version: '1.3.0',
+    format: 'image/png',
+    transparent: 'true',
+    style: 'default',
+    layer: layerId
   })
-  osmLayer.addTo(map)
-  const wmsLayerDomain = L.tileLayer.wms(
-    'https://arcgis.cuahsi.org/arcgis/services/HydroProcess/Domain/MapServer/WMSServer',
-    {
-      layers: '0', // Layer ID or name, adjust as needed
-      format: 'image/png',
-      transparent: true,
-      attribution: 'Tiles © Esri'
-    }
-  )
+  return `${lambertWmsUrl}?${params.toString()}`
+}
+
+const legendConfig = {
+  domain: {
+    title: 'Domains',
+    url: getLegendGraphicUrl('0')
+  },
+  province: {
+    title: 'Provinces',
+    url: getLegendGraphicUrl('1')
+  }
+}
+
+onMounted(() => {
+  const lambertProj4 =
+    '+proj=lcc +lat_0=40 +lon_0=-96 +lat_1=20 +lat_2=60 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs +type=crs'
+  proj4.defs('EPSG:102009', lambertProj4)
+
+  const lambertCrs = new L.Proj.CRS('EPSG:102009', lambertProj4, {
+    bounds: L.bounds([-9500000, -5000000], [6500000, 5000000]),
+    origin: [-9500000, 5000000],
+    resolutions: [32768, 16384, 8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1]
+  })
+
+  // Adjusted bounds to better center North America
+  // Shifted bounds further south for better centering
+  // Zoomed in by reducing bounds by ~20%
+  const centerX = 556600;
+  const minX = -11500000 + centerX;
+  const maxX = 11500000 + centerX;
+  const minY = -9000000;
+  const maxY = 6000000;
+  const width = maxX - minX;
+  const height = maxY - minY;
+  const newWidth = width * 0.8;
+  const newHeight = height * 0.8;
+  const xPad = (width - newWidth) / 2;
+  const yPad = (height - newHeight) / 2;
+  const expandedMin = [minX + xPad, minY + yPad];
+  const expandedMax = [maxX - xPad, maxY - yPad];
+  const lambertExtent = L.bounds(expandedMin, expandedMax)
+  const lambertSouthWest = lambertCrs.projection.unproject(lambertExtent.min)
+  const lambertNorthEast = lambertCrs.projection.unproject(lambertExtent.max)
+  const lambertLatLngBounds = L.latLngBounds(lambertSouthWest, lambertNorthEast)
+
+  const map = L.map('simpleMapContainer', {
+    minZoom: 1,
+    crs: lambertCrs
+  })
+  map.fitBounds(lambertLatLngBounds)
+  map.setMaxBounds(lambertLatLngBounds.pad(0.2))
+  // Center the map after fitting bounds
+  const center = lambertLatLngBounds.getCenter();
+  map.setView(center, map.getZoom());
+
+  const wmsLayerDomain = L.tileLayer.wms(lambertWmsUrl, {
+    layers: '0',
+    version: '1.3.0',
+    crs: lambertCrs,
+    format: 'image/png',
+    transparent: true,
+    attribution: 'Tiles © Esri'
+  })
   wmsLayerDomain.addTo(map)
-  const wmsLayerProvince = L.tileLayer.wms(
-    'https://arcgis.cuahsi.org/arcgis/services/HydroProcess/Province/MapServer/WMSServer',
-    {
-      layers: '0', // Layer ID or name, adjust as needed
-      format: 'image/png',
-      transparent: true,
-      attribution: 'Tiles © Esri'
-    }
-  )
-
-  loadWfsTypeNames()
-
-  // Set up grouped layer control
-  // Add the default base layer to the map before adding the control
+  const wmsLayerProvince = L.tileLayer.wms(lambertWmsUrl, {
+    layers: '1',
+    version: '1.3.0',
+    crs: lambertCrs,
+    format: 'image/png',
+    transparent: true,
+    attribution: 'Tiles © Esri'
+  })
 
   const groupedOverlays = {
     Regions: {
@@ -74,12 +108,9 @@ onMounted(() => {
     }
   }
   const options = {
-    // Make the "Landmarks" group exclusive (use radio inputs)
     exclusiveGroups: ['Regions'],
-    // Show a checkbox next to non-exclusive group labels for toggling all
     groupCheckboxes: true
   }
-  // Move layer control to the left
   const layerControl = new L.Control.GroupedLayers(null, groupedOverlays, {
     ...options,
     position: 'topleft',
@@ -87,200 +118,8 @@ onMounted(() => {
   })
   map.addControl(layerControl)
 
-  // Move zoom control to the right
   map.removeControl(map.zoomControl)
   map.zoomControl = L.control.zoom({ position: 'topright' }).addTo(map)
-
-  // Track which WMS layer is currently active
-  let activeWmsLayer = null
-
-  // Legend URLs
-  const legendUrls = {
-    domain:
-      'https://arcgis.cuahsi.org/arcgis/services/HydroProcess/Domain/MapServer/WMSServer?service=WMS&request=GetLegendGraphic&format=image/png&layer=0&version=1.1.1',
-    province:
-      'https://arcgis.cuahsi.org/arcgis/services/HydroProcess/Province/MapServer/WMSServer?service=WMS&request=GetLegendGraphic&format=image/png&layer=0&version=1.1.1'
-  }
-
-  function updateLegend() {
-    const domainOn = map.hasLayer(wmsLayerDomain)
-    const provinceOn = map.hasLayer(wmsLayerProvince)
-    let html = ''
-    if (domainOn) {
-      html += `<img src="${legendUrls.domain}" alt="Domain Legend" style="margin-bottom:8px;" />`
-    }
-    if (provinceOn) {
-      html += `<img src="${legendUrls.province}" alt="Province Legend" />`
-    }
-    document.getElementById('wms-legend').innerHTML = html
-
-    // Set activeWmsLayer to the one that is currently on (for exclusive group)
-    if (domainOn) {
-      activeWmsLayer = wmsLayerDomain
-    } else if (provinceOn) {
-      activeWmsLayer = wmsLayerProvince
-    } else {
-      activeWmsLayer = null
-    }
-  }
-  map.on('overlayadd', updateLegend)
-  map.on('overlayremove', updateLegend)
-  updateLegend()
-
-  map.on('click', function (e) {
-    if (!activeWmsLayer) return
-    highlightFeatureAtClick(activeWmsLayer, e.latlng)
-  })
-
-  async function highlightFeatureAtClick(layer, latlng) {
-    if (layer === wmsLayerDomain && domainTypeName) {
-      await highlightFromWfs(latlng, domainWfsUrl, domainTypeName, 'domain')
-      return
-    }
-
-    if (layer === wmsLayerProvince && provinceTypeName) {
-      await highlightFromWfs(latlng, provinceWfsUrl, provinceTypeName, 'province')
-      return
-    }
-  }
-
-  async function loadWfsTypeNames() {
-    domainTypeName = await loadWfsTypeName(domainWfsUrl, 'Domain')
-    provinceTypeName = await loadWfsTypeName(provinceWfsUrl, 'Province')
-  }
-
-  async function loadWfsTypeName(wfsUrl, label) {
-    const params = new URLSearchParams({
-      service: 'WFS',
-      request: 'GetCapabilities',
-      version: '2.0.0'
-    })
-
-    try {
-      const response = await fetch(`${wfsUrl}?${params.toString()}`)
-      const xmlText = await response.text()
-      const parser = new DOMParser()
-      const xmlDoc = parser.parseFromString(xmlText, 'text/xml')
-      const featureTypes = xmlDoc.getElementsByTagNameNS('*', 'FeatureType')
-
-      if (!featureTypes.length) {
-        return null
-      }
-
-      const firstFeatureType = featureTypes[0]
-      const nameNode = firstFeatureType.getElementsByTagNameNS('*', 'Name')[0]
-      return nameNode?.textContent?.trim() || null
-    } catch (error) {
-      console.error(`Failed to load WFS capabilities for ${label} layer`, error)
-      return null
-    }
-  }
-
-  async function highlightFromWfs(latlng, wfsUrl, typeName, label) {
-    // Use a tiny pixel buffer around click to keep feature retrieval small.
-    const clickPoint = map.latLngToContainerPoint(latlng)
-    const minLatLng = map.containerPointToLatLng(L.point(clickPoint.x - 4, clickPoint.y + 4))
-    const maxLatLng = map.containerPointToLatLng(L.point(clickPoint.x + 4, clickPoint.y - 4))
-
-    const minX = Math.min(minLatLng.lng, maxLatLng.lng)
-    const minY = Math.min(minLatLng.lat, maxLatLng.lat)
-    const maxX = Math.max(minLatLng.lng, maxLatLng.lng)
-    const maxY = Math.max(minLatLng.lat, maxLatLng.lat)
-
-    const baseParams = {
-      service: 'WFS',
-      version: '2.0.0',
-      request: 'GetFeature',
-      typeNames: typeName,
-      outputFormat: 'geojson',
-      srsName: 'EPSG:4326',
-      count: '1',
-      maxFeatures: '1',
-      maxAllowableOffset: '0.02'
-    }
-
-    const bboxLonLat = `${minX},${minY},${maxX},${maxY},EPSG:4326`
-    const bboxLatLon = `${minY},${minX},${maxY},${maxX},EPSG:4326`
-
-    try {
-      if (highlightAbortController) {
-        highlightAbortController.abort()
-      }
-      highlightAbortController = new AbortController()
-
-      let features = await fetchWfsFeatures(wfsUrl, { ...baseParams, bbox: bboxLonLat })
-
-      // Some WFS implementations expect EPSG:4326 axis order as lat,lon.
-      if (!features.length) {
-        features = await fetchWfsFeatures(wfsUrl, { ...baseParams, bbox: bboxLatLon })
-      }
-
-      clearHighlight()
-
-      if (!features.length) {
-        return
-      }
-
-      const clickedFeature = features[0]
-
-      highlightLayer = L.geoJSON(clickedFeature, {
-        style: {
-          color: '#1976d2',
-          weight: 3,
-          fillColor: '#90caf9',
-          fillOpacity: 0.24
-        }
-      }).addTo(map)
-
-      highlightLayer.bringToFront()
-
-      const popupHtml = buildPopupHtml(clickedFeature.properties)
-      L.popup().setLatLng(latlng).setContent(popupHtml).openOn(map)
-    } catch (error) {
-      if (error?.name === 'AbortError') {
-        return
-      }
-      console.error(`Failed to highlight ${label} feature from WFS`, error)
-      clearHighlight()
-    }
-  }
-
-  async function fetchWfsFeatures(wfsUrl, paramsObj) {
-    const params = new URLSearchParams(paramsObj)
-    const response = await fetch(`${wfsUrl}?${params.toString()}`, {
-      signal: highlightAbortController?.signal
-    })
-    const geojson = await response.json()
-    return geojson?.features || []
-  }
-
-  function buildPopupHtml(properties) {
-    if (!properties || Object.keys(properties).length === 0) {
-      return '<div>No feature attributes found.</div>'
-    }
-
-    const rows = Object.entries(properties)
-      .filter(([, value]) => value !== null && value !== undefined && value !== '')
-      .slice(0, 20)
-      .map(
-        ([key, value]) =>
-          `<tr><th style="text-align:left; padding-right:8px; vertical-align:top;">${escapeHtml(
-            key
-          )}</th><td>${escapeHtml(String(value))}</td></tr>`
-      )
-      .join('')
-
-    return rows ? `<table>${rows}</table>` : '<div>No feature attributes found.</div>'
-  }
-
-  function escapeHtml(value) {
-    return value
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;')
-      .replaceAll("'", '&#39;')
-  }
 
   function clearHighlight() {
     if (highlightLayer) {
@@ -288,6 +127,79 @@ onMounted(() => {
       highlightLayer = null
     }
   }
+
+  // --- Highlight and GetFeatureInfo logic ---
+  let highlightLayer = null
+  let highlightAbortController = null
+  let highlightRequestId = 0
+  map.on('click', async function (e) {
+    const requestId = ++highlightRequestId
+    if (highlightAbortController) {
+      highlightAbortController.abort()
+    }
+    highlightAbortController = new AbortController()
+
+    clearHighlight()
+    // Determine active layer
+    let activeLayerId = null
+    if (domainOn.value) activeLayerId = '1'
+    else if (provinceOn.value) activeLayerId = '0'
+    else return
+
+    // Query using the map CRS projected click coordinate to reduce reprojection drift.
+    const projectedPoint = map.options.crs.project(e.latlng)
+
+    const params = new URLSearchParams({
+      f: 'geojson',
+      geometry: `${projectedPoint.x},${projectedPoint.y}`,
+      geometryType: 'esriGeometryPoint',
+      inSR: '102009',
+      spatialRel: 'esriSpatialRelIntersects',
+      outFields: '*',
+      returnGeometry: 'true',
+      outSR: '4326'
+    })
+    const url = `${lambertMapServerUrl}/${activeLayerId}/query?${params.toString()}`
+    try {
+      const resp = await fetch(url, { signal: highlightAbortController.signal })
+      if (requestId !== highlightRequestId) return
+
+      const data = await resp.json()
+      if (requestId !== highlightRequestId) return
+
+      if (!data?.features?.length) {
+        L.popup().setLatLng(e.latlng).setContent('No feature info').openOn(map)
+        return
+      }
+
+      const feature = data.features[0]
+
+      highlightLayer = L.geoJSON(feature, {
+        style: { color: '#ff6600', weight: 3, fillOpacity: 0.2 },
+        pointToLayer: (geoJsonPoint, latlng) => L.circleMarker(latlng, { radius: 8, color: '#ff6600' })
+      }).addTo(map)
+      highlightLayer.bringToFront()
+
+      // Show popup with properties
+      const props = feature.properties || {}
+      const html = Object.entries(props).map(([k, v]) => `<b>${k}</b>: ${v}`).join('<br>')
+      L.popup()
+        .setLatLng(e.latlng)
+        .setContent(html || 'No data')
+        .openOn(map)
+    } catch (err) {
+      if (err?.name === 'AbortError') return
+      L.popup().setLatLng(e.latlng).setContent('No feature info').openOn(map)
+    }
+  })
+
+  function updateLegendState() {
+    domainOn.value = map.hasLayer(wmsLayerDomain)
+    provinceOn.value = map.hasLayer(wmsLayerProvince)
+  }
+  map.on('overlayadd', updateLegendState)
+  map.on('overlayremove', updateLegendState)
+  updateLegendState()
 })
 </script>
 
@@ -308,34 +220,116 @@ onMounted(() => {
   height: calc(100vh - var(--header-height, 64px));
   z-index: 0;
 }
-/* Legend styles */
+/* Legend panel */
 #wms-legend {
-  min-width: 120px;
-  min-height: 120px;
-  max-width: 350px;
-  max-height: 300px;
-  overflow: auto;
-  padding: 16px;
-  font-size: 1.2em;
-  box-sizing: border-box;
+  position: fixed;
+  top: calc(var(--header-height, 64px) + 10px);
+  bottom: 80px;
+  left: 10px;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-start;
+  z-index: 1200;
+  pointer-events: none;
 }
 
-@media (max-width: 600px) {
-  #wms-legend {
-    min-width: 80px;
-    min-height: 80px;
-    max-width: 90vw;
-    max-height: 120px;
-    padding: 8px;
-    font-size: 1em;
-    left: 4px !important;
-    right: 4px !important;
-  }
+/* Horizontal tab at the bottom */
+.legend-tab {
+  pointer-events: all;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 14px;
+  width: 220px;
+  background: #fff;
+  border: 1.5px solid #b0b0b0;
+  border-radius: 6px 6px 6px 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #333;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  user-select: none;
+  writing-mode: horizontal-tb;
 }
+
+.legend-tab:hover {
+  background: #f0f0f0;
+}
+
+.legend-tab-icon {
+  font-size: 0.85rem;
+  writing-mode: horizontal-tb;
+}
+
+.legend-tab-title {
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex: 1;
+  text-align: left;
+}
+
+/* Expanded panel — opens upward */
+.legend-panel {
+  pointer-events: all;
+  background: #fff;
+  border: 1.5px solid #b0b0b0;
+  border-radius: 8px 8px 8px 8px;
+  box-shadow: 2px 2px 12px rgba(0,0,0,0.10);
+  display: flex;
+  flex-direction: column;
+  width: 240px;
+  max-height: 100%;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+#wms-legend.is-collapsed .legend-panel {
+  display: none;
+}
+
+.legend-panel-header {
+  padding: 12px 16px 10px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #222;
+  border-bottom: 1px solid #e0e0e0;
+  background: #f7f7f7;
+  border-radius: 8px 8px 0 0;
+  flex-shrink: 0;
+}
+
+.legend-panel-body {
+  padding: 14px 16px 16px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.legend-item:last-child {
+  margin-bottom: 0;
+}
+
+.legend-empty {
+  color: #666;
+  font-size: 0.95rem;
+}
+
 #wms-legend img {
-  max-width: 100%;
+  max-width: 200px;
+  width: 100%;
   height: auto;
   display: block;
+  border: none;
+  background: transparent;
+  padding: 0;
 }
 </style>
 <style>
@@ -345,3 +339,31 @@ onMounted(() => {
   box-shadow: none !important;
 }
 </style>
+<template>
+  <div>
+    <div id="simpleMapContainer"></div>
+    <div id="wms-legend" :class="{ 'is-collapsed': legendCollapsed }">
+      <button
+        type="button"
+        class="legend-tab"
+        :aria-expanded="!legendCollapsed"
+        @click="legendCollapsed = !legendCollapsed"
+      >
+        <span class="legend-tab-icon">{{ legendCollapsed ? '▸' : '◂' }}</span>
+        <span class="legend-tab-title">Legend</span>
+      </button>
+        <div class="legend-panel">
+          <div class="legend-panel-header">Legend</div>
+          <div class="legend-panel-body">
+            <div v-if="domainOn" class="legend-item">
+              <img :src="legendConfig.domain.url" alt="Domain legend" />
+            </div>
+            <div v-if="provinceOn" class="legend-item">
+              <img :src="legendConfig.province.url" alt="Province legend" style="width:auto; max-width:200px;" />
+            </div>
+            <div v-if="!domainOn && !provinceOn" class="legend-empty">No active map layer</div>
+          </div>
+        </div>
+    </div>
+  </div>
+</template>
