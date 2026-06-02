@@ -44,7 +44,7 @@ const alertStore = useAlertStore()
 let showMobileNavigation = ref(false)
 const paths = [
   {
-    attrs: { to: '/hydrologic_processes' },
+    attrs: { to: '/' },
     label: 'Hydrologic Processes'
   },
   // {
