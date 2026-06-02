@@ -142,6 +142,8 @@ onMounted(() => {
     clearHighlight()
     // Determine active layer
     let activeLayerId = null
+    // Query IDs are intentionally inverted relative to rendered WMS IDs.
+    // Keep this mapping unless the ArcGIS query service layer order changes.
     if (domainOn.value) activeLayerId = '1'
     else if (provinceOn.value) activeLayerId = '0'
     else return
@@ -194,6 +196,14 @@ onMounted(() => {
   })
 
   function updateLegendState() {
+    // When switching overlays, clear any in-flight query and stale highlight
+    // so previous-layer selections do not remain visible.
+    if (highlightAbortController) {
+      highlightAbortController.abort()
+      highlightAbortController = null
+    }
+    clearHighlight()
+    map.closePopup()
     domainOn.value = map.hasLayer(wmsLayerDomain)
     provinceOn.value = map.hasLayer(wmsLayerProvince)
   }
@@ -279,7 +289,7 @@ onMounted(() => {
   box-shadow: 2px 2px 12px rgba(0,0,0,0.10);
   display: flex;
   flex-direction: column;
-  width: 240px;
+  width: 220px;
   max-height: 100%;
   overflow: hidden;
   margin-bottom: 6px;
@@ -324,7 +334,7 @@ onMounted(() => {
 
 #wms-legend img {
   max-width: 200px;
-  width: 100%;
+  width: auto;
   height: auto;
   display: block;
   border: none;
@@ -353,7 +363,10 @@ onMounted(() => {
         <span class="legend-tab-title">Legend</span>
       </button>
         <div class="legend-panel">
-          <div class="legend-panel-header">Legend</div>
+          <!-- Keep header synced with the currently active overlay layer. -->
+          <div class="legend-panel-header">
+            {{ domainOn ? legendConfig.domain.title : provinceOn ? legendConfig.province.title : 'Legend' }}
+          </div>
           <div class="legend-panel-body">
             <div v-if="domainOn" class="legend-item">
               <img :src="legendConfig.domain.url" alt="Domain legend" />
