@@ -1,4 +1,3 @@
-
 <script setup>
 import { ref, onMounted } from 'vue'
 import L from 'leaflet'
@@ -55,19 +54,19 @@ onMounted(() => {
   // Adjusted bounds to better center North America
   // Shifted bounds further south for better centering
   // Zoomed in by reducing bounds by ~20%
-  const centerX = 556600;
-  const minX = -11500000 + centerX;
-  const maxX = 11500000 + centerX;
-  const minY = -9000000;
-  const maxY = 6000000;
-  const width = maxX - minX;
-  const height = maxY - minY;
-  const newWidth = width * 0.8;
-  const newHeight = height * 0.8;
-  const xPad = (width - newWidth) / 2;
-  const yPad = (height - newHeight) / 2;
-  const expandedMin = [minX + xPad, minY + yPad];
-  const expandedMax = [maxX - xPad, maxY - yPad];
+  const centerX = 556600
+  const minX = -11500000 + centerX
+  const maxX = 11500000 + centerX
+  const minY = -9000000
+  const maxY = 6000000
+  const width = maxX - minX
+  const height = maxY - minY
+  const newWidth = width * 0.8
+  const newHeight = height * 0.8
+  const xPad = (width - newWidth) / 2
+  const yPad = (height - newHeight) / 2
+  const expandedMin = [minX + xPad, minY + yPad]
+  const expandedMax = [maxX - xPad, maxY - yPad]
   const lambertExtent = L.bounds(expandedMin, expandedMax)
   const lambertSouthWest = lambertCrs.projection.unproject(lambertExtent.min)
   const lambertNorthEast = lambertCrs.projection.unproject(lambertExtent.max)
@@ -80,8 +79,8 @@ onMounted(() => {
   map.fitBounds(lambertLatLngBounds)
   map.setMaxBounds(lambertLatLngBounds.pad(0.2))
   // Center the map after fitting bounds
-  const center = lambertLatLngBounds.getCenter();
-  map.setView(center, map.getZoom());
+  const center = lambertLatLngBounds.getCenter()
+  map.setView(center, map.getZoom())
 
   const wmsLayerDomain = L.tileLayer.wms(lambertWmsUrl, {
     layers: '0',
@@ -178,13 +177,16 @@ onMounted(() => {
 
       highlightLayer = L.geoJSON(feature, {
         style: { color: '#ff6600', weight: 3, fillOpacity: 0.2 },
-        pointToLayer: (geoJsonPoint, latlng) => L.circleMarker(latlng, { radius: 8, color: '#ff6600' })
+        pointToLayer: (geoJsonPoint, latlng) =>
+          L.circleMarker(latlng, { radius: 8, color: '#ff6600' })
       }).addTo(map)
       highlightLayer.bringToFront()
 
       // Show popup with properties
       const props = feature.properties || {}
-      const html = Object.entries(props).map(([k, v]) => `<b>${k}</b>: ${v}`).join('<br>')
+      const html = Object.entries(props)
+        .map(([k, v]) => `<b>${k}</b>: ${v}`)
+        .join('<br>')
       L.popup()
         .setLatLng(e.latlng)
         .setContent(html || 'No data')
@@ -259,7 +261,7 @@ onMounted(() => {
   cursor: pointer;
   font-size: 0.95rem;
   color: #333;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   user-select: none;
   writing-mode: horizontal-tb;
 }
@@ -286,7 +288,7 @@ onMounted(() => {
   background: #fff;
   border: 1.5px solid #b0b0b0;
   border-radius: 8px 8px 8px 8px;
-  box-shadow: 2px 2px 12px rgba(0,0,0,0.10);
+  box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   width: 220px;
@@ -362,21 +364,31 @@ onMounted(() => {
         <span class="legend-tab-icon">{{ legendCollapsed ? '▸' : '◂' }}</span>
         <span class="legend-tab-title">Legend</span>
       </button>
-        <div class="legend-panel">
-          <!-- Keep header synced with the currently active overlay layer. -->
-          <div class="legend-panel-header">
-            {{ domainOn ? legendConfig.domain.title : provinceOn ? legendConfig.province.title : 'Legend' }}
-          </div>
-          <div class="legend-panel-body">
-            <div v-if="domainOn" class="legend-item">
-              <img :src="legendConfig.domain.url" alt="Domain legend" />
-            </div>
-            <div v-if="provinceOn" class="legend-item">
-              <img :src="legendConfig.province.url" alt="Province legend" style="width:auto; max-width:200px;" />
-            </div>
-            <div v-if="!domainOn && !provinceOn" class="legend-empty">No active map layer</div>
-          </div>
+      <div class="legend-panel">
+        <!-- Keep header synced with the currently active overlay layer. -->
+        <div class="legend-panel-header">
+          {{
+            domainOn
+              ? legendConfig.domain.title
+              : provinceOn
+                ? legendConfig.province.title
+                : 'Legend'
+          }}
         </div>
+        <div class="legend-panel-body">
+          <div v-if="domainOn" class="legend-item">
+            <img :src="legendConfig.domain.url" alt="Domain legend" />
+          </div>
+          <div v-if="provinceOn" class="legend-item">
+            <img
+              :src="legendConfig.province.url"
+              alt="Province legend"
+              style="width: auto; max-width: 200px"
+            />
+          </div>
+          <div v-if="!domainOn && !provinceOn" class="legend-empty">No active map layer</div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
