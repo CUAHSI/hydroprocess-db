@@ -106,22 +106,13 @@ function getFeatureInfoUrl(layer, latlng) {
 function getRegionFromXml(xmlText, regions) {
   const xml = new DOMParser().parseFromString(xmlText, 'text/xml')
 
-  // Log this the first time so you can confirm the field name
-  console.log('XML response:', xmlText)
-  console.log(
-    mapStore.leaflet.hasLayer(wmsLayerDomain),
-    mapStore.leaflet.hasLayer(wmsLayerProvince)
-  )
-
   // LVL1_NAME is used by the Domain WMS; LVL2_NAME by the Province WMS
   const field = xml.querySelector('FIELDS')
   if (mapStore.leaflet.hasLayer(wmsLayerDomain)) {
     const regionName = field?.getAttribute('LVL1_NAME')
-    console.log('Extracted region name:', regionName)
     return regions.find((r) => r.name === regionName) ?? null
   } else {
     const provinceName = field?.getAttribute('LVL2_ID')
-    console.log('Extracted region name:', provinceName)
     return regions.find((r) => r.province === provinceName) ?? null
   }
 }
@@ -188,11 +179,9 @@ onMounted(async () => {
     try {
       const url = getFeatureInfoUrl(activeLayer, e.latlng)
       const response = await fetch(url)
-      console.log('Feature info URL:', response)
       const text = await response.text()
       const region = getRegionFromXml(text, domainOn ? domainRegions : provinceRegions)
       if (!region) return
-      console.log('Clicked region:', region, e.latlng)
       tooltipRegion.value = region
       updateTooltipPosition(e.latlng)
     } catch (error) {

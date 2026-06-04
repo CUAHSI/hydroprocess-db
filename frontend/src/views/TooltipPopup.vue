@@ -80,7 +80,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed, onMounted } from 'vue'
+import { ref, watch, computed } from 'vue'
 
 const props = defineProps({
   LayerType: { type: String, required: true },
@@ -128,10 +128,6 @@ const panelStyle = computed(() => {
     left: `${left}px`,
     top: `${top}px`
   }
-})
-
-onMounted(() => {
-  console.log('received props:', props.region, props.position, props.LayerType)
 })
 
 const descriptionRef = ref(null)
