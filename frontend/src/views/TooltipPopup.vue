@@ -17,6 +17,7 @@
 
     <div class="footer">
       <img
+        v-if="region.image"
         @mousemove="zoom($event)"
         @mouseleave="resetZoom"
         :src="region.image"

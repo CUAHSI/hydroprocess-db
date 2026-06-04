@@ -115,13 +115,15 @@ function getRegionFromXml(xmlText, regions) {
 
   // LVL1_NAME is used by the Domain WMS; LVL2_NAME by the Province WMS
   const field = xml.querySelector('FIELDS')
-  const regionName = mapStore.leaflet.hasLayer(wmsLayerDomain)
-    ? field?.getAttribute('LVL1_NAME')
-    : field?.getAttribute('LVL2_NAME')
-  console.log('Extracted region name:', regionName)
-
-  if (!regionName) return null
-  return regions.find((r) => r.name === regionName) ?? null
+  if (mapStore.leaflet.hasLayer(wmsLayerDomain)) {
+    const regionName = field?.getAttribute('LVL1_NAME')
+    console.log('Extracted region name:', regionName)
+    return regions.find((r) => r.name === regionName) ?? null
+  } else {
+    const provinceName = field?.getAttribute('LVL2_ID')
+    console.log('Extracted region name:', provinceName)
+    return regions.find((r) => r.province === provinceName) ?? null
+  }
 }
 
 function updateTooltipPosition(latlng) {
