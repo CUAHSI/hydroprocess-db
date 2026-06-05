@@ -78,128 +78,46 @@ export const domainRegions = [
   },
   {
     name: 'West',
-    summary:
-      'This domain is characterized by cold-region processes and is uniquely vulnerable to climate warming. The main feature is that it is cold. This strongly affects the hydrological conditions in this domain, emphasizing a need to consider water phase, heat deficits, and how frozen conditions affect water pathways through the landscape. Most of the Northern domain is very sparsely populated and large wildfires are common.',
-    image: northernDomain,
+    summary: 'Coming Soon',
     pdf: '/pdfs/west.pdf',
     content: [
       {
         type: 'text',
-        text: 'This domain is characterized by cold-region processes and is uniquely vulnerable to climate warming. The main feature is that it is cold. This strongly affects the hydrological conditions in this domain, emphasizing a need to consider water phase, heat deficits, and how frozen conditions affect water pathways through the landscape. Most of the Northern domain is very sparsely populated and large wildfires are common.'
-      },
-      {
-        type: 'text',
-        text: 'The transition of the Northern domain into the Western, Central, and Eastern domains is a gradual one. In the East, the Gulf of St Lawrence provides a convenient boundary. In the center, a transition from forests into agriculture provides a boundary between the two domains. In the West, the boundary is the most diffuse and the transition from Northern mountains into Western mountains should be seen as a broad transition zone along elevation, temperature, and precipitation gradients, rather than a sharp transition from one biome to another.'
-      },
-      {
-        type: 'image',
-        src: northernDomain,
-        caption:
-          'Illustration of hydrologic conditions across the northern domain (artist: Kate Olsen)'
-      },
-      {
-        type: 'text',
-        text: 'This domain includes 10 provinces, where the main defining feature is the degree to which hydrological conditions are influenced by incoming solar radiation. A major consequence of low energy availability is the extent to which soils tend to freeze and thus control infiltration, ponding, and the vegetation types the landscape can support.'
-      },
-      {
-        type: 'image',
-        src: northernDomain,
-        caption:
-          'Summary of key differences in drivers of hydrologic behavior across the Northern domain.'
-      },
-      {
-        type: 'text',
-        text: 'The dominant gradients across the Northern domain are temperature (north to south), elevation (stark contrast between mountain and the large plains) and geologic conditions (Canadian Shield and elsewhere). A primary consideration is the degree of soil freezing (given in blue). This corresponds to a clear north-south gradient. Consequently, agriculture is only common in the southern parts of the domain. Topography provides a second gradient, with a clear difference between the mountainous regions in the west and the remainder of the domain. Much of the Northern domain has low topographic gradients and lakes and wetlands are very common. Subsurface structure provides an additional gradient. The provinces on the Canadian Shield mainly have very thick soils on top of the bedrock. Beyond the Canadian Shield solid depths vary, with deeper soils being mainly common in Hudson, Mackenzie and Boreal plan provinces.'
-      },
-      {
-        type: 'text',
-        text: 'The perceptual models of the Northern Domain provinces have a focus on the many hydrological processes that relate to winter snow dynamics. Key processes in the Northern regions includes:'
+        text: 'Coming soon'
       }
-      //table data here
     ]
   },
   {
     name: 'Central',
-    summary:
-      'This domain is characterized by cold-region processes and is uniquely vulnerable to climate warming. The main feature is that it is cold. This strongly affects the hydrological conditions in this domain, emphasizing a need to consider water phase, heat deficits, and how frozen conditions affect water pathways through the landscape. Most of the Northern domain is very sparsely populated and large wildfires are common.',
-    image: northernDomain,
+    summary: 'Coming Soon',
     pdf: '/pdfs/west.pdf',
     content: [
       {
         type: 'text',
-        text: 'This domain is characterized by cold-region processes and is uniquely vulnerable to climate warming. The main feature is that it is cold. This strongly affects the hydrological conditions in this domain, emphasizing a need to consider water phase, heat deficits, and how frozen conditions affect water pathways through the landscape. Most of the Northern domain is very sparsely populated and large wildfires are common.'
-      },
-      {
-        type: 'text',
-        text: 'The transition of the Northern domain into the Western, Central, and Eastern domains is a gradual one. In the East, the Gulf of St Lawrence provides a convenient boundary. In the center, a transition from forests into agriculture provides a boundary between the two domains. In the West, the boundary is the most diffuse and the transition from Northern mountains into Western mountains should be seen as a broad transition zone along elevation, temperature, and precipitation gradients, rather than a sharp transition from one biome to another.'
-      },
-      {
-        type: 'image',
-        src: northernDomain,
-        caption:
-          'Illustration of hydrologic conditions across the northern domain (artist: Kate Olsen)'
-      },
-      {
-        type: 'text',
-        text: 'This domain includes 10 provinces, where the main defining feature is the degree to which hydrological conditions are influenced by incoming solar radiation. A major consequence of low energy availability is the extent to which soils tend to freeze and thus control infiltration, ponding, and the vegetation types the landscape can support.'
-      },
-      {
-        type: 'image',
-        src: northernDomain,
-        caption:
-          'Summary of key differences in drivers of hydrologic behavior across the Northern domain.'
-      },
-      {
-        type: 'text',
-        text: 'The dominant gradients across the Northern domain are temperature (north to south), elevation (stark contrast between mountain and the large plains) and geologic conditions (Canadian Shield and elsewhere). A primary consideration is the degree of soil freezing (given in blue). This corresponds to a clear north-south gradient. Consequently, agriculture is only common in the southern parts of the domain. Topography provides a second gradient, with a clear difference between the mountainous regions in the west and the remainder of the domain. Much of the Northern domain has low topographic gradients and lakes and wetlands are very common. Subsurface structure provides an additional gradient. The provinces on the Canadian Shield mainly have very thick soils on top of the bedrock. Beyond the Canadian Shield solid depths vary, with deeper soils being mainly common in Hudson, Mackenzie and Boreal plan provinces.'
-      },
-      {
-        type: 'text',
-        text: 'The perceptual models of the Northern Domain provinces have a focus on the many hydrological processes that relate to winter snow dynamics. Key processes in the Northern regions includes:'
+        text: 'Coming Soon'
       }
-      //table data here
     ]
   },
   {
     name: 'East',
-    summary:
-      'In the East the boundary is the most diffuse and the transition from northern mountains (N3, N4) into western mountains (W1, W4) should be seen as a broad transition zone along elevation, temperature and precipitation gradients, rather than a sharp transition from one biome into the next. The manifestation of hydrological conditions is strongly influenced by the water availability boundary that divides the continent between negative and positive P-PET. ',
-    image: northernDomain,
+    summary: 'Coming Soon',
     pdf: '/pdfs/west.pdf',
     content: [
       {
         type: 'text',
-        text: 'This domain is characterized by cold-region processes and is uniquely vulnerable to climate warming. The main feature is that it is cold. This strongly affects the hydrological conditions in this domain, emphasizing a need to consider water phase, heat deficits, and how frozen conditions affect water pathways through the landscape. Most of the Northern domain is very sparsely populated and large wildfires are common.'
-      },
-      {
-        type: 'text',
-        text: 'The transition of the Northern domain into the Western, Central, and Eastern domains is a gradual one. In the East, the Gulf of St Lawrence provides a convenient boundary. In the center, a transition from forests into agriculture provides a boundary between the two domains. In the West, the boundary is the most diffuse and the transition from Northern mountains into Western mountains should be seen as a broad transition zone along elevation, temperature, and precipitation gradients, rather than a sharp transition from one biome to another.'
-      },
-      {
-        type: 'image',
-        src: northernDomain,
-        caption:
-          'Illustration of hydrologic conditions across the northern domain (artist: Kate Olsen)'
-      },
-      {
-        type: 'text',
-        text: 'This domain includes 10 provinces, where the main defining feature is the degree to which hydrological conditions are influenced by incoming solar radiation. A major consequence of low energy availability is the extent to which soils tend to freeze and thus control infiltration, ponding, and the vegetation types the landscape can support.'
-      },
-      {
-        type: 'image',
-        src: northernDomain,
-        caption:
-          'Summary of key differences in drivers of hydrologic behavior across the Northern domain.'
-      },
-      {
-        type: 'text',
-        text: 'The dominant gradients across the Northern domain are temperature (north to south), elevation (stark contrast between mountain and the large plains) and geologic conditions (Canadian Shield and elsewhere). A primary consideration is the degree of soil freezing (given in blue). This corresponds to a clear north-south gradient. Consequently, agriculture is only common in the southern parts of the domain. Topography provides a second gradient, with a clear difference between the mountainous regions in the west and the remainder of the domain. Much of the Northern domain has low topographic gradients and lakes and wetlands are very common. Subsurface structure provides an additional gradient. The provinces on the Canadian Shield mainly have very thick soils on top of the bedrock. Beyond the Canadian Shield solid depths vary, with deeper soils being mainly common in Hudson, Mackenzie and Boreal plan provinces.'
-      },
-      {
-        type: 'text',
-        text: 'The perceptual models of the Northern Domain provinces have a focus on the many hydrological processes that relate to winter snow dynamics. Key processes in the Northern regions includes:'
+        text: 'Coming Soon'
       }
-      //table data here
+    ]
+  },
+  {
+    name: 'Islands',
+    summary: 'Coming Soon',
+    pdf: '/pdfs/west.pdf',
+    content: [
+      {
+        type: 'text',
+        text: 'Coming Soon'
+      }
     ]
   }
 ]
