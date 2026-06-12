@@ -8,6 +8,20 @@
       <v-col class="map-container pa-0">
         <TheLeafletMap />
 
+        <div class="overlay-opacity-control">
+          <div class="overlay-opacity-title">Overlay opacity</div>
+          <v-slider
+            v-model="overlayOpacity"
+            class="overlay-opacity-slider"
+            min="0"
+            max="100"
+            step="1"
+            hide-details
+            density="compact"
+            color="primary"
+          />
+        </div>
+
         <div id="wms-legend"></div>
       </v-col>
     </v-row>
@@ -15,68 +29,169 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import TheLeafletMap from '@/components/TheLeafletMap.vue'
 import { useMapStore } from '@/stores/map'
 import L from 'leaflet'
+import * as esriLeaflet from 'esri-leaflet'
 import 'leaflet-groupedlayercontrol'
 import 'leaflet-groupedlayercontrol/dist/leaflet.groupedlayercontrol.min.css'
 
 const mapStore = useMapStore()
-
-// Load map store properties as refs for reactivity
 const { mapLoaded } = storeToRefs(mapStore)
+const overlayOpacity = ref(100)
 
-// Define the perceptual models "Domain" WMS layer
-const wmsLayerDomain = L.tileLayer.wms(
-  'https://arcgis.cuahsi.org/arcgis/services/HydroProcess/Domain/MapServer/WMSServer',
-  {
-    layers: '0',
-    format: 'image/png',
-    transparent: true,
-    pane: 'overlayPane'
-  }
-)
+const mercatorMapServerUrl = 'https://arcgis.cuahsi.org/arcgis/rest/services/HydroProcess/HydroprocessDB_mercator/MapServer'
+const mercatorLegendUrl = `${mercatorMapServerUrl}/legend?f=json`
 
-// Define the perceptual models "Provinces" WMS layer
-const wmsLayerProvince = L.tileLayer.wms(
-  'https://arcgis.cuahsi.org/arcgis/services/HydroProcess/Province/MapServer/WMSServer',
-  {
-    layers: '0',
-    format: 'image/png',
-    transparent: true,
-    pane: 'overlayPane'
-  }
-)
+let highlightLayer = null
+let highlightAbortController = null
+let highlightRequestId = 0
+let activeQueryLayerId = 0
 
-// Define the Legend URLs
-const legendUrls = {
-  domain:
-    'https://arcgis.cuahsi.org/arcgis/services/HydroProcess/Domain/MapServer/WMSServer?service=WMS&request=GetLegendGraphic&format=image/png&layer=0&version=1.1.1',
-  province:
-    'https://arcgis.cuahsi.org/arcgis/services/HydroProcess/Province/MapServer/WMSServer?service=WMS&request=GetLegendGraphic&format=image/png&layer=0&version=1.1.1'
+const wmsLayerDomain = esriLeaflet.dynamicMapLayer({
+  url: mercatorMapServerUrl,
+  layers: [0],
+  format: 'png32',
+  transparent: true,
+  pane: 'overlayPane'
+})
+
+const wmsLayerProvince = esriLeaflet.dynamicMapLayer({
+  url: mercatorMapServerUrl,
+  layers: [1],
+  format: 'png32',
+  transparent: true,
+  pane: 'overlayPane'
+})
+
+const legendEntries = {
+  domain: [],
+  province: []
 }
 
+async function loadLegendEntries() {
+  try {
+    const response = await fetch(mercatorLegendUrl)
+    if (!response.ok) return
+
+    const data = await response.json()
+    const layerById = new Map((data.layers || []).map((layer) => [layer.layerId, layer]))
+    legendEntries.domain = layerById.get(0)?.legend || []
+    legendEntries.province = layerById.get(1)?.legend || []
+  } catch (error) {
+    console.warn('Failed to load perceptual map legend', error)
+  }
+}
+
+function clearHighlight() {
+  if (highlightLayer) {
+    mapStore.leaflet.removeLayer(highlightLayer)
+    highlightLayer = null
+  }
+}
+
+function applyOverlayOpacity(value) {
+  const opacity = Math.max(0, Math.min(100, Number(value))) / 100
+  wmsLayerDomain.setOpacity(opacity)
+  wmsLayerProvince.setOpacity(opacity)
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;')
+}
+
+function buildPopupHtml(properties) {
+  const entries = Object.entries(properties || {})
+  if (!entries.length) return 'No data'
+
+  return entries
+    .map(([key, value]) => `<div><strong>${escapeHtml(key)}</strong>: ${escapeHtml(value)}</div>`)
+    .join('')
+}
+
+function renderLegendSection(title, entries) {
+  if (!entries.length) return ''
+
+  const items = entries
+    .map((entry) => {
+      if (!entry?.imageData || !entry?.contentType) return ''
+      const label = entry.label ? `<span class="legend-item-label">${escapeHtml(entry.label)}</span>` : ''
+      return `
+        <div class="legend-item">
+          <img src="data:${entry.contentType};base64,${entry.imageData}" alt="${escapeHtml(title)} legend" />
+          ${label}
+        </div>
+      `
+    })
+    .join('')
+
+  return `
+    <div class="legend-section">
+      <div class="legend-section-title">${escapeHtml(title)}</div>
+      ${items}
+    </div>
+  `
+}
+
+function updateLegend() {
+  const domainOn = mapStore.leaflet.hasLayer(wmsLayerDomain)
+  const provinceOn = mapStore.leaflet.hasLayer(wmsLayerProvince)
+
+  const html = [
+    domainOn ? renderLegendSection('Domains', legendEntries.domain) : '',
+    provinceOn ? renderLegendSection('Provinces', legendEntries.province) : ''
+  ].join('')
+
+  const legendEl = document.getElementById('wms-legend')
+  if (legendEl) {
+    legendEl.innerHTML = html || '<div class="legend-empty">No active map layer</div>'
+  }
+}
+
+function handleOverlayChange(event) {
+  if (event?.type === 'overlayadd') {
+    activeQueryLayerId = event.layer === wmsLayerProvince ? 1 : 0
+  }
+
+  highlightRequestId += 1
+
+  if (highlightAbortController) {
+    highlightAbortController.abort()
+    highlightAbortController = null
+  }
+
+  clearHighlight()
+  mapStore.leaflet.closePopup()
+  updateLegend()
+}
+
+function getActiveQueryLayerId() {
+  return activeQueryLayerId
+}
+
+watch(overlayOpacity, (value) => {
+  applyOverlayOpacity(value)
+})
+
 onMounted(async () => {
-  // set the map bounds so that only North America is visible
-  // also set the minimum zoom level to prevent users from zooming
-  // out too far and seeing the entire world.
   mapStore.leaflet.setMaxBounds(
     L.latLngBounds([
-      [5, -170], // SW coordinate of bbox
-      [75, -50] // NE coordinate of bbox
+      [5, -170],
+      [75, -50]
     ])
   )
   mapStore.leaflet.setMinZoom(3)
 
-  // Add the perceptual models "Domain" layer to the map
-  // Only adding the "Domain" layer by default to
-  // control which layer is initially active.
   wmsLayerDomain.addTo(mapStore.leaflet)
+  applyOverlayOpacity(overlayOpacity.value)
 
-  // Set up grouped layer control
-  // Add the default base layer to the map before adding the control
   const groupedOverlays = {
     Regions: {
       Domains: wmsLayerDomain,
@@ -84,7 +199,6 @@ onMounted(async () => {
     }
   }
 
-  // Move layer control to the left
   const layerControl = new L.Control.GroupedLayers(null, groupedOverlays, {
     exclusiveGroups: ['Regions'],
     groupCheckboxes: true,
@@ -93,57 +207,176 @@ onMounted(async () => {
   })
   mapStore.leaflet.addControl(layerControl)
 
-  // Move zoom control to the right
   mapStore.leaflet.removeControl(mapStore.leaflet.zoomControl)
   mapStore.leaflet.zoomControl = L.control.zoom({ position: 'topright' }).addTo(mapStore.leaflet)
 
-  // add hooks to update the legend when layers are added or removed.
-  // Then call the updateLegend function manually. This is necessary
-  // because the overlayadd isn't called when initially adding the
-  // layers to the map.
-  mapStore.leaflet.on('overlayadd', updateLegend)
-  mapStore.leaflet.on('overlayremove', updateLegend)
+  mapStore.leaflet.on('overlayadd', handleOverlayChange)
+  mapStore.leaflet.on('overlayremove', handleOverlayChange)
+
+  mapStore.leaflet.on('click', async (event) => {
+    const requestId = ++highlightRequestId
+
+    if (highlightAbortController) {
+      highlightAbortController.abort()
+    }
+    highlightAbortController = new AbortController()
+
+    clearHighlight()
+
+    const queryUrl = mercatorMapServerUrl
+    const queryLayerId = getActiveQueryLayerId()
+
+    const projectedPoint = mapStore.leaflet.options.crs.project(event.latlng)
+    const params = new URLSearchParams({
+      f: 'geojson',
+      geometry: `${projectedPoint.x},${projectedPoint.y}`,
+      geometryType: 'esriGeometryPoint',
+      inSR: '3857',
+      spatialRel: 'esriSpatialRelIntersects',
+      outFields: '*',
+      returnGeometry: 'true',
+      outSR: '4326'
+    })
+
+    try {
+      const response = await fetch(`${queryUrl}/${queryLayerId}/query?${params.toString()}`, {
+        signal: highlightAbortController.signal
+      })
+      if (requestId !== highlightRequestId) return
+
+      const data = await response.json()
+      if (requestId !== highlightRequestId) return
+
+      const feature = data?.features?.[0]
+      if (!feature) {
+        L.popup().setLatLng(event.latlng).setContent('No feature info').openOn(mapStore.leaflet)
+        return
+      }
+
+      highlightLayer = L.geoJSON(feature, {
+        style: {
+          color: '#ff6600',
+          weight: 3,
+          fillColor: '#ff6600',
+          fillOpacity: 0.18
+        },
+        pointToLayer: (_feature, latlng) =>
+          L.circleMarker(latlng, {
+            radius: 8,
+            color: '#ff6600',
+            weight: 3,
+            fillColor: '#ffb07a',
+            fillOpacity: 0.8
+          })
+      }).addTo(mapStore.leaflet)
+
+      highlightLayer.bringToFront()
+
+      L.popup()
+        .setLatLng(event.latlng)
+        .setContent(buildPopupHtml(feature.properties))
+        .openOn(mapStore.leaflet)
+    } catch (error) {
+      if (error?.name === 'AbortError') return
+      L.popup().setLatLng(event.latlng).setContent('No feature info').openOn(mapStore.leaflet)
+    }
+  })
+
   updateLegend()
-
-  // set the mapLoaded flag to true after the map and layers have been initialized
-  // this will turn off the loading overlay and allow the map to be displayed
   mapLoaded.value = true
-})
 
-function updateLegend() {
-  const domainOn = mapStore.leaflet.hasLayer(wmsLayerDomain)
-  const provinceOn = mapStore.leaflet.hasLayer(wmsLayerProvince)
-  let html = ''
-  if (domainOn) {
-    html += `<img src="${legendUrls.domain}" alt="Domain Legend" />`
-  }
-  if (provinceOn) {
-    html += `<img src="${legendUrls.province}" alt="Province Legend" />`
-  }
-  document.getElementById('wms-legend').innerHTML = html
-}
+  loadLegendEntries().then(updateLegend)
+})
 </script>
 
 <style scoped>
-div {
-  line-height: 0;
-}
-
-/* Legend styles */
 #wms-legend {
   z-index: 1001;
   position: absolute;
   overflow: auto;
   border: 2px solid rgba(0, 0, 0, 0.2);
-  min-width: 90px;
-  max-width: 350px;
-  max-height: 300px;
-  padding: 6px;
-  font-size: 1em;
+  min-width: 110px;
+  max-width: 340px;
+  max-height: 190px;
+  padding: 5px;
+  font-size: 0.92rem;
   border-radius: 6px;
   bottom: 10px;
   left: 10px;
   background: white;
+}
+
+.legend-section + .legend-section {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.legend-section-title {
+  margin-bottom: 4px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #333;
+}
+
+.legend-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-bottom: 3px;
+  line-height: 1.1;
+}
+
+.legend-item img {
+  flex-shrink: 0;
+  width: auto;
+  height: auto;
+  max-width: 20px;
+  max-height: 20px;
+  object-fit: contain;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 3px;
+}
+
+.legend-item-label {
+  font-size: 0.82rem;
+  color: #222;
+}
+
+.legend-empty {
+  color: #666;
+  font-size: 0.82rem;
+  padding: 2px 0;
+}
+
+.overlay-opacity-control {
+  position: absolute;
+  z-index: 1001;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(220px, calc(100vw - 24px));
+  padding: 8px 10px 4px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.14);
+  backdrop-filter: blur(4px);
+}
+
+.overlay-opacity-title {
+  margin-bottom: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.overlay-opacity-slider {
+  margin-top: -8px;
 }
 
 @media (max-width: 600px) {
@@ -161,6 +394,13 @@ div {
     bottom: 4px;
     left: 4px;
     background: white;
+  }
+
+  .overlay-opacity-control {
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(200px, calc(100vw - 16px));
   }
 }
 </style>
