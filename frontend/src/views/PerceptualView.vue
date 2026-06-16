@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue'
+import { nextTick, onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import TheLeafletMap from '@/components/TheLeafletMap.vue'
 import { useMapStore } from '@/stores/map'
@@ -42,7 +42,8 @@ const mapStore = useMapStore()
 const { mapLoaded } = storeToRefs(mapStore)
 const overlayOpacity = ref(100)
 
-const mercatorMapServerUrl = 'https://arcgis.cuahsi.org/arcgis/rest/services/HydroProcess/HydroprocessDB_mercator/MapServer'
+const mercatorMapServerUrl =
+  'https://arcgis.cuahsi.org/arcgis/rest/services/HydroProcess/HydroprocessDB_mercator/MapServer'
 const mercatorLegendUrl = `${mercatorMapServerUrl}/legend?f=json`
 
 let highlightLayer = null
@@ -122,7 +123,9 @@ function renderLegendSection(title, entries) {
   const items = entries
     .map((entry) => {
       if (!entry?.imageData || !entry?.contentType) return ''
-      const label = entry.label ? `<span class="legend-item-label">${escapeHtml(entry.label)}</span>` : ''
+      const label = entry.label
+        ? `<span class="legend-item-label">${escapeHtml(entry.label)}</span>`
+        : ''
       return `
         <div class="legend-item">
           <img src="data:${entry.contentType};base64,${entry.imageData}" alt="${escapeHtml(title)} legend" />
@@ -188,6 +191,15 @@ onMounted(async () => {
     ])
   )
   mapStore.leaflet.setMinZoom(3)
+
+  const initialDomainLayerReady = new Promise((resolve) => {
+    const resolveReady = () => resolve()
+    wmsLayerDomain.once('load', resolveReady)
+    wmsLayerDomain.once('error', resolveReady)
+  })
+
+  await nextTick()
+  mapStore.leaflet.invalidateSize(true)
 
   wmsLayerDomain.addTo(mapStore.leaflet)
   applyOverlayOpacity(overlayOpacity.value)
@@ -283,7 +295,13 @@ onMounted(async () => {
   })
 
   updateLegend()
+
+  await initialDomainLayerReady
+
   mapLoaded.value = true
+
+  await nextTick()
+  mapStore.leaflet.invalidateSize(true)
 
   loadLegendEntries().then(updateLegend)
 })
