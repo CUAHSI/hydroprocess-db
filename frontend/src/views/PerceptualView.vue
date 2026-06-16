@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import { nextTick, onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import TheLeafletMap from '@/components/TheLeafletMap.vue'
 import { useMapStore } from '@/stores/map'
@@ -183,6 +183,16 @@ watch(overlayOpacity, (value) => {
   applyOverlayOpacity(value)
 })
 
+watch(
+  mapLoaded,
+  (loaded) => {
+    if (loaded) {
+      mapStore.leaflet.invalidateSize(true)
+    }
+  },
+  { flush: 'post' }
+)
+
 onMounted(async () => {
   mapStore.leaflet.setMaxBounds(
     L.latLngBounds([
@@ -197,9 +207,6 @@ onMounted(async () => {
     wmsLayerDomain.once('load', resolveReady)
     wmsLayerDomain.once('error', resolveReady)
   })
-
-  await nextTick()
-  mapStore.leaflet.invalidateSize(true)
 
   wmsLayerDomain.addTo(mapStore.leaflet)
   applyOverlayOpacity(overlayOpacity.value)
@@ -300,9 +307,6 @@ onMounted(async () => {
 
   mapLoaded.value = true
 
-  await nextTick()
-  mapStore.leaflet.invalidateSize(true)
-
   loadLegendEntries().then(updateLegend)
 })
 </script>
@@ -375,7 +379,7 @@ onMounted(async () => {
   bottom: 12px;
   left: 50%;
   transform: translateX(-50%);
-  width: min(220px, calc(100vw - 24px));
+  width: min(187px, calc(100vw - 24px));
   padding: 8px 10px 4px;
   border-radius: 10px;
   border: 1px solid rgba(0, 0, 0, 0.14);
@@ -418,7 +422,7 @@ onMounted(async () => {
     bottom: 8px;
     left: 50%;
     transform: translateX(-50%);
-    width: min(200px, calc(100vw - 16px));
+    width: min(170px, calc(100vw - 16px));
   }
 }
 </style>
