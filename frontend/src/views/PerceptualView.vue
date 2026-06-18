@@ -41,6 +41,7 @@ import 'leaflet-groupedlayercontrol/dist/leaflet.groupedlayercontrol.min.css'
 const mapStore = useMapStore()
 const tooltipRegion = ref(null)
 const tooltipPosition = ref(null)
+const tooltipLatLng = ref(null)
 
 // Load map store properties as refs for reactivity
 const { mapLoaded } = storeToRefs(mapStore)
@@ -183,9 +184,16 @@ onMounted(async () => {
       const region = getRegionFromXml(text, domainOn ? domainRegions : provinceRegions)
       if (!region) return
       tooltipRegion.value = region
+      tooltipLatLng.value = e.latlng
       updateTooltipPosition(e.latlng)
     } catch (error) {
       console.error('Error fetching feature info:', error)
+    }
+  })
+  // update tooltip position when the map is moved
+  mapStore.leaflet.on('move', () => {
+    if (tooltipLatLng.value) {
+      updateTooltipPosition(tooltipLatLng.value)
     }
   })
 
@@ -196,6 +204,7 @@ onMounted(async () => {
 
 function updateLegend() {
   tooltipRegion.value = null //disable tooltip when legend changes
+  tooltipLatLng.value = null
   const domainOn = mapStore.leaflet.hasLayer(wmsLayerDomain)
   const provinceOn = mapStore.leaflet.hasLayer(wmsLayerProvince)
   let html = ''

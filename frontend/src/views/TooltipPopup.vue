@@ -38,7 +38,7 @@
     </div>
 
     <!-- Triangle pointer -->
-    <div class="triangle" :class="{ flipped: isFlipped }" />
+    <div class="triangle" />
   </div>
 
   <!-- pop up appears when user clicks to learn more about the region -->
@@ -91,42 +91,13 @@ const props = defineProps({
 defineEmits(['close'])
 
 const PANEL_WIDTH = 380
-const PANEL_OFFSET = 16 // gap between triangle tip and click point
-const PANEL_HEIGHT = 320
-const VIEWPORT_PADDING = 20
-const NAVBAR_HEIGHT = 80
-const isFlipped = computed(() => props.position.y - PANEL_HEIGHT - PANEL_OFFSET < NAVBAR_HEIGHT)
+const PANEL_OFFSET = 16
 
 const panelStyle = computed(() => {
-  const viewportWidth = window.innerWidth
-  const viewportHeight = window.innerHeight
-
-  let left = props.position.x - PANEL_WIDTH / 2
-  let top = props.position.y - PANEL_HEIGHT - PANEL_OFFSET
-
-  // Prevent overflow on left side
-  if (left < VIEWPORT_PADDING) {
-    left = VIEWPORT_PADDING
-  }
-
-  // Prevent overflow on right side
-  if (left + PANEL_WIDTH > viewportWidth - VIEWPORT_PADDING) {
-    left = viewportWidth - PANEL_WIDTH - VIEWPORT_PADDING
-  }
-
-  // Prevent overlap with navbar/top
-  if (top < NAVBAR_HEIGHT) {
-    top = props.position.y + PANEL_OFFSET + 24
-  }
-
-  // Prevent bottom overflow
-  if (top + PANEL_HEIGHT > viewportHeight - VIEWPORT_PADDING) {
-    top = viewportHeight - PANEL_HEIGHT - VIEWPORT_PADDING
-  }
-
   return {
-    left: `${left}px`,
-    top: `${top}px`
+    left: `${props.position.x - PANEL_WIDTH / 2}px`,
+    top: `${props.position.y - PANEL_OFFSET}px`,
+    transform: 'translateY(-100%)'
   }
 })
 
