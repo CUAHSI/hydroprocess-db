@@ -195,6 +195,7 @@ onMounted(async () => {
 })
 
 function updateLegend() {
+  tooltipRegion.value = null //disable tooltip when legend changes
   const domainOn = mapStore.leaflet.hasLayer(wmsLayerDomain)
   const provinceOn = mapStore.leaflet.hasLayer(wmsLayerProvince)
   let html = ''
