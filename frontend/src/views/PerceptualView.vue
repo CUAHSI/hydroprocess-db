@@ -9,7 +9,7 @@
         <TheLeafletMap />
 
         <div class="overlay-opacity-control">
-          <div class="overlay-opacity-title">Overlay opacity</div>
+          <div class="overlay-opacity-title">Opacity</div>
           <v-slider
             v-model="overlayOpacity"
             class="overlay-opacity-slider"
@@ -18,7 +18,10 @@
             step="1"
             hide-details
             density="compact"
-            color="primary"
+            color="grey-darken-2"
+            track-color="grey-lighten-2"
+            :thumb-size="12"
+            :track-size="2"
           />
         </div>
 
@@ -226,6 +229,14 @@ onMounted(async () => {
   })
   mapStore.leaflet.addControl(layerControl)
 
+  const opacityEl = document.querySelector('.overlay-opacity-control')
+  const layerControlList = mapStore.leaflet.getContainer().querySelector('.leaflet-control-layers-list')
+  if (opacityEl && layerControlList) {
+    L.DomEvent.disableClickPropagation(opacityEl)
+    L.DomEvent.disableScrollPropagation(opacityEl)
+    layerControlList.appendChild(opacityEl)
+  }
+
   mapStore.leaflet.removeControl(mapStore.leaflet.zoomControl)
   mapStore.leaflet.zoomControl = L.control.zoom({ position: 'topright' }).addTo(mapStore.leaflet)
 
@@ -268,7 +279,6 @@ onMounted(async () => {
 
       const feature = data?.features?.[0]
       if (!feature) {
-        L.popup().setLatLng(event.latlng).setContent('No feature info').openOn(mapStore.leaflet)
         return
       }
 
@@ -297,7 +307,6 @@ onMounted(async () => {
         .openOn(mapStore.leaflet)
     } catch (error) {
       if (error?.name === 'AbortError') return
-      L.popup().setLatLng(event.latlng).setContent('No feature info').openOn(mapStore.leaflet)
     }
   })
 
@@ -373,28 +382,25 @@ onMounted(async () => {
   padding: 2px 0;
 }
 
+:deep(.leaflet-control-layers-group-name) {
+  display: none;
+}
+
 .overlay-opacity-control {
-  position: absolute;
-  z-index: 1001;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(187px, calc(100vw - 24px));
-  padding: 8px 10px 4px;
-  border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.14);
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.14);
-  backdrop-filter: blur(4px);
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+  pointer-events: auto;
+  cursor: default;
 }
 
 .overlay-opacity-title {
   margin-bottom: 0;
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.1;
   color: #333;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
 }
 
 .overlay-opacity-slider {
@@ -418,11 +424,6 @@ onMounted(async () => {
     background: white;
   }
 
-  .overlay-opacity-control {
-    bottom: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(170px, calc(100vw - 16px));
-  }
+
 }
 </style>
