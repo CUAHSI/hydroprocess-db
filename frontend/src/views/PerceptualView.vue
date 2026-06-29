@@ -43,7 +43,7 @@ import 'leaflet-groupedlayercontrol/dist/leaflet.groupedlayercontrol.min.css'
 
 const mapStore = useMapStore()
 const { mapLoaded } = storeToRefs(mapStore)
-const overlayOpacity = ref(100)
+const overlayOpacity = ref(50)
 
 const mercatorMapServerUrl =
   'https://arcgis.cuahsi.org/arcgis/rest/services/HydroProcess/HydroprocessDB_mercator/MapServer'
@@ -230,7 +230,9 @@ onMounted(async () => {
   mapStore.leaflet.addControl(layerControl)
 
   const opacityEl = document.querySelector('.overlay-opacity-control')
-  const layerControlList = mapStore.leaflet.getContainer().querySelector('.leaflet-control-layers-list')
+  const layerControlList = mapStore.leaflet
+    .getContainer()
+    .querySelector('.leaflet-control-layers-list')
   if (opacityEl && layerControlList) {
     L.DomEvent.disableClickPropagation(opacityEl)
     L.DomEvent.disableScrollPropagation(opacityEl)
@@ -396,7 +398,7 @@ onMounted(async () => {
 
 .overlay-opacity-title {
   margin-bottom: 0;
-  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
   font-size: 13px;
   font-weight: 400;
   line-height: 1.1;
@@ -423,7 +425,5 @@ onMounted(async () => {
     left: 4px;
     background: white;
   }
-
-
 }
 </style>
