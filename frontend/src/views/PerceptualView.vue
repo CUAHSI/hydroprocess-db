@@ -95,48 +95,6 @@ const legendEntries = {
   province: []
 }
 
-// function getFeatureInfoUrl(layer, latlng) {
-//   const map = mapStore.leaflet
-//   const point = map.latLngToContainerPoint(latlng)
-//   const size = map.getSize()
-
-//   const params = {
-//     request: 'GetFeatureInfo',
-//     service: 'WMS',
-//     srs: 'EPSG:4326',
-//     styles: '',
-//     transparent: true,
-//     version: '1.1.1',
-//     format: 'image/png',
-//     bbox: map.getBounds().toBBoxString(),
-//     height: size.y,
-//     width: size.x,
-//     layers: layer.wmsParams.layers,
-//     query_layers: layer.wmsParams.layers,
-//     info_format: 'text/xml'
-//   }
-
-//   params.x = Math.round(point.x)
-//   params.y = Math.round(point.y)
-
-//   const baseUrl = layer._url
-//   return baseUrl + L.Util.getParamString(params, baseUrl, true)
-// }
-
-// function getRegionFromXml(xmlText, regions) {
-//   const xml = new DOMParser().parseFromString(xmlText, 'text/xml')
-
-//   // LVL1_NAME is used by the Domain WMS; LVL2_NAME by the Province WMS
-//   const field = xml.querySelector('FIELDS')
-//   if (mapStore.leaflet.hasLayer(wmsLayerDomain)) {
-//     const regionName = field?.getAttribute('LVL1_NAME')
-//     return regions.find((r) => r.name === regionName) ?? null
-//   } else {
-//     const provinceName = field?.getAttribute('LVL2_ID')
-//     return regions.find((r) => r.province === provinceName) ?? null
-//   }
-// }
-
 function updateTooltipPosition(latlng) {
   const point = mapStore.leaflet.latLngToContainerPoint(latlng)
   console.log('Tooltip position updated:', point)
@@ -194,15 +152,6 @@ function escapeHtml(value) {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;')
-}
-
-function buildPopupHtml(properties) {
-  const entries = Object.entries(properties || {})
-  if (!entries.length) return 'No data'
-
-  return entries
-    .map(([key, value]) => `<div><strong>${escapeHtml(key)}</strong>: ${escapeHtml(value)}</div>`) //here!!!
-    .join('')
 }
 
 function renderLegendSection(title, entries) {
@@ -375,76 +324,29 @@ onMounted(async () => {
       highlightLayer.bringToFront()
       const domainOn = mapStore.leaflet.hasLayer(wmsLayerDomain)
       const provinceOn = mapStore.leaflet.hasLayer(wmsLayerProvince)
-      if (domainOn){
-        const region = feature.properties?.["LVL1_NAME"]
+      if (domainOn) {
+        const region = feature.properties?.['LVL1_NAME']
         tooltipRegion.value = domainRegions.find((r) => r.name === region) ?? null
-      } else if (provinceOn){
-        const region = feature.properties?.["LVL2_ID"]
+      } else if (provinceOn) {
+        const region = feature.properties?.['LVL2_ID']
         tooltipRegion.value = provinceRegions.find((r) => r.province === region) ?? null
       } else {
         tooltipRegion.value = null
       }
       tooltipLatLng.value = event.latlng
       updateTooltipPosition(event.latlng)
-
-
-      function getRegionFromXml(xmlText, regions) {
-        const xml = new DOMParser().parseFromString(xmlText, 'text/xml')
-
-        // LVL1_NAME is used by the Domain WMS; LVL2_NAME by the Province WMS
-        const field = xml.querySelector('FIELDS')
-        if (mapStore.leaflet.hasLayer(wmsLayerDomain)) {
-          const regionName = field?.getAttribute('LVL1_NAME')
-          return regions.find((r) => r.name === regionName) ?? null
-        } else {
-          const provinceName = field?.getAttribute('LVL2_ID')
-          return regions.find((r) => r.province === provinceName) ?? null
-        }
-}
-
-      // L.popup()
-      //   .setLatLng(event.latlng)
-      //   .setContent(buildPopupHtml(feature.properties)) //here!!!
-      //   .openOn(mapStore.leaflet)
     } catch (error) {
       if (error?.name === 'AbortError') return
     }
     // update tooltip position when the map is moved
     mapStore.leaflet.on('move', () => {
-    if (tooltipLatLng.value) {
-      updateTooltipPosition(tooltipLatLng.value)
-    }
-  })
+      if (tooltipLatLng.value) {
+        updateTooltipPosition(tooltipLatLng.value)
+      }
+    })
   })
 
   updateLegend()
-
-  // Add click event listener to the map to fetch region data and show tooltips
-  // mapStore.leaflet.on('click', async (e) => {
-  //   const domainOn = mapStore.leaflet.hasLayer(wmsLayerDomain)
-  //   const provinceOn = mapStore.leaflet.hasLayer(wmsLayerProvince)
-  //   const activeLayer = domainOn ? wmsLayerDomain : provinceOn ? wmsLayerProvince : null
-  //   if (!activeLayer) return
-
-  //   try {
-  //     const url = getFeatureInfoUrl(activeLayer, e.latlng)
-  //     const response = await fetch(url)
-  //     const text = await response.text()
-  //     const region = getRegionFromXml(text, domainOn ? domainRegions : provinceRegions)
-  //     if (!region) return
-  //     tooltipRegion.value = region
-  //     tooltipLatLng.value = e.latlng
-  //     updateTooltipPosition(e.latlng)
-  //   } catch (error) {
-  //     console.error('Error fetching feature info:', error)
-  //   }
-  // })
-  // // update tooltip position when the map is moved
-  // mapStore.leaflet.on('move', () => {
-  //   if (tooltipLatLng.value) {
-  //     updateTooltipPosition(tooltipLatLng.value)
-  //   }
-  // })
 
   await initialDomainLayerReady
   // set the mapLoaded flag to true after the map and layers have been initialized
@@ -452,11 +354,7 @@ onMounted(async () => {
   mapLoaded.value = true
   loadLegendEntries().then(updateLegend)
 })
-
-
-
 </script>
-
 
 <style scoped>
 #wms-legend {

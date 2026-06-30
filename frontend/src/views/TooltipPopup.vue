@@ -80,7 +80,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, onMounted } from 'vue'
 
 const props = defineProps({
   LayerType: { type: String, required: true },
@@ -92,6 +92,10 @@ defineEmits(['close'])
 
 const PANEL_WIDTH = 380
 const PANEL_OFFSET = 16
+
+onMounted(() => {
+  console.log('props in tooltip:', props)
+})
 
 const panelStyle = computed(() => {
   return {
