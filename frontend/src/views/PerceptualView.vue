@@ -127,6 +127,7 @@ async function loadLegendEntries() {
     legendEntries.domain = layerById.get(0)?.legend || []
     legendEntries.province = layerById.get(1)?.legend || []
   } catch (error) {
+    console.error('Error loading legend entries:', error)
   }
 }
 
