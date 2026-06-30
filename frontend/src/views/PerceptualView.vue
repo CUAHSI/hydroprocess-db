@@ -97,7 +97,6 @@ const legendEntries = {
 
 function updateTooltipPosition(latlng) {
   const point = mapStore.leaflet.latLngToContainerPoint(latlng)
-  console.log('Tooltip position updated:', point)
   tooltipPosition.value = { x: point.x, y: point.y }
 }
 
@@ -128,7 +127,6 @@ async function loadLegendEntries() {
     legendEntries.domain = layerById.get(0)?.legend || []
     legendEntries.province = layerById.get(1)?.legend || []
   } catch (error) {
-    console.warn('Failed to load perceptual map legend', error)
   }
 }
 
@@ -302,7 +300,6 @@ onMounted(async () => {
       if (!feature) {
         return
       }
-      console.log('Feature properties:', feature.properties)
 
       highlightLayer = L.geoJSON(feature, {
         style: {
