@@ -7,7 +7,7 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes: [
     {
-      path: '/hydrologic_processes',
+      path: '/',
       name: 'Hydrologic Processes',
       component: MapView,
       meta: {

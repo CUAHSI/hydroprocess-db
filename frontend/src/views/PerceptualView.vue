@@ -26,6 +26,19 @@
         </div>
 
         <div id="wms-legend"></div>
+        <tooltip
+          v-if="tooltipRegion"
+          :region="tooltipRegion"
+          :position="tooltipPosition"
+          :LayerType="
+            mapStore.leaflet.hasLayer(wmsLayerDomain)
+              ? 'Domain'
+              : mapStore.leaflet.hasLayer(wmsLayerProvince)
+                ? 'Province'
+                : null
+          "
+          @close="tooltipRegion = null"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -35,13 +48,20 @@
 import { onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import TheLeafletMap from '@/components/TheLeafletMap.vue'
+import tooltip from './TooltipPopup.vue'
 import { useMapStore } from '@/stores/map'
+import { domainRegions, provinceRegions } from '../constants'
 import L from 'leaflet'
 import * as esriLeaflet from 'esri-leaflet'
 import 'leaflet-groupedlayercontrol'
 import 'leaflet-groupedlayercontrol/dist/leaflet.groupedlayercontrol.min.css'
 
 const mapStore = useMapStore()
+const tooltipRegion = ref(null)
+const tooltipPosition = ref(null)
+const tooltipLatLng = ref(null)
+
+// Load map store properties as refs for reactivity
 const { mapLoaded } = storeToRefs(mapStore)
 const overlayOpacity = ref(50)
 
@@ -73,6 +93,28 @@ const wmsLayerProvince = esriLeaflet.dynamicMapLayer({
 const legendEntries = {
   domain: [],
   province: []
+}
+
+function updateTooltipPosition(latlng) {
+  const point = mapStore.leaflet.latLngToContainerPoint(latlng)
+  tooltipPosition.value = { x: point.x, y: point.y }
+}
+
+function updateLegend() {
+  tooltipRegion.value = null //disable tooltip when legend changes
+  tooltipLatLng.value = null
+  const domainOn = mapStore.leaflet.hasLayer(wmsLayerDomain)
+  const provinceOn = mapStore.leaflet.hasLayer(wmsLayerProvince)
+
+  const html = [
+    domainOn ? renderLegendSection('Domains', legendEntries.domain) : '',
+    provinceOn ? renderLegendSection('Provinces', legendEntries.province) : ''
+  ].join('')
+
+  const legendEl = document.getElementById('wms-legend')
+  if (legendEl) {
+    legendEl.innerHTML = html || '<div class="legend-empty">No active map layer</div>'
+  }
 }
 
 async function loadLegendEntries() {
@@ -111,15 +153,6 @@ function escapeHtml(value) {
     .replaceAll("'", '&#39;')
 }
 
-function buildPopupHtml(properties) {
-  const entries = Object.entries(properties || {})
-  if (!entries.length) return 'No data'
-
-  return entries
-    .map(([key, value]) => `<div><strong>${escapeHtml(key)}</strong>: ${escapeHtml(value)}</div>`)
-    .join('')
-}
-
 function renderLegendSection(title, entries) {
   if (!entries.length) return ''
 
@@ -144,21 +177,6 @@ function renderLegendSection(title, entries) {
       ${items}
     </div>
   `
-}
-
-function updateLegend() {
-  const domainOn = mapStore.leaflet.hasLayer(wmsLayerDomain)
-  const provinceOn = mapStore.leaflet.hasLayer(wmsLayerProvince)
-
-  const html = [
-    domainOn ? renderLegendSection('Domains', legendEntries.domain) : '',
-    provinceOn ? renderLegendSection('Provinces', legendEntries.province) : ''
-  ].join('')
-
-  const legendEl = document.getElementById('wms-legend')
-  if (legendEl) {
-    legendEl.innerHTML = html || '<div class="legend-empty">No active map layer</div>'
-  }
 }
 
 function handleOverlayChange(event) {
@@ -302,22 +320,36 @@ onMounted(async () => {
       }).addTo(mapStore.leaflet)
 
       highlightLayer.bringToFront()
-
-      L.popup()
-        .setLatLng(event.latlng)
-        .setContent(buildPopupHtml(feature.properties))
-        .openOn(mapStore.leaflet)
+      const domainOn = mapStore.leaflet.hasLayer(wmsLayerDomain)
+      const provinceOn = mapStore.leaflet.hasLayer(wmsLayerProvince)
+      if (domainOn) {
+        const region = feature.properties?.['LVL1_NAME']
+        tooltipRegion.value = domainRegions.find((r) => r.name === region) ?? null
+      } else if (provinceOn) {
+        const region = feature.properties?.['LVL2_ID']
+        tooltipRegion.value = provinceRegions.find((r) => r.province === region) ?? null
+      } else {
+        tooltipRegion.value = null
+      }
+      tooltipLatLng.value = event.latlng
+      updateTooltipPosition(event.latlng)
     } catch (error) {
       if (error?.name === 'AbortError') return
     }
+    // update tooltip position when the map is moved
+    mapStore.leaflet.on('move', () => {
+      if (tooltipLatLng.value) {
+        updateTooltipPosition(tooltipLatLng.value)
+      }
+    })
   })
 
   updateLegend()
 
   await initialDomainLayerReady
-
+  // set the mapLoaded flag to true after the map and layers have been initialized
+  // this will turn off the loading overlay and allow the map to be displayed
   mapLoaded.value = true
-
   loadLegendEntries().then(updateLegend)
 })
 </script>
