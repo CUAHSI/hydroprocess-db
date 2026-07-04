@@ -1,6 +1,6 @@
 <template>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-  <div v-show="$route.meta.showMap" id="mapContainer">
+  <div v-show="$route.meta.showMap" ref="mapContainerRef" class="map-container">
     <div v-if="userTouchedFilter && currentFilteredData.length === 0" class="no-data-overlay">
       <span>No data found</span>
     </div>
@@ -12,7 +12,7 @@ import L from 'leaflet'
 import 'leaflet-draw'
 import 'leaflet.markercluster'
 import * as esriLeaflet from 'esri-leaflet'
-import { onMounted, onUpdated } from 'vue'
+import { onMounted, onUpdated, onActivated, ref } from 'vue'
 import { useMapStore } from '@/stores/map'
 import 'leaflet-iconmaterial/dist/leaflet.icon-material.css'
 import 'leaflet/dist/leaflet.css'
@@ -22,14 +22,28 @@ import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 
 const mapStore = useMapStore()
 
+const mapContainerRef = ref(null)
+const localMap = ref(null)
+
+onActivated(() => {
+  if (localMap.value) {
+    mapStore.leaflet = localMap.value
+    localMap.value.invalidateSize(true)
+  }
+})
+
 onUpdated(() => {
-  mapStore.leaflet.invalidateSize()
+  if (localMap.value) {
+    localMap.value.invalidateSize()
+  }
 })
 
 onMounted(() => {
-  mapStore.leaflet = L.map('mapContainer', { minZoom: 2 }).setView([0, 11], 2)
+  const map = L.map(mapContainerRef.value, { minZoom: 2 }).setView([0, 11], 2)
+  localMap.value = map
+  mapStore.leaflet = map
   mapStore.layerGroup = new L.LayerGroup()
-  mapStore.layerGroup.addTo(mapStore.leaflet)
+  mapStore.layerGroup.addTo(map)
 
   const CartoDB_PositronNoLabels = L.tileLayer(
     'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
@@ -62,15 +76,15 @@ onMounted(() => {
     Esri_WorldImagery
   }
 
-  Esri_WorldImagery.addTo(mapStore.leaflet)
-  Esri_Hydro_Reference_Overlay.addTo(mapStore.leaflet)
+  Esri_WorldImagery.addTo(map)
+  Esri_Hydro_Reference_Overlay.addTo(map)
 
-  L.control.layers(baselayers).addTo(mapStore.leaflet)
+  L.control.layers(baselayers).addTo(map)
 })
 </script>
 
 <style scoped>
-#mapContainer {
+.map-container {
   width: 100%;
   height: 100%;
   position: relative;
