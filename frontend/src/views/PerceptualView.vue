@@ -208,20 +208,15 @@ watch(
   mapLoaded,
   (loaded) => {
     if (loaded) {
-      mapStore.leaflet.invalidateSize(true)
+      mapStore.leaflet.invalidateSize({ pan: false, animate: false })
     }
   },
   { flush: 'post' }
 )
 
 onMounted(async () => {
-  mapStore.leaflet.setMaxBounds(
-    L.latLngBounds([
-      [5, -170],
-      [75, -50]
-    ])
-  )
   mapStore.leaflet.setMinZoom(3)
+  mapStore.leaflet.setView([45, -100], 3)
 
   const initialDomainLayerReady = new Promise((resolve) => {
     const resolveReady = () => resolve()

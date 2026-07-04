@@ -28,7 +28,11 @@ const localMap = ref(null)
 onActivated(() => {
   if (localMap.value) {
     mapStore.leaflet = localMap.value
-    localMap.value.invalidateSize(true)
+    const map = localMap.value
+    const center = map.getCenter()
+    const zoom = map.getZoom()
+    map.invalidateSize({ animate: false })
+    map.setView(center, zoom, { animate: false })
   }
 })
 
