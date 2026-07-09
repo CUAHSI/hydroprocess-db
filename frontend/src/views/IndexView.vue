@@ -1,14 +1,13 @@
 <template>
   <v-container fluid class="pa-0">
-
     <!-- Section 1 (Top) -->
     <section class="page-section section-1" :style="{ backgroundImage: `url(${landingBg})` }">
       <div class="hero-content">
         <div class="hero-text">
           <h1>Hydrological Process Knowledge Hub</h1>
           <p class="hero-subhead">
-            A shared platform for exploring hydrologic process knowledge across site, regional,
-            and continental scales
+            A shared platform for exploring hydrologic process knowledge across site, regional, and
+            continental scales
           </p>
           <p class="hero-body">
             The Hydrological Process Knowledge Hub brings together two complementary resources for
@@ -25,21 +24,21 @@
           <RouterLink class="hero-cta cta-blue" to="/map">
             <div class="hero-cta-main">
               <v-icon :icon="mdiDatabaseOutline" size="44" class="hero-cta-icon" />
-              <span class="hero-cta-text">Explore hydrological process database</span>
+              <span class="hero-cta-text">Explore hydrological<br />process database</span>
             </div>
             <span class="hero-cta-arrow" aria-hidden="true"></span>
           </RouterLink>
           <RouterLink class="hero-cta cta-green" to="/perceptual_models">
             <div class="hero-cta-main">
               <v-icon :icon="mdiMapMarkerRadiusOutline" size="44" class="hero-cta-icon" />
-              <span class="hero-cta-text">Explore hydrologic domains and processes</span>
+              <span class="hero-cta-text">Explore hydrologic<br />domains &amp; processes</span>
             </div>
             <span class="hero-cta-arrow" aria-hidden="true"></span>
           </RouterLink>
           <RouterLink class="hero-cta cta-light" to="/about">
             <div class="hero-cta-main">
-              <v-icon :icon="mdiImageOutline" size="44" class="hero-cta-icon" />
-              <span class="hero-cta-text">Learn about perceptual models</span>
+              <v-icon :icon="mdiInformationOutline" size="44" class="hero-cta-icon" />
+              <span class="hero-cta-text">Learn about<br />perceptual models</span>
             </div>
             <span class="hero-cta-arrow" aria-hidden="true"></span>
           </RouterLink>
@@ -49,26 +48,18 @@
     </section>
 
     <!-- Section 2 -->
-    <section class="page-section">
-    </section>
+    <section class="page-section"></section>
 
     <!-- Section 3 -->
-    <section class="page-section">
-    </section>
+    <section class="page-section"></section>
 
     <!-- Section 4 -->
-    <section class="page-section">
-    </section>
-
+    <section class="page-section"></section>
   </v-container>
 </template>
 
 <script setup>
-import {
-  mdiDatabaseOutline,
-  mdiImageOutline,
-  mdiMapMarkerRadiusOutline
-} from '@mdi/js'
+import { mdiDatabaseOutline, mdiInformationOutline, mdiMapMarkerRadiusOutline } from '@mdi/js'
 import { RouterLink } from 'vue-router'
 import landingBg from '@/assets/landing section.png'
 </script>
@@ -151,7 +142,7 @@ import landingBg from '@/assets/landing section.png'
 }
 
 .hero-cta {
-  min-height: 88px;
+  min-height: 96px;
   border-radius: 0.55rem;
   text-decoration: none;
   font-weight: 700;
@@ -163,7 +154,10 @@ import landingBg from '@/assets/landing section.png'
   align-items: stretch;
   gap: 0.35rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.13);
-  transition: transform 170ms ease, box-shadow 170ms ease, filter 170ms ease;
+  transition:
+    transform 170ms ease,
+    box-shadow 170ms ease,
+    filter 170ms ease;
 }
 
 .hero-cta:hover {
@@ -188,6 +182,7 @@ import landingBg from '@/assets/landing section.png'
 
 .hero-cta-text {
   flex: 1;
+  line-height: 1.2;
 }
 
 .hero-cta-arrow {
