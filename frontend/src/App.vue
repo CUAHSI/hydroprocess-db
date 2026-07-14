@@ -45,6 +45,10 @@ let showMobileNavigation = ref(false)
 const paths = [
   {
     attrs: { to: '/' },
+    label: 'Home'
+  },
+  {
+    attrs: { to: '/hydrologic-processes' },
     label: 'Hydrologic Processes'
   },
   // {

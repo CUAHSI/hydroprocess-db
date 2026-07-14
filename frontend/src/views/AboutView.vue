@@ -1,6 +1,8 @@
 <template>
-  <v-container fluid>
-    <div>
+  <v-container fluid class="pa-0">
+    <home-view></home-view>
+
+    <div class="pa-4">
       <div class="useful-links-wrapper mb-5">
         <h3>Hydrologic Process Knowledge Platform</h3>
         <p>
@@ -138,6 +140,7 @@
 
 <script setup>
 import { mdiOpenInNew } from '@mdi/js'
+import HomeView from '@/views/HomeView.vue'
 import hilary from '@/assets/hilary.jpg'
 import ryoko from '@/assets/ryoko.jpg'
 import tony from '@/assets/tony.jpg'
