@@ -44,7 +44,14 @@
           </RouterLink>
         </div>
       </div>
-      <span class="photo-credit">Photo by Justin McFadden on Unsplash</span>
+      <a
+        class="photo-credit"
+        href="https://unsplash.com/photos/a-winding-river-flows-through-a-lush-green-forest-fbBTXLbolC4?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Photo by Justin McFadden on Unsplash
+      </a>
     </section>
 
     <!-- Section 2 -->
@@ -252,7 +259,11 @@ import landingBg from '@/assets/landing section.png'
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
   line-height: 1.2;
   z-index: 4;
-  pointer-events: none;
+  text-decoration: none;
+}
+
+.photo-credit:hover {
+  text-decoration: underline;
 }
 
 @media (max-width: 960px) {

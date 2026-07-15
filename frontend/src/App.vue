@@ -44,6 +44,10 @@ const alertStore = useAlertStore()
 let showMobileNavigation = ref(false)
 const paths = [
   {
+    attrs: { to: '/' },
+    label: 'Home'
+  },
+  {
     attrs: { to: '/map' },
     label: 'Hydrologic Processes'
   },
