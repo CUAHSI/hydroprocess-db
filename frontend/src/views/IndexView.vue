@@ -390,12 +390,12 @@ const steps = [
 .why-hub-title {
   color: #1a1464;
   font-weight: 700;
-  margin-bottom: 4px;
+  margin-bottom: 24px;
 }
 
 .heading {
   font-weight: bold;
-  margin-bottom: 3px;
+  margin-bottom: 23px;
   color: #1a1464;
 }
 
