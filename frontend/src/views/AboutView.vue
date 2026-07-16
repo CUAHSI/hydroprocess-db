@@ -140,7 +140,6 @@
 
 <script setup>
 import { mdiOpenInNew } from '@mdi/js'
-import HomeView from '@/views/HomeView.vue'
 import hilary from '@/assets/hilary.jpg'
 import ryoko from '@/assets/ryoko.jpg'
 import tony from '@/assets/tony.jpg'
