@@ -176,19 +176,19 @@ const section4AudienceCards = [
       'Use the hub to explore hydrologic similarity, process diversity, watershed function, and knowledge gaps across sites and regions.'
   },
   {
-    title: 'Model Developers',
+    title: 'Developers',
     icon: mdiCodeBraces,
     description:
       'Use process knowledge to inform model structure, evaluate model assumptions, and support flexible hydrologic modeling frameworks.'
   },
   {
-    title: 'Educators & Students',
+    title: 'Educators',
     icon: mdiSchoolOutline,
     description:
       'Use perceptual models and process summaries to teach watershed behavior, runoff generation, and regional hydrologic diversity.'
   },
   {
-    title: 'Community Scientists & Practitioners',
+    title: 'Practitioners',
     icon: mdiAccountGroupOutline,
     description:
       'Use the hub to access organized hydrologic knowledge and better understand how landscapes influence water movement.'
