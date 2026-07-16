@@ -63,7 +63,11 @@
         <h2 class="section-3-title">Explore Two Resources</h2>
 
         <div class="resource-grid">
-          <article v-for="resource in section3Resources" :key="resource.title" class="resource-card">
+          <article
+            v-for="resource in section3Resources"
+            :key="resource.title"
+            class="resource-card"
+          >
             <div class="resource-card-top">
               <img :src="resource.logo" :alt="resource.logoAlt" class="resource-logo" />
               <div>
@@ -531,6 +535,7 @@ const section4AudienceCards = [
 
 .audience-card {
   background: #f3f3f4;
+  border-radius: 1.45rem;
   padding: 1.1rem 1.05rem;
   min-height: 220px;
 }
