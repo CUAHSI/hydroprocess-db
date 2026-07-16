@@ -2,18 +2,18 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import MapView from '../views/MapView.vue'
 import PerceptualView from '../views/PerceptualView.vue'
 import ApiView from '../views/ApiView.vue'
-import HomeView from '@/views/HomeView.vue'
+import IndexView from '../views/IndexView.vue'
 
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
     {
-      attrs: { to: '/' },
-      label: 'Home',
-      component: HomeView
+      path: '/',
+      name: 'Index',
+      component: IndexView
     },
     {
-      path: '/hydrologic-processes',
+      path: '/map',
       name: 'Hydrologic Processes',
       component: MapView,
       meta: {

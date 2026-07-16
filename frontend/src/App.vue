@@ -48,7 +48,7 @@ const paths = [
     label: 'Home'
   },
   {
-    attrs: { to: '/hydrologic-processes' },
+    attrs: { to: '/map' },
     label: 'Hydrologic Processes'
   },
   // {
