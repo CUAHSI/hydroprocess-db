@@ -1,11 +1,9 @@
 <template>
   <div class="why-hub">
-    <v-img :src="landingImg" height="140" cover class="why-hub-banner"></v-img>
-
     <v-container fluid class="why-hub-body">
       <v-row align="stretch" class="why-hub-row">
         <v-col cols="12" md="5">
-          <h2 class="why-hub-title mb-4">Why This Hub?</h2>
+          <h2 class="why-hub-title">Why This Hub?</h2>
 
           <p class="heading">Hydrologic process knowledge exists at multiple scales.</p>
 
@@ -16,9 +14,7 @@
             connects both perspectives in one place.
           </p>
 
-          <p class="font-weight-bold mb-3">
-            By bridging these projects together, the hub helps users:
-          </p>
+          <p class="heading">By bridging these projects together, the hub helps users:</p>
 
           <ul class="why-hub-checklist">
             <li v-for="item in checklist" :key="item">
@@ -57,10 +53,6 @@
               </div>
             </div>
           </div>
-
-          <p class="text-caption font-italic text-right text-medium-emphasis mt-2">
-            Conceptual image generated with ChatGPT / DALL·E, 2026.
-          </p>
         </v-col>
       </v-row>
     </v-container>
@@ -69,7 +61,6 @@
 
 <script setup>
 import { mdiCheckboxMarked } from '@mdi/js'
-import landingImg from '@/assets/aboutPage/landingSection.png'
 import siteImg from '@/assets/aboutPage/siteBackground.png'
 import provinceImg from '@/assets/aboutPage/provinceBackground.png'
 import domainImg from '@/assets/aboutPage/domainBackground.png'
@@ -131,6 +122,7 @@ const steps = [
 .why-hub-title {
   color: #1a1464;
   font-weight: 700;
+  margin-bottom: 4px;
 }
 
 .heading {
@@ -160,7 +152,7 @@ const steps = [
 
 .why-hub-images {
   position: relative;
-  flex: 1 0 62%;
+  flex: 0.5 0 62%;
 }
 
 .why-hub-img {
