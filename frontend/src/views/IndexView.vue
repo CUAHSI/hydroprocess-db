@@ -90,11 +90,16 @@
                     alt="Province scale"
                     class="why-hub-img why-hub-img--province"
                   />
-                  <img
-                    :src="domainImg"
-                    alt="Domain scale"
-                    class="why-hub-img why-hub-img--domain"
-                  />
+                  <div class="why-hub-domain-wrap">
+                    <img
+                      :src="domainImg"
+                      alt="Domain scale"
+                      class="why-hub-img why-hub-img--domain"
+                    />
+                    <p class="text-caption font-italic text-right text-medium-emphasis mt-2">
+                      Conceptual image generated with ChatGPT / DALL·E, 2026.
+                    </p>
+                  </div>
                 </div>
 
                 <div class="why-hub-timeline">
@@ -437,20 +442,26 @@ const steps = [
 
 .why-hub-img--site {
   width: 76%;
-  top: 10%;
+  top: 5%;
   right: 12%;
 }
 
 .why-hub-img--province {
   width: 84%;
-  top: 37%;
+  top: 35%;
   right: 20%;
 }
 
-.why-hub-img--domain {
+.why-hub-domain-wrap {
+  position: absolute;
   width: 100%;
   top: 60%;
   right: 10%;
+}
+
+.why-hub-img--domain {
+  position: static;
+  width: 100%;
 }
 
 .why-hub-step-description {
