@@ -7,10 +7,9 @@ RUN pip install -r requirements.txt
 COPY requirements-dev.txt requirements-dev.txt
 RUN pip install -r requirements-dev.txt
 
-RUN apt-get update && apt-get install -y --no-install-recommends wget \
-    && wget -qO /usr/local/bin/mc https://dl.min.io/client/mc/release/linux-amd64/mc \
-    && chmod +x /usr/local/bin/mc \
-    && apt-get purge -y wget && rm -rf /var/lib/apt/lists/*
+RUN python -m wget https://dl.min.io/client/mc/release/linux-amd64/mc
+RUN chmod +x mc
+RUN mv mc /usr/local/bin/mc
 
 COPY ./hydroprocess_db /hydroprocess_db
 
