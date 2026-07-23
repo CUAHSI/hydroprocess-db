@@ -830,6 +830,7 @@ const section4AudienceCards = [
 
   .hero-text h1 {
     font-size: clamp(1.2rem, 5vw, 1.7rem);
+    white-space: normal;
   }
 
   .hero-subhead {
@@ -865,6 +866,13 @@ const section4AudienceCards = [
     margin: 0 auto 16px;
   }
 
+  .why-hub-domain-wrap {
+    position: static;
+    width: 80%;
+    right: auto;
+    margin: 0 auto 16px;
+  }
+
   .why-hub-timeline {
     position: static;
     flex: none;
@@ -881,38 +889,43 @@ const section4AudienceCards = [
   .why-hub-timeline-step {
     position: static !important;
     margin-bottom: 16px;
-    .section-4 {
-      padding: 1.15rem 1rem;
-    }
+  }
 
-    .section-3 {
-      padding: 1.35rem 1rem;
-    }
+  .why-hub-step-description {
+    width: 100% !important;
+  }
 
-    .resource-grid {
-      grid-template-columns: 1fr;
-    }
+  .section-4 {
+    padding: 1.15rem 1rem;
+  }
 
-    .resource-card-top h3 {
-      font-size: 1.08rem;
-    }
+  .section-3 {
+    padding: 1.35rem 1rem;
+  }
 
-    .resource-card-top {
-      min-height: 0;
-    }
+  .resource-grid {
+    grid-template-columns: 1fr;
+  }
 
-    .resource-cta {
-      font-size: 0.93rem;
-    }
+  .resource-card-top h3 {
+    font-size: 1.08rem;
+  }
 
-    .audience-grid {
-      grid-template-columns: 1fr;
-      gap: 0.8rem;
-    }
+  .resource-card-top {
+    min-height: 0;
+  }
 
-    .audience-card {
-      min-height: auto;
-    }
+  .resource-cta {
+    font-size: 0.93rem;
+  }
+
+  .audience-grid {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .audience-card {
+    min-height: auto;
   }
 }
 

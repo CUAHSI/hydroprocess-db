@@ -9,7 +9,7 @@
     app
   >
     <div class="d-flex align-end full-height pa-2 align-center w-100 position-relative">
-      <v-app-bar-title
+      <v-app-bar-title class="app-bar-title"
         >Perceptual Models Around the World
         <div class="text-subtitle-1">McMillan Hydrology Lab</div>
       </v-app-bar-title>
@@ -31,10 +31,10 @@
           </v-btn>
         </nav>
       </v-card>
-      <v-spacer></v-spacer>
+      <v-spacer v-if="!mdAndDown"></v-spacer>
       <!-- <UserLogin @logged-in="login" v-if="!mdAndDown" :mobile="false" /> -->
 
-      <!-- <v-app-bar-nav-icon @click="$emit('toggleMobileNav')" v-else /> -->
+      <v-app-bar-nav-icon @click="$emit('toggleMobileNav')" v-if="mdAndDown" />
     </div>
   </v-app-bar>
 </template>
@@ -52,6 +52,24 @@ const { mdAndDown } = useDisplay()
   will-change: padding;
   padding-top: 0;
   padding-bottom: 0;
+}
+
+.app-bar-title {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+@media (max-width: 960px) {
+  .app-bar-title :deep(.v-toolbar-title__placeholder) {
+    font-size: 1rem;
+    line-height: 1.2;
+    white-space: normal;
+  }
+
+  .app-bar-title .text-subtitle-1 {
+    font-size: 0.75rem;
+    line-height: 1.1;
+  }
 }
 
 .nav-items {
