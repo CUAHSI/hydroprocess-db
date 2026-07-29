@@ -58,7 +58,8 @@ const { mdAndDown } = useDisplay()
   border-radius: 2rem !important;
   overflow: hidden;
   position: absolute;
-  left: 43%;
+  left: 50%;
+  transform: translateX(-50%);
 
   & > a.v-btn:first-child {
     border-top-left-radius: 2rem !important;
