@@ -709,37 +709,47 @@ const section4AudienceCards = [
   }
 
   .why-hub-visual {
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    column-gap: 14px;
+    row-gap: 20px;
     min-height: auto;
   }
 
-  .why-hub-images {
-    position: static;
-    flex: none;
-    height: auto;
+  /* Promote images and timeline steps to direct children of .why-hub-visual so
+     each image can be placed in its own grid row next to its matching description. */
+  .why-hub-images,
+  .why-hub-timeline {
+    display: contents;
   }
 
   .why-hub-img {
     position: static;
     display: block;
-    width: 80% !important;
-    margin: 0 auto 16px;
+    width: 100% !important;
+    margin: 0;
+  }
+
+  .why-hub-img--site {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+  }
+
+  .why-hub-img--province {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: center;
   }
 
   .why-hub-domain-wrap {
     position: static;
-    width: 80%;
-    right: auto;
-    margin: 0 auto 16px;
-  }
-
-  .why-hub-timeline {
-    position: static;
-    flex: none;
     width: 100%;
-    height: auto;
-    margin-top: 16px;
-    right: 10%;
+    right: auto;
+    margin: 0;
+    grid-column: 2;
+    grid-row: 3;
+    align-self: center;
   }
 
   .why-hub-timeline-line {
@@ -748,7 +758,20 @@ const section4AudienceCards = [
 
   .why-hub-timeline-step {
     position: static !important;
-    margin-bottom: 16px;
+    grid-column: 1;
+    align-self: center;
+  }
+
+  .why-hub-timeline-step:nth-child(2) {
+    grid-row: 1;
+  }
+
+  .why-hub-timeline-step:nth-child(3) {
+    grid-row: 2;
+  }
+
+  .why-hub-timeline-step:nth-child(4) {
+    grid-row: 3;
   }
 
   .why-hub-step-description {
