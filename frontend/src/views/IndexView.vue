@@ -830,6 +830,7 @@ const section4AudienceCards = [
 
   .hero-text h1 {
     font-size: clamp(1.2rem, 5vw, 1.7rem);
+    white-space: normal;
   }
 
   .hero-subhead {
@@ -848,30 +849,47 @@ const section4AudienceCards = [
   }
 
   .why-hub-visual {
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    column-gap: 14px;
+    row-gap: 20px;
     min-height: auto;
   }
 
-  .why-hub-images {
-    position: static;
-    flex: none;
-    height: auto;
+  /* Promote images and timeline steps to direct children of .why-hub-visual so
+     each image can be placed in its own grid row next to its matching description. */
+  .why-hub-images,
+  .why-hub-timeline {
+    display: contents;
   }
 
   .why-hub-img {
     position: static;
     display: block;
-    width: 80% !important;
-    margin: 0 auto 16px;
+    width: 100% !important;
+    margin: 0;
   }
 
-  .why-hub-timeline {
+  .why-hub-img--site {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+  }
+
+  .why-hub-img--province {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: center;
+  }
+
+  .why-hub-domain-wrap {
     position: static;
-    flex: none;
     width: 100%;
-    height: auto;
-    margin-top: 16px;
-    right: 10%;
+    right: auto;
+    margin: 0;
+    grid-column: 2;
+    grid-row: 3;
+    align-self: center;
   }
 
   .why-hub-timeline-line {
@@ -880,39 +898,57 @@ const section4AudienceCards = [
 
   .why-hub-timeline-step {
     position: static !important;
-    margin-bottom: 16px;
-    .section-4 {
-      padding: 1.15rem 1rem;
-    }
+    grid-column: 1;
+    align-self: center;
+  }
 
-    .section-3 {
-      padding: 1.35rem 1rem;
-    }
+  .why-hub-timeline-step:nth-child(2) {
+    grid-row: 1;
+  }
 
-    .resource-grid {
-      grid-template-columns: 1fr;
-    }
+  .why-hub-timeline-step:nth-child(3) {
+    grid-row: 2;
+  }
 
-    .resource-card-top h3 {
-      font-size: 1.08rem;
-    }
+  .why-hub-timeline-step:nth-child(4) {
+    grid-row: 3;
+  }
 
-    .resource-card-top {
-      min-height: 0;
-    }
+  .why-hub-step-description {
+    width: 100% !important;
+  }
 
-    .resource-cta {
-      font-size: 0.93rem;
-    }
+  .section-4 {
+    padding: 1.15rem 1rem;
+  }
 
-    .audience-grid {
-      grid-template-columns: 1fr;
-      gap: 0.8rem;
-    }
+  .section-3 {
+    padding: 1.35rem 1rem;
+  }
 
-    .audience-card {
-      min-height: auto;
-    }
+  .resource-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .resource-card-top h3 {
+    font-size: 1.08rem;
+  }
+
+  .resource-card-top {
+    min-height: 0;
+  }
+
+  .resource-cta {
+    font-size: 0.93rem;
+  }
+
+  .audience-grid {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .audience-card {
+    min-height: auto;
   }
 }
 
