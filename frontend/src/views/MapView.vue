@@ -33,6 +33,11 @@
       <v-col class="map-container pa-0">
         <TheLeafletMap />
 
+        <HydrologicProcessModal
+          v-model="showHydrologicModal"
+          :records-count="currentFilteredData.length"
+        />
+
         <div class="bottom-right-container d-flex flex-column align-end ga-2">
           <v-btn
             v-if="mdAndDown"
@@ -56,6 +61,7 @@ import { ref, nextTick, onMounted, watch } from 'vue'
 import FilterDrawer from '@/components/FilterDrawer.vue'
 import DataViewDrawer from '@/components/DataViewDrawer.vue'
 import TheLeafletMap from '@/components/TheLeafletMap.vue'
+import HydrologicProcessModal from '@/components/HydrologicProcessModal.vue'
 import { mdiChevronRight, mdiChevronLeft, mdiInformationOutline } from '@mdi/js'
 import { useMapStore } from '@/stores/map'
 import { useDisplay } from 'vuetify'
@@ -79,6 +85,7 @@ const { mdAndDown } = useDisplay()
 const showFilterDrawer = ref(true)
 const dataDrawerRef = ref(null)
 const showDataDrawer = ref(!mdAndDown.value)
+const showHydrologicModal = ref(true)
 
 watch(mdAndDown, (val) => {
   showFilterDrawer.value = !val ? true : false
