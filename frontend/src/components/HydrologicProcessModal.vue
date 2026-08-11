@@ -1,9 +1,5 @@
 <template>
-  <v-dialog
-    :model-value="modelValue"
-    max-width="760"
-    @update:model-value="emit('update:modelValue', $event)"
-  >
+  <v-dialog :model-value="modelValue" max-width="760" @update:model-value="onModelValueUpdate">
     <v-card class="hydro-tooltip rounded-xl">
       <v-btn
         variant="text"
@@ -25,9 +21,18 @@
         </div>
 
         <p class="hydro-tooltip__text mb-0">
-          Click a point to see its perceptual model, dominant processes, and source citation. Use the
-          Filter Map to narrow down your search.
+          Click a point to see its perceptual model, dominant processes, and source citation. Use
+          the Filter Map to narrow down your search.
         </p>
+
+        <v-checkbox
+          v-model="doNotShowAgain"
+          density="compact"
+          hide-details
+          color="primary"
+          class="hydro-tooltip__checkbox mt-3"
+          label="Do not show this again"
+        />
 
         <div class="hydro-tooltip__footer d-flex justify-end align-center ga-2 mt-3">
           <v-icon icon="mdi-layers-triple-outline" size="16" color="blue-grey-lighten-1" />
@@ -39,6 +44,7 @@
 </template>
 
 <script setup>
+import { ref, watch } from 'vue'
 import lightbulbTooltip from '@/assets/lightbulb-clean.png'
 
 const props = defineProps({
@@ -52,11 +58,31 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'dismiss'])
+
+const doNotShowAgain = ref(false)
+
+watch(
+  () => props.modelValue,
+  (isOpen) => {
+    if (isOpen) {
+      doNotShowAgain.value = false
+    }
+  }
+)
 
 const closeDialog = () => {
   if (!props.modelValue) return
+  emit('dismiss', doNotShowAgain.value)
   emit('update:modelValue', false)
+}
+
+const onModelValueUpdate = (nextValue) => {
+  if (!nextValue && props.modelValue) {
+    emit('dismiss', doNotShowAgain.value)
+  }
+
+  emit('update:modelValue', nextValue)
 }
 </script>
 
@@ -112,6 +138,10 @@ const closeDialog = () => {
 .hydro-tooltip__footer {
   color: #7a848f;
   font-size: 0.86rem;
+}
+
+.hydro-tooltip__checkbox {
+  color: #5c6670;
 }
 
 @media (max-width: 600px) {

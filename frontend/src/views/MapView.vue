@@ -36,6 +36,7 @@
         <HydrologicProcessModal
           v-model="showHydrologicModal"
           :records-count="currentFilteredData.length"
+          @dismiss="handleHydrologicModalDismiss"
         />
 
         <div class="bottom-right-container d-flex flex-column align-end ga-2">
@@ -81,11 +82,12 @@ const {
 } = storeToRefs(mapStore)
 
 const { mdAndDown } = useDisplay()
+const HYDROLOGIC_MODAL_PREF_KEY = 'hideHydrologicProcessTooltip'
 
 const showFilterDrawer = ref(true)
 const dataDrawerRef = ref(null)
 const showDataDrawer = ref(!mdAndDown.value)
-const showHydrologicModal = ref(true)
+const showHydrologicModal = ref(false)
 
 watch(mdAndDown, (val) => {
   showFilterDrawer.value = !val ? true : false
@@ -95,6 +97,9 @@ watch(mdAndDown, (val) => {
 showFilterDrawer.value = !mdAndDown.value
 
 onMounted(async () => {
+  const hideHydrologicTooltip = localStorage.getItem(HYDROLOGIC_MODAL_PREF_KEY) === 'true'
+  showHydrologicModal.value = !hideHydrologicTooltip
+
   await mapStore.fetchPerceptualModelsGeojson()
   const bounds = L.latLngBounds(mapStore.allAvailableCoordinates)
   mapStore.leaflet.setMaxBounds(bounds)
@@ -291,6 +296,10 @@ const toggleFilterDrawer = async () => {
 
 const toggleDataDrawer = () => {
   showDataDrawer.value = !showDataDrawer.value
+}
+
+const handleHydrologicModalDismiss = (doNotShowAgain) => {
+  localStorage.setItem(HYDROLOGIC_MODAL_PREF_KEY, String(Boolean(doNotShowAgain)))
 }
 </script>
 
