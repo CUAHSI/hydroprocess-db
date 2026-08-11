@@ -58,16 +58,26 @@ const { mdAndDown } = useDisplay()
 .app-bar-title {
   flex: 1 1 auto;
   min-width: 0;
-  color: #0c177d;
+  color: #26176f;
   font-weight: bolder;
-  display: inline-flex;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.app-bar-title :deep(.v-toolbar-title__placeholder) {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .logo {
-  width: 100px;
+  width: 50px;
+  flex: 0 0 auto;
 }
 
 .title {
+  white-space: nowrap;
 }
 
 @media (max-width: 960px) {
