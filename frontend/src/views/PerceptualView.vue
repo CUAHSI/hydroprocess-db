@@ -8,6 +8,14 @@
       <v-col class="map-container pa-0">
         <TheLeafletMap />
 
+        <HydrologicProcessModal
+          v-model="showPerceptualModal"
+          :title="'Quick tooltip!'"
+          :message="perceptualTooltipMessage"
+          :footer-text="perceptualTooltipFooter"
+          @dismiss="handlePerceptualModalDismiss"
+        />
+
         <div class="overlay-opacity-control">
           <div class="overlay-opacity-title">Opacity</div>
           <v-slider
@@ -48,6 +56,7 @@
 import { onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import TheLeafletMap from '@/components/TheLeafletMap.vue'
+import HydrologicProcessModal from '@/components/HydrologicProcessModal.vue'
 import tooltip from './TooltipPopup.vue'
 import { useMapStore } from '@/stores/map'
 import { domainRegions, provinceRegions } from '../constants'
@@ -60,6 +69,12 @@ const mapStore = useMapStore()
 const tooltipRegion = ref(null)
 const tooltipPosition = ref(null)
 const tooltipLatLng = ref(null)
+const PERCEPTUAL_MODAL_PREF_KEY = 'hidePerceptualModelsTooltip'
+const showPerceptualModal = ref(false)
+
+const perceptualTooltipMessage =
+  'Click a domain to view a summary of its dominant hydrological processes. Click a province to explore its regional hydrologic perceptual model, then expand the full details panel to review the dominant processes and physical and hydroclimatic characteristics of the representative region.'
+const perceptualTooltipFooter = `${domainRegions.length} domains · ${provinceRegions.length} provinces`
 
 // Load map store properties as refs for reactivity
 const { mapLoaded } = storeToRefs(mapStore)
@@ -215,6 +230,9 @@ watch(
 )
 
 onMounted(async () => {
+  const hidePerceptualTooltip = localStorage.getItem(PERCEPTUAL_MODAL_PREF_KEY) === 'true'
+  showPerceptualModal.value = !hidePerceptualTooltip
+
   mapStore.leaflet.setMaxBounds(
     L.latLngBounds([
       [5, -170],
@@ -352,6 +370,10 @@ onMounted(async () => {
   mapLoaded.value = true
   loadLegendEntries().then(updateLegend)
 })
+
+const handlePerceptualModalDismiss = (doNotShowAgain) => {
+  localStorage.setItem(PERCEPTUAL_MODAL_PREF_KEY, String(Boolean(doNotShowAgain)))
+}
 </script>
 
 <style scoped>
