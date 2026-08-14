@@ -33,6 +33,12 @@
       <v-col class="map-container pa-0">
         <TheLeafletMap />
 
+        <HydrologicProcessModal
+          v-model="showHydrologicModal"
+          :records-count="currentFilteredData.length"
+          @dismiss="handleHydrologicModalDismiss"
+        />
+
         <div class="bottom-right-container d-flex flex-column align-end ga-2">
           <v-btn
             v-if="mdAndDown"
@@ -56,6 +62,7 @@ import { ref, nextTick, onMounted, watch } from 'vue'
 import FilterDrawer from '@/components/FilterDrawer.vue'
 import DataViewDrawer from '@/components/DataViewDrawer.vue'
 import TheLeafletMap from '@/components/TheLeafletMap.vue'
+import HydrologicProcessModal from '@/components/HydrologicProcessModal.vue'
 import { mdiChevronRight, mdiChevronLeft, mdiInformationOutline } from '@mdi/js'
 import { useMapStore } from '@/stores/map'
 import { useDisplay } from 'vuetify'
@@ -75,10 +82,12 @@ const {
 } = storeToRefs(mapStore)
 
 const { mdAndDown } = useDisplay()
+const HYDROLOGIC_MODAL_PREF_KEY = 'hideHydrologicProcessTooltip'
 
 const showFilterDrawer = ref(true)
 const dataDrawerRef = ref(null)
 const showDataDrawer = ref(!mdAndDown.value)
+const showHydrologicModal = ref(false)
 
 watch(mdAndDown, (val) => {
   showFilterDrawer.value = !val ? true : false
@@ -88,6 +97,9 @@ watch(mdAndDown, (val) => {
 showFilterDrawer.value = !mdAndDown.value
 
 onMounted(async () => {
+  const hideHydrologicTooltip = localStorage.getItem(HYDROLOGIC_MODAL_PREF_KEY) === 'true'
+  showHydrologicModal.value = !hideHydrologicTooltip
+
   await mapStore.fetchPerceptualModelsGeojson()
   const bounds = L.latLngBounds(mapStore.allAvailableCoordinates)
   mapStore.leaflet.setMaxBounds(bounds)
@@ -284,6 +296,10 @@ const toggleFilterDrawer = async () => {
 
 const toggleDataDrawer = () => {
   showDataDrawer.value = !showDataDrawer.value
+}
+
+const handleHydrologicModalDismiss = (doNotShowAgain) => {
+  localStorage.setItem(HYDROLOGIC_MODAL_PREF_KEY, String(Boolean(doNotShowAgain)))
 }
 </script>
 
