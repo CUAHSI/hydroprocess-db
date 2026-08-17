@@ -55,6 +55,7 @@ import CIROHLogo from '@/assets/CIROHLogo.png'
 .cirohimagecontainer {
   margin-right: 8px;
   height: 48px;
+  padding-top: 5px;
 
   :deep(.v-img__img) {
     width: auto;
