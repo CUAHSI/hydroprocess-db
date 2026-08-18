@@ -2,7 +2,7 @@
   <v-container fluid class="about-page px-0">
     <section class="about-shell">
       <div class="about-hero">
-        <div class="about-copy">
+        <div class="about-hero-text">
           <p class="about-eyebrow">PROJECTS, PEOPLE, & PUBLICATIONS</p>
           <h1 class="about-title">About the Hydrological Process Knowledge Hub</h1>
           <p class="about-text">
@@ -77,7 +77,7 @@ import aboutTemplate from '@/assets/justin-mcfadden-unsplash.jpg'
   position: relative;
 }
 
-.about-copy {
+.about-hero-text {
   padding: 0.7rem 1.2rem 0.55rem;
   position: relative;
   z-index: 3;
@@ -218,9 +218,7 @@ import aboutTemplate from '@/assets/justin-mcfadden-unsplash.jpg'
     overflow: hidden;
   }
 
-  .about-copy {
-    position: relative;
-    z-index: 3;
+  .about-hero-text {
     margin-right: 0;
     max-width: 100%;
     padding: 0.75rem 1rem 0.65rem;
@@ -292,8 +290,5 @@ import aboutTemplate from '@/assets/justin-mcfadden-unsplash.jpg'
     min-height: 0;
   }
 
-  .about-copy {
-    padding: 0.75rem 1rem 0.65rem;
-  }
 }
 </style>
