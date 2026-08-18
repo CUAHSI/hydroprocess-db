@@ -9,9 +9,9 @@
     app
   >
     <div class="d-flex align-end full-height pa-2 align-center w-100 position-relative">
-      <v-app-bar-title class="app-bar-title"
-        >Perceptual Models Around the World
-        <div class="text-subtitle-1">McMillan Hydrology Lab</div>
+      <v-app-bar-title class="app-bar-title">
+        <v-img class="logo" :src="hydroprocessLogo" />
+        <span class="title"> Hydroprocess Hub </span>
       </v-app-bar-title>
 
       <v-spacer></v-spacer>
@@ -40,6 +40,7 @@
 </template>
 <script setup>
 import { useDisplay } from 'vuetify'
+import hydroprocessLogo from '@/assets/hydroprocess-logo-v11.png'
 defineProps(['paths'])
 defineEmits(['toggleMobileNav'])
 
@@ -57,6 +58,26 @@ const { mdAndDown } = useDisplay()
 .app-bar-title {
   flex: 1 1 auto;
   min-width: 0;
+  color: #26176f;
+  font-weight: bolder;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.app-bar-title :deep(.v-toolbar-title__placeholder) {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo {
+  width: 50px;
+  flex: 0 0 auto;
+}
+
+.title {
+  white-space: nowrap;
 }
 
 @media (max-width: 960px) {

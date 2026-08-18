@@ -2,11 +2,12 @@
   <v-footer v-if="!$route.meta.hideNavigation" app color="navbar" class="d-flex flex-column">
     <div class="d-flex w-100 position-relative">
       <div class="nsfimagecontainer float-left">
-        <img :src="nfsImgUrl" cover width="100" height="50" class="rounded" />
+        <img :src="nfsImgUrl" width="100" height="50" class="rounded nsf-logo" />
       </div>
-      <div class="sdsuimagecontainer float-left">
-        <v-img :src="sdsuImgUrl" cover width="8rem" class="rounded"></v-img>
+      <div class="cirohimagecontainer float-left">
+        <v-img :src="CIROHLogo" cover width="8rem" class="rounded"></v-img>
       </div>
+      <div class="text">Hydrological Process Knowledge Hub</div>
       <div class="poweredbycontainer">
         <v-card
           href="https://cuahsi.org"
@@ -14,6 +15,8 @@
           rel="noopener"
           target="_blank"
           subtitle="Powered by"
+          color="transparent"
+          elevation="0"
           min-width="
           16rem"
         >
@@ -28,8 +31,8 @@
 
 <script setup>
 import imgUrl from '@/assets/logo.png'
-import sdsuImgUrl from '@/assets/sdsu_logo.png'
 import nfsImgUrl from '@/assets/nsf_logo.png'
+import CIROHLogo from '@/assets/CIROHLogo.png'
 </script>
 
 <style lang="scss" scoped>
@@ -42,14 +45,30 @@ import nfsImgUrl from '@/assets/nsf_logo.png'
   }
 }
 
-.sdsuimagecontainer {
+.text {
+  color: #7a7a7a;
+  margin-top: 8px;
+  margin-left: -50px;
+  font-size: 1.2rem;
+}
+
+.cirohimagecontainer {
   margin-right: 8px;
   height: 48px;
+  padding-top: 5px;
+
+  :deep(.v-img__img) {
+    width: auto;
+  }
 }
 
 .nsfimagecontainer {
   margin-right: -11px;
   height: 48px;
+}
+
+.nsf-logo {
+  object-fit: contain;
 }
 
 .footerdescription {
@@ -68,5 +87,9 @@ import nfsImgUrl from '@/assets/nsf_logo.png'
 .poweredbycontainer {
   position: absolute;
   right: 0;
+
+  :deep(.v-card-subtitle) {
+    color: #606060;
+  }
 }
 </style>
