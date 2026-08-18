@@ -16,27 +16,31 @@
         <div class="hydro-tooltip__header d-flex align-center">
           <div class="d-flex align-center ga-3">
             <img :src="lightbulbTooltip" alt="Lightbulb" class="hydro-tooltip__bulb" />
-            <span class="hydro-tooltip__title">Quick tooltip!</span>
+            <span class="hydro-tooltip__title">{{ title }}</span>
           </div>
         </div>
 
         <p class="hydro-tooltip__text mb-0">
-          Click a point to see its perceptual model, dominant processes, and source citation. Use
-          the Filter Map to narrow down your search.
+          {{ message }}
         </p>
 
         <v-checkbox
+          v-if="showDoNotShowAgain"
           v-model="doNotShowAgain"
           density="compact"
           hide-details
           color="primary"
-          class="hydro-tooltip__checkbox mt-3"
+          class="hydro-tooltip__checkbox mt-2"
           label="Do not show this again"
         />
 
-        <div class="hydro-tooltip__footer d-flex justify-end align-center ga-2 mt-3">
+        <div
+          v-if="resolvedFooterText"
+          class="hydro-tooltip__footer d-flex justify-end align-center ga-2"
+          :class="showDoNotShowAgain ? 'mt-1' : 'mt-1'"
+        >
           <v-icon icon="mdi-layers-triple-outline" size="16" color="blue-grey-lighten-1" />
-          <span>{{ recordsCount }} records</span>
+          <span>{{ resolvedFooterText }}</span>
         </div>
       </v-card-text>
     </v-card>
@@ -44,7 +48,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import lightbulbTooltip from '@/assets/lightbulb-clean.png'
 
 const props = defineProps({
@@ -55,12 +59,33 @@ const props = defineProps({
   recordsCount: {
     type: Number,
     default: 0
+  },
+  title: {
+    type: String,
+    default: 'Quick tooltip!'
+  },
+  message: {
+    type: String,
+    default:
+      'Click a point to see its perceptual model, dominant processes, and source citation. Use the Filter Map to narrow down your search.'
+  },
+  footerText: {
+    type: String,
+    default: ''
+  },
+  showDoNotShowAgain: {
+    type: Boolean,
+    default: true
   }
 })
 
 const emit = defineEmits(['update:modelValue', 'dismiss'])
 
 const doNotShowAgain = ref(false)
+const resolvedFooterText = computed(() => {
+  if (props.footerText) return props.footerText
+  return `${props.recordsCount} records`
+})
 
 watch(
   () => props.modelValue,
@@ -112,7 +137,7 @@ const onModelValueUpdate = (nextValue) => {
 }
 
 .hydro-tooltip__body {
-  padding: 24px 24px 18px;
+  padding: 18px 22px 6px;
 }
 
 .hydro-tooltip__title {
@@ -129,7 +154,7 @@ const onModelValueUpdate = (nextValue) => {
 }
 
 .hydro-tooltip__text {
-  margin-top: 10px;
+  margin-top: 8px;
   color: #5c6670;
   font-size: 1.05rem;
   line-height: 1.45;
@@ -142,6 +167,10 @@ const onModelValueUpdate = (nextValue) => {
 
 .hydro-tooltip__checkbox {
   color: #5c6670;
+}
+
+.hydro-tooltip__checkbox :deep(.v-label) {
+  font-size: 0.9rem;
 }
 
 @media (max-width: 600px) {
