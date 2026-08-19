@@ -224,6 +224,14 @@ import aboutTemplate from '@/assets/justin-mcfadden-unsplash.jpg'
     padding: 0.75rem 1rem 0.65rem;
   }
 
+  .about-eyebrow,
+  .about-title,
+  .about-text {
+    text-shadow:
+      0 0 3px rgba(255, 255, 255, 0.98),
+      0 0 10px rgba(255, 255, 255, 0.92);
+  }
+
   .about-image {
     position: absolute;
     inset: 0;
@@ -289,6 +297,5 @@ import aboutTemplate from '@/assets/justin-mcfadden-unsplash.jpg'
     height: auto;
     min-height: 0;
   }
-
 }
 </style>
