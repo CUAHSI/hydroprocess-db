@@ -32,10 +32,10 @@ import W7 from './assets/Provinces/West/W7.png'
 import W8 from './assets/Provinces/West/W8.png'
 import W9 from './assets/Provinces/West/W9.png'
 
-import NorthernDomain from './assets/Domains/NorthernDomain.PNG'
-import CentralDomain from './assets/Domains/CentralDomain.PNG'
-import EasternDomain from './assets/Domains/EasternDomain.PNG'
-import WesternDomain from './assets/Domains/WesternDomain.PNG'
+import NorthernDomain from './assets/Domains/NorthernDomain.png'
+import CentralDomain from './assets/Domains/CentralDomain.png'
+import EasternDomain from './assets/Domains/EasternDomain.png'
+import WesternDomain from './assets/Domains/WesternDomain.png'
 import IslandDomain from './assets/Domains/IslandDomain.png'
 
 export const domainRegions = [
