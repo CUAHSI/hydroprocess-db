@@ -37,7 +37,6 @@
         <tooltip
           v-if="tooltipRegion"
           :region="tooltipRegion"
-          :position="tooltipPosition"
           :LayerType="
             mapStore.leaflet.hasLayer(wmsLayerDomain)
               ? 'Domain'
@@ -67,8 +66,6 @@ import 'leaflet-groupedlayercontrol/dist/leaflet.groupedlayercontrol.min.css'
 
 const mapStore = useMapStore()
 const tooltipRegion = ref(null)
-const tooltipPosition = ref(null)
-const tooltipLatLng = ref(null)
 const PERCEPTUAL_MODAL_PREF_KEY = 'hidePerceptualModelsTooltip'
 const showPerceptualModal = ref(false)
 
@@ -110,14 +107,8 @@ const legendEntries = {
   province: []
 }
 
-function updateTooltipPosition(latlng) {
-  const point = mapStore.leaflet.latLngToContainerPoint(latlng)
-  tooltipPosition.value = { x: point.x, y: point.y }
-}
-
 function updateLegend() {
   tooltipRegion.value = null //disable tooltip when legend changes
-  tooltipLatLng.value = null
   const domainOn = mapStore.leaflet.hasLayer(wmsLayerDomain)
   const provinceOn = mapStore.leaflet.hasLayer(wmsLayerProvince)
 
@@ -349,17 +340,9 @@ onMounted(async () => {
       } else {
         tooltipRegion.value = null
       }
-      tooltipLatLng.value = event.latlng
-      updateTooltipPosition(event.latlng)
     } catch (error) {
       if (error?.name === 'AbortError') return
     }
-    // update tooltip position when the map is moved
-    mapStore.leaflet.on('move', () => {
-      if (tooltipLatLng.value) {
-        updateTooltipPosition(tooltipLatLng.value)
-      }
-    })
   })
 
   updateLegend()
@@ -377,6 +360,10 @@ const handlePerceptualModalDismiss = (doNotShowAgain) => {
 </script>
 
 <style scoped>
+.map-container {
+  position: relative;
+}
+
 #wms-legend {
   z-index: 1001;
   position: absolute;
