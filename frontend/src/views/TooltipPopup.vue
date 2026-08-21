@@ -6,10 +6,10 @@
         {{ region.name }}<template v-if="LayerType === 'Domain'"> Domain</template>
       </h3>
 
-      <p ref="descriptionRef" class="description">
+      <p v-if="!isDiagramExpanded" class="description">
         {{ LayerType === 'Domain' ? region.summary : region.characteristics }}
       </p>
-      <div v-if="LayerType === 'Province'" class="tags">
+      <div v-if="LayerType === 'Province' && !isDiagramExpanded" class="tags">
         <span class="tag" v-for="(tag, index) in region.processes" :key="index">{{ tag }}</span>
       </div>
 
@@ -18,10 +18,12 @@
           v-if="LayerType === 'Domain' && region.image"
           type="button"
           class="pill-btn full-diagram-btn"
-          @click="openFullDiagram"
+          @click="isDiagramExpanded = !isDiagramExpanded"
         >
-          View full diagram
-          <span class="icon-arrow" aria-hidden="true">&#x2197;</span>
+          {{ isDiagramExpanded ? 'Back' : 'View full diagram' }}
+          <span class="icon-arrow" aria-hidden="true">{{
+            isDiagramExpanded ? '&#x2197;' : '&#x2199;'
+          }}</span>
         </button>
 
         <img
@@ -35,7 +37,7 @@
         />
 
         <button
-          v-if="LayerType === 'Domain'"
+          v-if="LayerType === 'Domain' && !isDiagramExpanded"
           type="button"
           class="details-btn"
           @click="isExpanded = true"
@@ -106,21 +108,16 @@ const DIAGRAM_CITATION =
   'Fan, Y. (2026). Hydrological Process Illustrations of the Five Domains of North America, HydroShare'
 const DIAGRAM_CITATION_URL = 'http://www.hydroshare.org/resource/9c92f62ced274fa69ed19434447c8422'
 
-const descriptionRef = ref(null)
 const isExpanded = ref(false)
+const isDiagramExpanded = ref(false)
 
 watch(
-  () => descriptionRef.value?.textContent,
-  async () => {
+  () => props.region,
+  () => {
     isExpanded.value = false
+    isDiagramExpanded.value = false
   }
 )
-
-const openFullDiagram = () => {
-  if (props.region?.image) {
-    //maximize image
-  }
-}
 </script>
 
 <style scoped>
