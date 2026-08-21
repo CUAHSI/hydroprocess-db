@@ -20,10 +20,10 @@
           class="pill-btn full-diagram-btn"
           @click="isDiagramExpanded = !isDiagramExpanded"
         >
-          {{ isDiagramExpanded ? 'Back' : 'View full diagram' }}
           <span class="icon-arrow" aria-hidden="true">{{
-            isDiagramExpanded ? '&#x2197;' : '&#x2199;'
+            isDiagramExpanded ? '&#x2197;' : '&#x26F6;'
           }}</span>
+          {{ isDiagramExpanded ? 'Back' : 'View full diagram' }}
         </button>
 
         <img
