@@ -32,15 +32,21 @@ import W7 from './assets/Provinces/West/W7.png'
 import W8 from './assets/Provinces/West/W8.png'
 import W9 from './assets/Provinces/West/W9.png'
 
-import northernDomain from './assets/northernDomain.jpg'
+import NorthernDomain from './assets/Domains/NorthernDomain.png'
+import CentralDomain from './assets/Domains/CentralDomain.png'
+import EasternDomain from './assets/Domains/EasternDomain.png'
+import WesternDomain from './assets/Domains/WesternDomain.png'
+import IslandDomain from './assets/Domains/IslandDomain.png'
+
 export const domainRegions = [
   {
     name: 'North',
-    image: northernDomain,
+    image: NorthernDomain,
     summary:
-      'This domain is characterized by cold-region processes and is uniquely vulnerable to climate warming. The main feature is that it is cold. This strongly affects the hydrological conditions in this domain, emphasizing a need to consider water phase, heat deficits, and how frozen conditions affect water pathways through the landscape. Most of the Northern domain is very sparsely populated and large wildfires are common.',
+      'The Northern Domain is defined by cold-region hydrology, where snow, glaciers, river ice, frozen soils, and permafrost strongly control the storage and movement of water. In mountainous areas, elevation and slope aspect influence snowpack, glacier extent, precipitation, and permafrost conditions, creating contrasting hydrologic responses between sunlit and shaded slopes. Across lower elevations, seasonal thaw determines the depth of the active layer, while taliks provide localized pathways for water through or beneath permafrost. Extensive peatlands, lakes, and ice-affected rivers are common in the lowlands, making the region especially sensitive to warming-driven changes in permafrost, snow, ice, and drainage.',
     pdf: '/pdfs/north.pdf',
     content: [
+      //for the expanded panel metadata
       {
         type: 'text',
         text: 'This domain is characterized by cold-region processes and is uniquely vulnerable to climate warming. The main feature is that it is cold. This strongly affects the hydrological conditions in this domain, emphasizing a need to consider water phase, heat deficits, and how frozen conditions affect water pathways through the landscape. Most of the Northern domain is very sparsely populated and large wildfires are common.'
@@ -51,7 +57,7 @@ export const domainRegions = [
       },
       {
         type: 'image',
-        src: northernDomain,
+        src: NorthernDomain,
         caption:
           'Illustration of hydrologic conditions across the northern domain (artist: Kate Olsen)'
       },
@@ -61,7 +67,7 @@ export const domainRegions = [
       },
       {
         type: 'image',
-        src: northernDomain,
+        src: NorthernDomain,
         caption:
           'Summary of key differences in drivers of hydrologic behavior across the Northern domain.'
       },
@@ -78,7 +84,9 @@ export const domainRegions = [
   },
   {
     name: 'West',
-    summary: 'Coming Soon',
+    summary:
+      'The Western Domain is defined by complex topography and geology, with high mountain ranges, steep elevation gradients, and deep sedimentary basins strongly controlling climate, drainage, and groundwater movement. The Coastal Ranges, Sierra Nevada, and Rocky Mountains intercept incoming moisture, producing high orographic precipitation and extensive seasonal snowpacks at higher elevations. Along the coast, warmer snow and rainfall can generate rapid runoff, while colder, higher-elevation snowpacks store water for longer periods and provide an important seasonal water supply. Atmospheric rivers are a major source of precipitation, and their temperature influences the rain-snow boundary, snowmelt, and runoff generation. Water infiltrating mountain landscapes can recharge adjacent basins through shallow and deep pathways, including flow through fractured rock. In the drier interior and southwestern parts of the domain, internally drained basins contain playas and salt lakes, with deep soils and sedimentary deposits contrasting with the shallow soils of mountain areas. Human activities strongly modify these natural processes through reservoirs, irrigated agriculture, groundwater pumping, urban development, and extensive water conveyance, while wildfire increasingly affects vegetation, soils, and runoff across forested landscapes.',
+    image: WesternDomain,
     pdf: '/pdfs/west.pdf',
     content: [
       {
@@ -89,7 +97,9 @@ export const domainRegions = [
   },
   {
     name: 'Central',
-    summary: 'Coming Soon',
+    summary:
+      'The Central Domain is defined by broad plains and prairies, gentle topography, and generally deep soils extending between the Rocky Mountain foothills and the Appalachian Mountains. Much of the domain drains through the Mississippi River and its extensive tributary network, while the Great Lakes form an important surface-water feature in the north. Climate varies from cooler conditions in the north to warmer conditions in the south and from drier landscapes in the west to more humid regions in the east. These gradients interact with soils, geology, and the legacy of past glaciation to create distinct hydrologic settings, including prairie potholes that store water in shallow depressions and areas with shallow groundwater that are managed through extensive tile drainage. Hydrology is heavily modified by agriculture, including irrigated farming in the west, rain-fed agriculture in the east, and lowland rice farming near the Mississippi River. Large reservoirs, groundwater pumping, drainage infrastructure, and river regulation further alter the storage and movement of water. Beneath the landscape, mountain-block recharge and regional groundwater flow connect the bordering uplands with the central plains and major river systems.',
+    image: CentralDomain,
     pdf: '/pdfs/west.pdf',
     content: [
       {
@@ -100,7 +110,9 @@ export const domainRegions = [
   },
   {
     name: 'East',
-    summary: 'Coming Soon',
+    summary:
+      'The Eastern Domain is a humid, densely vegetated region organized around the Appalachian Mountains, Piedmont, and Coastal Plain. Relatively high, year-round precipitation supports broadleaf and secondary forests, rain-fed agriculture, and extensive stream networks, although seasonal energy and water limitations influence runoff generation in different parts of the domain. The old, tectonically stable landscape has developed deep weathered profiles beneath uplands, with shallower materials in valleys and increasingly thick sediments toward the coast. Water moves through both local hillslope pathways and deeper regional groundwater systems before discharging to rivers, estuaries, wetlands, and coastal waters. The Fall Line marks an important transition between the Piedmont and Coastal Plain and has also helped concentrate major cities and infrastructure along an extensive urban corridor. Hydrologic behavior is strongly shaped by a long history of land-use change, including forest clearing, agriculture, soil erosion, urbanization, dams, and other in-stream barriers. Coastal lowlands are additionally influenced by backwater effects, estuarine processes, and exposure to flooding, storm surge, and sea-level rise, while carbonate aquifers and wetlands create distinct hydrologic settings in parts of the southern domain.',
+    image: EasternDomain,
     pdf: '/pdfs/west.pdf',
     content: [
       {
@@ -111,7 +123,9 @@ export const domainRegions = [
   },
   {
     name: 'Islands',
-    summary: 'Coming Soon',
+    summary:
+      'The Island Domain includes Hawaiʻi, Puerto Rico, and the U.S. Virgin Islands, where steep volcanic terrain creates sharp hydrologic contrasts over short distances. Moist oceanic air produces high rainfall, cloud forests, and steep, flashy rivers on windward slopes, while rain-shadow effects create warmer, drier leeward areas with intermittent streams and greater wildfire exposure. Elevation further controls temperature, precipitation, vegetation, and soil development from the coast to the highest peaks. Because these islands are small and surrounded by ocean, groundwater systems are especially important: infiltrating rainfall forms freshwater bodies within the volcanic and weathered subsurface, while coastal pumping and reduced recharge can increase the risk of saltwater intrusion. Surface water and groundwater ultimately discharge to estuaries, nearshore waters, and coral reef ecosystems, closely linking upland hydrology with coastal environments.',
+    image: IslandDomain,
     pdf: '/pdfs/west.pdf',
     content: [
       {
