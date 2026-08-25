@@ -12,6 +12,8 @@ export const ENDPOINTS = {
   spatial_zones: `${APP_API_URL}/filters/spatial_zones`,
   temporal_zones: `${APP_API_URL}/filters/temporal_zones`
 }
+
+//provinces
 import N1 from './assets/Provinces/North/N1.png'
 import N2 from './assets/Provinces/North/N2.png'
 import N3 from './assets/Provinces/North/N3.png'
@@ -22,6 +24,22 @@ import N7 from './assets/Provinces/North/N7.png'
 import N8 from './assets/Provinces/North/N8.png'
 import N9 from './assets/Provinces/North/N9.png'
 import N10 from './assets/Provinces/North/N10.png'
+
+import E1 from './assets/Provinces/East/E1.png'
+import E2 from './assets/Provinces/East/E2.png'
+import E3 from './assets/Provinces/East/E3.png'
+import E4 from './assets/Provinces/East/E4.png'
+import E5 from './assets/Provinces/East/E5.png'
+import E6 from './assets/Provinces/East/E6.png'
+import C1 from './assets/Provinces/Centeral/C1.png'
+import C2 from './assets/Provinces/Centeral/C2.png'
+import C3 from './assets/Provinces/Centeral/C3.png'
+import C4 from './assets/Provinces/Centeral/C4.png'
+import C5 from './assets/Provinces/Centeral/C5.png'
+import C6 from './assets/Provinces/Centeral/C6.png'
+import C7 from './assets/Provinces/Centeral/C7.png'
+import C8 from './assets/Provinces/Centeral/C8.png'
+
 import W1 from './assets/Provinces/West/W1.png'
 import W2 from './assets/Provinces/West/W2.png'
 import W3 from './assets/Provinces/West/W3.png'
@@ -32,6 +50,10 @@ import W7 from './assets/Provinces/West/W7.png'
 import W8 from './assets/Provinces/West/W8.png'
 import W9 from './assets/Provinces/West/W9.png'
 
+import I1 from './assets/Provinces/Islands/I1.png'
+import I2 from './assets/Provinces/Islands/I2.png'
+
+//Domains
 import NorthernDomain from './assets/Domains/NorthernDomain.png'
 import CentralDomain from './assets/Domains/CentralDomain.png'
 import EasternDomain from './assets/Domains/EasternDomain.png'
@@ -139,7 +161,8 @@ export const domainRegions = [
 export const provinceRegions = [
   {
     province: 'N01',
-    name: 'N01-Tundra',
+    type: 'North Domain',
+    name: 'Tundra',
     characteristics: 'Continuous permafrost and seasonal thaw of upper layers, low vegetation.',
     processes: ['Snow accumulation/melt', 'Overland flow over frozen ground', 'River ice'],
     image: N1,
@@ -147,7 +170,8 @@ export const provinceRegions = [
   },
   {
     province: 'N02',
-    name: 'N02-Alaska Lowlands',
+    type: 'North Domain',
+    name: 'Alaska Lowlands',
     characteristics:
       'Discontinuous permafrost, seasonal thaw and complex surface-groundwater connections through taliks.',
     processes: ['Wetlands', 'Shallow water tables', 'Lake–river connectivity'],
@@ -156,7 +180,8 @@ export const provinceRegions = [
   },
   {
     province: 'N03',
-    name: 'N03-Northern High Mountains',
+    type: 'North Domain',
+    name: 'Northern High Mountains',
     characteristics: 'Discontinuous permafrost, glaciers and very high precipitation.',
     processes: ['Snow accumulation/melt', 'Glacier melt', 'Rapid runoff'],
     image: N3,
@@ -164,7 +189,8 @@ export const provinceRegions = [
   },
   {
     province: 'N04',
-    name: 'N04-Northern Low Mountains',
+    type: 'North Domain',
+    name: 'Northern Low Mountains',
     characteristics:
       'Permafrost variability, shallow soils, lower precipitation and taller vegetation than N3.',
     processes: ['Snow accumulation/melt', 'subsurface flow'],
@@ -173,7 +199,8 @@ export const provinceRegions = [
   },
   {
     province: 'N05',
-    name: 'N05-Mackenzie Plain',
+    type: 'North Domain',
+    name: 'Mackenzie Plain',
     characteristics:
       'Discontinuous permafrost, large lakes, organic soils, dry due to rain shadow of N4.',
     processes: ['Plateau-wetland systems', 'bogs', 'channel fens'],
@@ -182,7 +209,8 @@ export const provinceRegions = [
   },
   {
     province: 'N06',
-    name: 'N06-Taiga Shield',
+    type: 'North Domain',
+    name: 'Taiga Shield',
     characteristics: 'Discontinuous permafrost, thin soils with exposed bedrock, wetlands.',
     processes: ['Shallow flow', 'Bedrock control', 'Wetlands', 'Thermokarst', 'Limited Storage'],
     image: N6,
@@ -190,7 +218,8 @@ export const provinceRegions = [
   },
   {
     province: 'N07',
-    name: 'N07-Hudson Plain',
+    type: 'North Domain',
+    name: 'Hudson Plain',
     characteristics: 'Discontinuous permafrost, organic soils, extensive wetlands, low and flat.',
     processes: ['Wetland storage', 'Slow drainage'],
     image: N7,
@@ -198,7 +227,8 @@ export const provinceRegions = [
   },
   {
     province: 'N08',
-    name: 'N08-Boreal Shield',
+    type: 'North Domain',
+    name: 'Boreal Shield',
     characteristics:
       'Sporadic permafrost, thin soils with exposed bedrock, denser vegetation than N6.',
     processes: ['Fill-and-spill lakes (bedrock-lake systems)', 'Lateral flow'],
@@ -207,7 +237,8 @@ export const provinceRegions = [
   },
   {
     province: 'N09',
-    name: 'N09-Boreal Plain',
+    type: 'North Domain',
+    name: 'Boreal Plain',
     characteristics:
       'Seasonally frozen ground, lower elevation, deeper soils, dry, some agriculture reliant on surface water.',
     processes: ['Groundwater flow', 'recharge/storage'],
@@ -216,7 +247,8 @@ export const provinceRegions = [
   },
   {
     province: 'N10',
-    name: 'N10-Great Lakes Forests',
+    type: 'North Domain',
+    name: 'Great Lakes Forests',
     characteristics:
       'Seasonally frozen ground, dense forest cover, southern edge of transition zone from N6 to N8 to N10.',
     processes: ['Lake-groundwater interaction', 'evapotranspiration'],
@@ -224,7 +256,8 @@ export const provinceRegions = [
   },
   {
     province: 'W01',
-    name: 'W01-British Columbia Coastal Mountains',
+    type: ' West Domain',
+    name: 'British Columbia Coastal Mountains',
     characteristics:
       'Very high precipitation, extensive ice cover on peaks, classic mountain environment (bare peaks, forested slopes and valleys)',
     processes: ['Rain-fed near-surface groundwater', 'shallow flow paths', 'surface storage'],
@@ -232,7 +265,8 @@ export const provinceRegions = [
   },
   {
     province: 'W02',
-    name: 'W02-Pacific Forests',
+    type: ' West Domain',
+    name: 'Pacific Forests',
     characteristics:
       'Very high precipitation, densely forested with relatively high population density compared to most other provinces in this domain. Deep soils.',
     processes: ['Seasonal rain feeds groundwater', 'evapotranspiration', 'subsurface flow'],
@@ -240,7 +274,8 @@ export const provinceRegions = [
   },
   {
     province: 'W03',
-    name: 'W03-Northern Intermontane Plateaus',
+    type: ' West Domain',
+    name: 'Northern Intermontane Plateaus',
     characteristics:
       'Intermediate elevation, volcanic and sedimentary formations, major aquifers. Dry due to rain shadows of W1 and W5, variable land cover and subsurface along three main plateaus.',
     processes: ['Groundwater storage in bedrock/regolith', 'delayed flow', 'irrigation support'],
@@ -248,7 +283,8 @@ export const provinceRegions = [
   },
   {
     province: 'W04',
-    name: 'W04-Western Mountains',
+    type: ' West Domain',
+    name: 'Western Mountains',
     characteristics:
       'High elevation, cold, seasonal snow. Inland mountain ranges are much drier than W1 & W5, classic mountain environments (bare peaks, forested slopes and valleys)',
     processes: ['Snow accumulation/melt', 'sublimation', 'rapid runoff'],
@@ -256,7 +292,8 @@ export const provinceRegions = [
   },
   {
     province: 'W05',
-    name: 'W05-Pacific Mountains',
+    type: ' West Domain',
+    name: 'Pacific Mountains',
     characteristics:
       'Southern continuation of W1, becoming warmer and wetter. Extensive forest cover with very limited permanent snow/ice.<br>Strong elevation gradients, mixed lithology, high snow accumulation.',
     processes: ['Snowmelt-driven flow', 'subsurface storage', 'mountain block recharge'],
@@ -264,7 +301,8 @@ export const provinceRegions = [
   },
   {
     province: 'W06',
-    name: 'W06-Basin and Range',
+    type: ' West Domain',
+    name: 'Basin and Range',
     characteristics:
       'Arid to semi-arid basins with internal drainage. Very dry with large local heterogeneity due to topographic relief, mostly internal draining, limited tall vegetation.',
     processes: ['Local flows from mountains', 'groundwater recharge in basins'],
@@ -272,7 +310,8 @@ export const provinceRegions = [
   },
   {
     province: 'W07',
-    name: 'W07-California Coast',
+    type: ' West Domain',
+    name: 'California Coast',
     characteristics:
       'Mediterranean climate, strong seasonality, complex subsurface. Dry and warm, locally very densely populated, extensive irrigated agriculture in the Central Valley.',
     processes: [
@@ -284,7 +323,8 @@ export const provinceRegions = [
   },
   {
     province: 'W08',
-    name: 'W08-Southern Deserts',
+    type: ' West Domain',
+    name: 'Southern Deserts',
     characteristics:
       'Arid climate, deep groundwater, low runoff efficiency. Very dry and warm with predominantly low vegetation. A number of large settlements heavily reliant on upstream water sources.',
     processes: ['Infiltration excess flow', 'channel losses', 'deep groundwater recharge'],
@@ -292,7 +332,8 @@ export const provinceRegions = [
   },
   {
     province: 'W09',
-    name: 'W09-Colorado Plateau',
+    type: 'West Domain',
+    name: 'Colorado Plateau',
     characteristics:
       'Semi-arid plateau, monsoon influence, limited runoff efficiency. Dry and warm, predominantly low vegetation but with strong local heterogeneity.',
     processes: ['Local flows', 'infiltration excess', 'limited runoff generation'],
@@ -300,114 +341,130 @@ export const provinceRegions = [
   },
   {
     province: 'C01',
-    name: 'C01-Northern Prairies',
+    type: 'Central Domain',
+    name: 'Northern Prairies',
     characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: C1,
+    processes: ['Coming soon'],
+    image: C1
   },
   {
     province: 'C02',
-    name: 'C02-Norther Great Plains',
+    type: 'Central Domain',
+    name: 'Northern Great Plains',
     characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: C2,
+    processes: ['Coming soon'],
+    image: C2
   },
   {
     province: 'C03',
-    name: 'C03-High Plains Aquifer',
+    type: 'Central Domain',
+    name: 'High Plains Aquifer',
     characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: C3,
+    processes: ['Coming soon'],
+    image: C3
   },
   {
     province: 'C04',
-    name: 'C04-Southern Great Plains',
+    type: 'Central Domain',
+    name: 'Southern Great Plains',
     characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: C4,
+    processes: ['Coming soon'],
+    image: C4
   },
   {
     province: 'C05',
-    name: 'C05-Southern Coastal Plains',
+    type: 'Central Domain',
+    name: 'Southern Coastal Plains',
     characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: C5,
+    processes: ['Coming soon'],
+    image: C5
   },
   {
     province: 'C06',
-    name: 'C06-Mississippi Plain',
+    type: 'Central Domain',
+    name: 'Mississippi Plain',
     characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: C6,
+    processes: ['Coming soon'],
+    image: C6
   },
   {
     province: 'C07',
-    name: 'C07-Unglaciated Central Lowlands',
+    type: 'Central Domain',
+    name: 'Unglaciated Central Lowlands',
     characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: C7,
+    processes: ['Coming soon'],
+    image: C7
   },
   {
     province: 'C08',
-    name: 'C08-Glaciated Central Lowlands',
+    type: 'Central Domain',
+    name: 'Glaciated Central Lowlands',
     characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: C8,
+    processes: ['Coming soon'],
+    image: C8
   },
   {
     province: 'E01',
-    name: 'E01-North Atlantic Coast',
+    type: 'Eastern Domain',
+    name: 'North Atlantic Coast',
     characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: E1,
+    processes: ['Coming soon'],
+    image: E1
   },
   {
     province: 'E02',
-    name: 'E02-Appalachian Mountains and Plateaus',
+    type: 'Eastern Domain',
+    name: 'Appalachian Mountains and Plateaus',
     characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: E2,
+    processes: ['Coming soon'],
+    image: E2
   },
   {
     province: 'E03',
-    name: 'E03-Applachian Piedmont',
+    type: 'Eastern Domain',
+    name: 'Applachian Piedmont',
     characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: E3,
+    processes: ['Coming soon'],
+    image: E3
   },
   {
     province: 'E04',
-    name: 'E04-Eastern Coastal Plain',
+    type: 'Eastern Domain',
+    name: 'Eastern Coastal Plain',
     characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: E4,
+    processes: ['Coming soon'],
+    image: E4
   },
   {
     province: 'E05',
-    name: 'E05-Everglades',
+    type: 'Eastern Domain',
+    name: 'Everglades',
     characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: E5,
+    processes: ['Coming soon'],
+    image: E5
   },
   {
     province: 'E06',
-    name: 'E06-Eastern Plateaus',
+    type: 'Eastern Domain',
+    name: 'Eastern Plateaus',
     characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: E6,
+    processes: ['Coming soon'],
+    image: E6
   },
   {
     province: 'I01',
-    name: 'I01-Hawaiian Islands',
+    type: 'Islands',
+    name: 'Hawaiian Islands',
     characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: I1,
+    processes: ['Coming soon'],
+    image: I1
   },
   {
     province: 'I02',
-    name: 'I02-Puerto Rico',
+    type: 'Islands',
+    name: 'Puerto Rico',
     characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: I2,
+    processes: ['Coming soon'],
+    image: I2
   }
 ]
