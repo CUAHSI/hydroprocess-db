@@ -2,9 +2,13 @@
   <div v-show="!isExpanded && region" class="tooltip-overlay">
     <div class="tooltip-panel">
       <button class="close-btn" type="button" @click="$emit('close')">&#x2715;</button>
-      <h3 class="tooltip-title">
-        {{ region.name }}<template v-if="LayerType === 'Domain'"> Domain</template>
-      </h3>
+      <template v-if="LayerType === 'Domain'">
+        <h3 class="tooltip-title">{{ region.name }} Domain</h3>
+      </template>
+      <template v-else>
+        <div class="province-eyebrow">{{ region.province }} &middot; {{ region.type }}</div>
+        <h3 class="tooltip-title">{{ region.name }}</h3>
+      </template>
 
       <p v-if="!isDiagramExpanded" class="description">
         {{ LayerType === 'Domain' ? region.summary : region.characteristics }}
@@ -208,6 +212,16 @@ h3,
   font-size: 22px;
   font-weight: 700;
   color: #1b2a6b;
+}
+
+.province-eyebrow {
+  flex-shrink: 0;
+  margin-bottom: 4px;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #4b5563;
 }
 
 .tooltip-panel .description {
