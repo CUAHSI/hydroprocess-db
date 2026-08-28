@@ -18,27 +18,30 @@
       </div>
 
       <div class="content-panel">
-        <button
-          v-if="LayerType === 'Domain' && region.image"
-          type="button"
-          class="pill-btn full-diagram-btn"
-          @click="isDiagramExpanded = !isDiagramExpanded"
-        >
-          <span class="icon-arrow" aria-hidden="true">{{
-            isDiagramExpanded ? '&#x2197;' : '&#x26F6;'
-          }}</span>
-          {{ isDiagramExpanded ? 'Back' : 'View full diagram' }}
-        </button>
+        <div v-if="region.image" class="content-panel-header">
+          <button
+            type="button"
+            class="pill-btn full-diagram-btn"
+            @click="isDiagramExpanded = !isDiagramExpanded"
+          >
+            <span class="icon-arrow" aria-hidden="true">{{
+              isDiagramExpanded ? '&#x2197;' : '&#x26F6;'
+            }}</span>
+            {{ isDiagramExpanded ? 'Back' : 'View full diagram' }}
+          </button>
+        </div>
 
-        <img
-          v-if="region.image"
-          :src="region.image"
-          :alt="region.name"
-          :class="{
-            'domain-image': LayerType === 'Domain',
-            'province-image': LayerType === 'Province'
-          }"
-        />
+        <div class="content-panel-body">
+          <img
+            v-if="region.image"
+            :src="region.image"
+            :alt="region.name"
+            :class="{
+              'domain-image': LayerType === 'Domain',
+              'province-image': LayerType === 'Province'
+            }"
+          />
+        </div>
 
         <button
           v-if="LayerType === 'Domain' && !isDiagramExpanded"
@@ -51,12 +54,24 @@
         </button>
       </div>
 
-      <p v-if="LayerType === 'Domain'" class="citation">
-        Diagram: {{ DIAGRAM_CITATION }}<br />
-        <a :href="DIAGRAM_CITATION_URL" target="_blank" rel="noopener">{{
-          DIAGRAM_CITATION_URL
-        }}</a>
-      </p>
+      <div class="footer-row">
+        <p class="citation">
+          Diagram: {{ DIAGRAM_CITATION }}<br />
+          <a :href="DIAGRAM_CITATION_URL" target="_blank" rel="noopener">{{
+            DIAGRAM_CITATION_URL
+          }}</a>
+        </p>
+
+        <button
+          v-if="LayerType === 'Province' && !isDiagramExpanded"
+          type="button"
+          class="details-btn details-btn-inline"
+          @click="isExpanded = true"
+        >
+          View details
+          <span class="icon-arrow" aria-hidden="true">&#x2192;</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -293,14 +308,27 @@ h3,
   background: #16215a;
 }
 
+.details-btn-inline {
+  position: static;
+  flex-shrink: 0;
+}
+
 .icon-arrow {
   font-size: 14px;
   line-height: 1;
 }
 
-.citation {
+.footer-row {
   flex-shrink: 0;
   margin-top: 12px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.citation {
+  flex-shrink: 0;
   font-size: 11px;
   line-height: 1.5;
   color: #6b7280;
