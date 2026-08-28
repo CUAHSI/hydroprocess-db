@@ -259,17 +259,28 @@ h3,
   min-height: 0;
   margin-top: 16px;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
   background: white;
   border-radius: 12px;
   padding: 20px;
 }
 
+.content-panel-header {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.content-panel-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .pill-btn {
-  position: absolute;
-  top: 16px;
-  right: 16px;
   display: flex;
   align-items: center;
   gap: 6px;
