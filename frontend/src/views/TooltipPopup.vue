@@ -56,10 +56,13 @@
 
       <div class="footer-row">
         <p class="citation">
-          Diagram: {{ DIAGRAM_CITATION }}<br />
-          <a :href="DIAGRAM_CITATION_URL" target="_blank" rel="noopener">{{
-            DIAGRAM_CITATION_URL
-          }}</a>
+          Diagram: {{ LayerType === 'Domain' ? DOMAIN_CITATION : PROVINCE_CITATION }}<br />
+          <a
+            :href="LayerType === 'Domain' ? DOMAIN_CITATION_URL : PROVINCE_CITATION_URL"
+            target="_blank"
+            rel="noopener"
+            >{{ LayerType === 'Domain' ? DOMAIN_CITATION_URL : PROVINCE_CITATION_URL }}
+          </a>
         </p>
 
         <button
@@ -123,9 +126,13 @@ const props = defineProps({
 
 defineEmits(['close'])
 
-const DIAGRAM_CITATION =
+const DOMAIN_CITATION =
   'Fan, Y. (2026). Hydrological Process Illustrations of the Five Domains of North America, HydroShare'
-const DIAGRAM_CITATION_URL = 'http://www.hydroshare.org/resource/9c92f62ced274fa69ed19434447c8422'
+const DOMAIN_CITATION_URL = 'http://www.hydroshare.org/resource/9c92f62ced274fa69ed19434447c8422'
+
+const PROVINCE_CITATION =
+  'McMillan, H. (2026). Hydrological Perceptual Models of the 35 Provinces of North America, HydroShare,'
+const PROVINCE_CITATION_URL = 'http://www.hydroshare.org/resource/74f92d07ad204fa7bcc49ccf29b11510'
 
 const isExpanded = ref(false)
 const isDiagramExpanded = ref(false)

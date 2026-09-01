@@ -380,7 +380,7 @@ export const provinceRegions = [
   {
     province: 'W03',
     type: ' West Domain',
-    name: 'Northern Intermontane Plateaus',
+    name: 'Western Interior Plateaus',
     characteristics:
       'Drier. Groundwater storage in major volcanic/sedimentary aquifers supports sustained flows and irrigation.',
     processes: [
@@ -483,7 +483,7 @@ export const provinceRegions = [
     type: 'Central Domain',
     name: 'Northern Prairies',
     characteristics:
-      'xSurface depressions fill with snowmelt, then connect and spill to generate river flows. Many areas were drained for agriculture.',
+      'Surface depressions fill with snowmelt, then connect and spill to generate river flows. Many areas were drained for agriculture.',
     processes: [
       'Dominant vertical processes (ET, recharge) in flat terrain',
       'Recharge controlled by clay content',
