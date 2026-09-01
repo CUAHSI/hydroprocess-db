@@ -2,39 +2,54 @@
   <v-container fluid class="pa-0">
     <home-view></home-view>
 
+    <div class="about-shell">
+      <section class="about-hero">
+        <div class="about-hero-text">
+          <p class="about-eyebrow">PROJECTS, PEOPLE, &amp; PUBLICATIONS</p>
+          <h1 class="about-title">About the Hydrological Process Knowledge Hub</h1>
+          <p class="about-text">
+            A shared platform for exploring hydrologic process knowledge across site, regional, and
+            continental scales. Below you can find the teams, funding resources, publications, and
+            data citations behind each project.
+          </p>
+        </div>
+
+        <v-img
+          :src="aboutHeroImage"
+          alt="Hydrologic Process Knowledge Hub overview"
+          class="about-hero-image"
+          cover
+        />
+      </section>
+
+      <section class="about-citation">
+        <h2 class="citation-title">
+          <v-icon class="citation-title-icon" :icon="mdiFileDocumentOutline" size="18" />
+          How to cite
+        </h2>
+        <p class="citation-lead">
+          Journal articles document the scientific methods; HydroShare hosts the reusable maps,
+          illustrations, and text shown in the tool. Choose the citation that matches what you are
+          using.
+        </p>
+
+        <div class="citation-grid">
+          <article class="citation-card">
+            <h3>Citing the science</h3>
+            <p>Cite the journal articles listed under each project tab below.</p>
+          </article>
+
+          <article class="citation-card">
+            <h3>Reusing materials from this site</h3>
+            <p>
+              Images, geospatial feature boundaries, popup or sidebar text come from HydroShare.
+            </p>
+          </article>
+        </div>
+      </section>
+    </div>
+
     <div class="pa-4">
-      <div class="useful-links-wrapper mb-5">
-        <h3>Hydrologic Process Knowledge Platform</h3>
-        <p>
-          This project enables users to view and search a hydrologic process knowledge database
-          derived from perceptual models of research watersheds around the globe (McMillan et al.,
-          2023, 2025). The relational database captures extensive knowledge from hundreds of
-          experimental watersheds using standardized workflows and a hierarchical Hydrologic Process
-          Taxonomy to ensure consistency and data quality (McMillan, 2022).
-        </p>
-        <p>
-          Potential use cases for this platform include, but are not limited to, exploring global
-          patterns of hydrologic function and analyzing how dominant processes relate to physical
-          watershed features. The database can also support evaluation of next-generation,
-          continental-scale hydrologic models, which often lack the process-level data needed to
-          inform model structure.
-        </p>
-      </div>
-
-      <div class="useful-links-wrapper mb-5">
-        <h3>Hydrologic Processes</h3>
-        <p>
-          Hydrologic processes describe the flow paths and mechanisms that move water from the
-          canopy and land surface to its release into streams, deep groundwater or
-          evapotranspiration. Hydrologists often communicate process knowledge using a perceptual
-          model, a qualitative summary of our knowledge about the hydrologic system presented as a
-          schematic figure or a text description. Perceptual models are one of the best tools that
-          the hydrologic community has to organize hydrologic knowledge, test hypotheses about
-          runoff generation, design accurate computer models to predict river flows, and identify
-          knowledge gaps.
-        </p>
-      </div>
-
       <div class="useful-links-wrapper mb-5">
         <h3>Funding</h3>
         <p>
@@ -139,7 +154,8 @@
 </template>
 
 <script setup>
-import { mdiOpenInNew } from '@mdi/js'
+import { mdiOpenInNew, mdiFileDocumentOutline } from '@mdi/js'
+import aboutHeroImage from '@/assets/landing section.png'
 import hilary from '@/assets/hilary.jpg'
 import ryoko from '@/assets/ryoko.jpg'
 import tony from '@/assets/tony.jpg'
@@ -195,5 +211,142 @@ const members = [
   max-width: 950px;
   margin-left: auto;
   margin-right: auto;
+}
+
+.about-shell {
+  width: min(1024px, calc(100% - 2rem));
+  margin: 0 auto;
+  background: #ffffff;
+}
+
+.about-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+  min-height: 260px;
+  position: relative;
+  background: #ffffff;
+}
+
+.about-hero-text {
+  padding: 40px 32px 32px 40px;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.about-eyebrow {
+  margin: 0 0 8px;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  color: #6b7280;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.about-title {
+  margin: 0 0 12px;
+  font-size: clamp(1.1rem, 1.9vw, 1.4rem);
+  line-height: 1.25;
+  color: #26176f;
+  font-weight: 700;
+}
+
+.about-text {
+  margin: 0;
+  color: #1f2329;
+  line-height: 1.5;
+  font-size: 1rem;
+}
+
+.about-hero-image {
+  height: 100%;
+  min-height: 260px;
+}
+
+.about-citation {
+  padding: 40px 45px;
+  border-top: 1px solid #d7e4f2;
+  background: #eef4fb;
+}
+
+.citation-title {
+  margin: 0 0 8px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  color: #26176f;
+}
+
+.citation-title-icon {
+  margin-right: 10px;
+  color: #26176f;
+}
+
+.citation-lead {
+  margin: 0 0 20px;
+  color: #2b2b31;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  max-width: 900px;
+}
+
+.citation-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 45px;
+}
+
+.citation-card {
+  background: #d7e4f2;
+  border: 0;
+  padding: 16px 20px;
+}
+
+.citation-card h3 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  color: #14306d;
+  font-weight: 700;
+}
+
+.citation-card p {
+  margin: 0;
+  color: #33363d;
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 900px) {
+  .about-hero {
+    display: block;
+    position: relative;
+    min-height: 220px;
+    overflow: hidden;
+  }
+
+  .about-hero-text {
+    padding: 24px 20px;
+  }
+
+  .about-hero-image {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    z-index: 1;
+    opacity: 0.25;
+  }
+
+  .about-citation {
+    padding: 24px 20px;
+  }
+
+  .citation-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 }
 </style>
