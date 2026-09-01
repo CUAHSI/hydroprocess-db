@@ -12,6 +12,8 @@ export const ENDPOINTS = {
   spatial_zones: `${APP_API_URL}/filters/spatial_zones`,
   temporal_zones: `${APP_API_URL}/filters/temporal_zones`
 }
+
+//provinces
 import N1 from './assets/Provinces/North/N1.png'
 import N2 from './assets/Provinces/North/N2.png'
 import N3 from './assets/Provinces/North/N3.png'
@@ -22,6 +24,22 @@ import N7 from './assets/Provinces/North/N7.png'
 import N8 from './assets/Provinces/North/N8.png'
 import N9 from './assets/Provinces/North/N9.png'
 import N10 from './assets/Provinces/North/N10.png'
+
+import E1 from './assets/Provinces/East/E1.png'
+import E2 from './assets/Provinces/East/E2.png'
+import E3 from './assets/Provinces/East/E3.png'
+import E4 from './assets/Provinces/East/E4.png'
+import E5 from './assets/Provinces/East/E5.png'
+import E6 from './assets/Provinces/East/E6.png'
+import C1 from './assets/Provinces/Centeral/C1.png'
+import C2 from './assets/Provinces/Centeral/C2.png'
+import C3 from './assets/Provinces/Centeral/C3.png'
+import C4 from './assets/Provinces/Centeral/C4.png'
+import C5 from './assets/Provinces/Centeral/C5.png'
+import C6 from './assets/Provinces/Centeral/C6.png'
+import C7 from './assets/Provinces/Centeral/C7.png'
+import C8 from './assets/Provinces/Centeral/C8.png'
+
 import W1 from './assets/Provinces/West/W1.png'
 import W2 from './assets/Provinces/West/W2.png'
 import W3 from './assets/Provinces/West/W3.png'
@@ -32,6 +50,10 @@ import W7 from './assets/Provinces/West/W7.png'
 import W8 from './assets/Provinces/West/W8.png'
 import W9 from './assets/Provinces/West/W9.png'
 
+import I1 from './assets/Provinces/Islands/I1.png'
+import I2 from './assets/Provinces/Islands/I2.png'
+
+//Domains
 import NorthernDomain from './assets/Domains/NorthernDomain.png'
 import CentralDomain from './assets/Domains/CentralDomain.png'
 import EasternDomain from './assets/Domains/EasternDomain.png'
@@ -139,275 +161,554 @@ export const domainRegions = [
 export const provinceRegions = [
   {
     province: 'N01',
-    name: 'N01-Tundra',
-    characteristics: 'Continuous permafrost and seasonal thaw of upper layers, low vegetation.',
-    processes: ['Snow accumulation/melt', 'Overland flow over frozen ground', 'River ice'],
+    type: 'North Domain',
+    name: 'Tundra',
+    characteristics:
+      'Continuous permafrost with flow in seasonally thawed upper layers. Snow accumulation and melt. Low vegetation.',
+    processes: [
+      'Canopy interception and sublimation/ET',
+      'Snowmelt energy balance',
+      'Seasonal subsurface freeze-thaw controls flows, drainage',
+      'River ice processes',
+      'Blowing snow redistribution and sublimation',
+      'Overland/shallow perched flow in active layer over permafrost',
+      'Themokarst and taliks',
+      'Shrubification/vegetation shifts'
+    ],
     image: N1,
     pdf: '/pdfs/north.pdf'
   },
   {
     province: 'N02',
-    name: 'N02-Alaska Lowlands',
+    type: 'North Domain',
+    name: 'Alaska Lowlands',
     characteristics:
-      'Discontinuous permafrost, seasonal thaw and complex surface-groundwater connections through taliks.',
-    processes: ['Wetlands', 'Shallow water tables', 'Lake–river connectivity'],
+      'Discontinuous permafrost and taliks, lakes and wetlands with complex connectivity of lakes-rivers-groundwater.',
+    processes: [
+      'Canopy interception and sublimation/ET',
+      'Snowmelt energy balance',
+      'Seasonal subsurface freeze-thaw controls flows, drainage',
+      'River ice processes',
+      'Blowing snow redistribution and sublimation',
+      'Overland/shallow perched flow in active layer over permafrost',
+      'bogs and fens, wetland complexes',
+      'Themokarst and taliks',
+      'Surface water-groundwater interactions'
+    ],
     image: N2,
     pdf: '/pdfs/west.pdf'
   },
   {
     province: 'N03',
-    name: 'N03-Northern High Mountains',
-    characteristics: 'Discontinuous permafrost, glaciers and very high precipitation.',
-    processes: ['Snow accumulation/melt', 'Glacier melt', 'Rapid runoff'],
+    type: 'North Domain',
+    name: 'Northern High Mountains',
+    characteristics:
+      'Discontinuous permafrost, glaciers and very high precipitation (rain and flow) with rapid runoff during the warm season.',
+    processes: [
+      'Canopy interception and sublimation/ET',
+      'Snowmelt energy balance',
+      'Seasonal subsurface freeze-thaw controls flows, drainage',
+      'River ice processes',
+      'Blowing snow redistribution and sublimation',
+      'Overland/shallow perched flow in active layer over permafrost',
+      'Aspect controls discontinuous permafrost',
+      'Slow groundwater flow pathway below permafrost',
+      'Glacier processes'
+    ],
     image: N3,
     pdf: '/pdfs/central.pdf'
   },
   {
     province: 'N04',
-    name: 'N04-Northern Low Mountains',
+    type: 'North Domain',
+    name: 'Northern Low Mountains',
     characteristics:
-      'Permafrost variability, shallow soils, lower precipitation and taller vegetation than N3.',
-    processes: ['Snow accumulation/melt', 'subsurface flow'],
+      'Variable permafrost with aspect creating subsurface flow paths, shallow soils, lower precipitation and taller vegetation than N03.',
+    processes: [
+      'Canopy interception and sublimation/ET',
+      'Snowmelt energy balance',
+      'Seasonal subsurface freeze-thaw controls flows, drainage',
+      'River ice processes',
+      'Blowing snow redistribution and sublimation',
+      'Overland/shallow perched flow in active layer over permafrost',
+      'Aspect controls discontinuous permafrost',
+      'Slow groundwater flow pathway below permafrost'
+    ],
     image: N4,
     pdf: '/pdfs/east.pdf'
   },
   {
     province: 'N05',
-    name: 'N05-Mackenzie Plain',
+    type: 'North Domain',
+    name: 'Mackenzie Plain',
     characteristics:
-      'Discontinuous permafrost, large lakes, organic soils, dry due to rain shadow of N4.',
-    processes: ['Plateau-wetland systems', 'bogs', 'channel fens'],
+      'Discontinuous permafrost. Large lakes, wetland systems, bogs and channel fens on organic soils.',
+    processes: [
+      'Canopy interception and sublimation/ET',
+      'Snowmelt energy balance',
+      'Seasonal subsurface freeze-thaw controls flows, drainage',
+      'River ice processes',
+      'Blowing snow redistribution and sublimation',
+      'Overland/shallow perched flow in active layer over permafrost',
+      'bogs and fens, wetland complexes',
+      'Themokarst and taliks',
+      'Fill-and-spill lake systems'
+    ],
     image: N5,
     pdf: '/pdfs/north.pdf'
   },
   {
     province: 'N06',
-    name: 'N06-Taiga Shield',
-    characteristics: 'Discontinuous permafrost, thin soils with exposed bedrock, wetlands.',
-    processes: ['Shallow flow', 'Bedrock control', 'Wetlands', 'Thermokarst', 'Limited Storage'],
+    type: 'North Domain',
+    name: 'Taiga Shield',
+    characteristics:
+      'Discontinuous permafrost, shallow flow over thin soils and exposed bedrock, lakes.',
+    processes: [
+      'Canopy interception and sublimation/ET',
+      'Snowmelt energy balance',
+      'Seasonal subsurface freeze-thaw controls flows, drainage',
+      'River ice processes',
+      'Blowing snow redistribution and sublimation',
+      'Overland/shallow perched flow in active layer over permafrost',
+      'Themokarst and taliks',
+      'Fill-and-spill lake systems'
+    ],
     image: N6,
     pdf: '/pdfs/west.pdf'
   },
   {
     province: 'N07',
-    name: 'N07-Hudson Plain',
-    characteristics: 'Discontinuous permafrost, organic soils, extensive wetlands, low and flat.',
-    processes: ['Wetland storage', 'Slow drainage'],
+    type: 'North Domain',
+    name: 'Hudson Plain',
+    characteristics:
+      'Discontinuous permafrost and taliks. Low and flat with deep organic soils. Extensive slow-draining wetlands store water.',
+    processes: [
+      'Canopy interception and sublimation/ET',
+      'Snowmelt energy balance',
+      'Seasonal subsurface freeze-thaw controls flows, drainage',
+      'River ice processes',
+      'Blowing snow redistribution and sublimation',
+      'Overland/shallow perched flow in active layer over permafrost',
+      'bogs and fens, wetland complexes',
+      'Themokarst and taliks'
+    ],
     image: N7,
     pdf: '/pdfs/central.pdf'
   },
   {
     province: 'N08',
-    name: 'N08-Boreal Shield',
+    type: 'North Domain',
+    name: 'Boreal Shield',
     characteristics:
-      'Sporadic permafrost, thin soils with exposed bedrock, denser vegetation than N6.',
-    processes: ['Fill-and-spill lakes (bedrock-lake systems)', 'Lateral flow'],
+      'Sporadic permafrost, lateral flow over thin soils and exposed bedrock, wetlands and lakes. Denser vegetation than N06.',
+    processes: [
+      'Canopy interception and sublimation/ET',
+      'Snowmelt energy balance',
+      'Seasonal subsurface freeze-thaw controls flows, drainage',
+      'River ice processes',
+      'Blowing snow redistribution and sublimation',
+      'bogs and fens, wetland complexes',
+      'Fill-and-spill lake systems'
+    ],
     image: N8,
     pdf: '/pdfs/east.pdf'
   },
   {
     province: 'N09',
-    name: 'N09-Boreal Plain',
+    type: 'North Domain',
+    name: 'Boreal Plain',
     characteristics:
-      'Seasonally frozen ground, lower elevation, deeper soils, dry, some agriculture reliant on surface water.',
-    processes: ['Groundwater flow', 'recharge/storage'],
+      'Seasonally frozen ground supports groundwater flow and recharge. Lower elevation, deeper soils, dry, some agriculture.',
+    processes: [
+      'Canopy interception and sublimation/ET',
+      'Snowmelt energy balance',
+      'Seasonal subsurface freeze-thaw controls flows, drainage',
+      'River ice processes',
+      'Blowing snow redistribution and sublimation',
+      'bogs and fens, wetland complexes',
+      'Fill-and-spill lake systems'
+    ],
     image: N9,
     pdf: '/pdfs/north.pdf'
   },
   {
     province: 'N10',
-    name: 'N10-Great Lakes Forests',
-    characteristics:
-      'Seasonally frozen ground, dense forest cover, southern edge of transition zone from N6 to N8 to N10.',
-    processes: ['Lake-groundwater interaction', 'evapotranspiration'],
+    type: 'North Domain',
+    name: 'Great Lakes Forests',
+    characteristics: 'Seasonally frozen ground, dense forest cover, lake-groundwater interaction.',
+    processes: [
+      'Canopy interception and sublimation/ET',
+      'Snowmelt energy balance',
+      'Seasonal subsurface freeze-thaw controls flows, drainage',
+      'River ice processes',
+      'bogs and fens',
+      'wetland complexes',
+      'Fill-and-spill lake systems',
+      'Surface water-groundwater interactions'
+    ],
     image: N10
   },
   {
     province: 'W01',
-    name: 'W01-British Columbia Coastal Mountains',
+    type: ' West Domain',
+    name: 'British Columbia Coastal Mountains',
     characteristics:
-      'Very high precipitation, extensive ice cover on peaks, classic mountain environment (bare peaks, forested slopes and valleys)',
-    processes: ['Rain-fed near-surface groundwater', 'shallow flow paths', 'surface storage'],
+      'Icy peaks and steep, forested valleys. Very high precipitation drives shallow groundwater and flow systems, bogs, seeps.',
+    processes: [
+      'Forest evapotranspiration and vegetation-snow interactions',
+      'Seasonal snow dynamics',
+      'Canopy interception and sublimation of snow',
+      'Rain-on-snow; Glaciers',
+      'Rainfed very near-surface groundwater and shallow flows'
+    ],
     image: W1
   },
   {
     province: 'W02',
-    name: 'W02-Pacific Forests',
+    type: ' West Domain',
+    name: 'Pacific Forests',
     characteristics:
-      'Very high precipitation, densely forested with relatively high population density compared to most other provinces in this domain. Deep soils.',
-    processes: ['Seasonal rain feeds groundwater', 'evapotranspiration', 'subsurface flow'],
+      'Extensive forest, seasonally very high precipitation feeds groundwater and subsurface flows in weathered bedrock.',
+    processes: [
+      'Forest evapotranspiration and vegetation-snow interactions',
+      'Seasonal snow dynamics',
+      'Rain-on-snow',
+      'Seasonal fill and release of groundwater in saprolite'
+    ],
     image: W2
   },
   {
     province: 'W03',
-    name: 'W03-Northern Intermontane Plateaus',
+    type: ' West Domain',
+    name: 'Western Interior Plateaus',
     characteristics:
-      'Intermediate elevation, volcanic and sedimentary formations, major aquifers. Dry due to rain shadows of W1 and W5, variable land cover and subsurface along three main plateaus.',
-    processes: ['Groundwater storage in bedrock/regolith', 'delayed flow', 'irrigation support'],
+      'Drier. Groundwater storage in major volcanic/sedimentary aquifers supports sustained flows and irrigation.',
+    processes: [
+      'Forest evapotranspiration and vegetation-snow interactions',
+      'Seasonal snow dynamics',
+      'Canopy interception and sublimation of snow',
+      'Snowmelt feeds groundwater',
+      'Deep groundwater flow-mountain block recharge'
+    ],
     image: W3
   },
   {
     province: 'W04',
-    name: 'W04-Western Mountains',
+    type: ' West Domain',
+    name: 'Western Mountains',
     characteristics:
-      'High elevation, cold, seasonal snow. Inland mountain ranges are much drier than W1 & W5, classic mountain environments (bare peaks, forested slopes and valleys)',
-    processes: ['Snow accumulation/melt', 'sublimation', 'rapid runoff'],
+      'High elevation, cold, seasonal snow. Snow accumulation and melt recharges groundwater. Rapid runoff.',
+    processes: [
+      'Forest evapotranspiration and vegetation-snow interactions',
+      'Seasonal snow dynamics',
+      'Canopy interception and sublimation of snow',
+      'Snowmelt feeds groundwater',
+      'Glaciers',
+      'Deep groundwater flow-mountain block recharge'
+    ],
     image: W4
   },
   {
     province: 'W05',
-    name: 'W05-Pacific Mountains',
+    type: ' West Domain',
+    name: 'Pacific Mountains',
     characteristics:
-      'Southern continuation of W1, becoming warmer and wetter. Extensive forest cover with very limited permanent snow/ice.<br>Strong elevation gradients, mixed lithology, high snow accumulation.',
-    processes: ['Snowmelt-driven flow', 'subsurface storage', 'mountain block recharge'],
+      'Forested mountains. Snowmelt drives flow, subsurface storage, groundwater flow and mountain block recharge.',
+    processes: [
+      'Forest evapotranspiration and vegetation-snow interactions',
+      'Seasonal snow dynamics',
+      'Canopy interception and sublimation of snow',
+      'Snowmelt feeds groundwater',
+      'Rain-on-snow',
+      'Seasonal fill and release of groundwater in saprolite',
+      'Deep groundwater flow-mountain block recharge'
+    ],
     image: W5
   },
   {
     province: 'W06',
-    name: 'W06-Basin and Range',
+    type: ' West Domain',
+    name: 'Basin and Range',
     characteristics:
-      'Arid to semi-arid basins with internal drainage. Very dry with large local heterogeneity due to topographic relief, mostly internal draining, limited tall vegetation.',
-    processes: ['Local flows from mountains', 'groundwater recharge in basins'],
+      'Dry. Internal-draining basins. Mountain block recharge supports groundwater flow and pumping.',
+    processes: [
+      'Forest evapotranspiration and vegetation-snow interactions',
+      'Seasonal snow dynamics',
+      'Canopy interception and sublimation of snow',
+      'Snowmelt feeds groundwater',
+      'Deep groundwater flow-mountain block recharge',
+      'Channel losses'
+    ],
     image: W6
   },
   {
     province: 'W07',
-    name: 'W07-California Coast',
+    type: ' West Domain',
+    name: 'California Coast',
     characteristics:
-      'Mediterranean climate, strong seasonality, complex subsurface. Dry and warm, locally very densely populated, extensive irrigated agriculture in the Central Valley.',
-    processes: [
-      'Surface-dominated flow',
-      'shallow soils',
-      'infiltration and saturation excess runoff'
-    ],
+      'Mediterranean climate. Some groundwater baseflow and some surface flows. Large cities. Wildfire impacts.',
+    processes: ['Local mountain-front recharge and basin flows'],
     image: W7
   },
   {
     province: 'W08',
-    name: 'W08-Southern Deserts',
+    type: ' West Domain',
+    name: 'Southern Deserts',
     characteristics:
-      'Arid climate, deep groundwater, low runoff efficiency. Very dry and warm with predominantly low vegetation. A number of large settlements heavily reliant on upstream water sources.',
-    processes: ['Infiltration excess flow', 'channel losses', 'deep groundwater recharge'],
+      'Arid climate with little runoff. Deep groundwater recharge in isolated mountains. Infiltration-excess flow, channel losses.',
+    processes: [
+      'Local mountain-front recharge and basin flows',
+      'Infiltration-excess flow',
+      'Channel losses'
+    ],
     image: W8
   },
   {
     province: 'W09',
-    name: 'W09-Colorado Plateau',
+    type: 'West Domain',
+    name: 'Colorado Plateau',
     characteristics:
-      'Semi-arid plateau, monsoon influence, limited runoff efficiency. Dry and warm, predominantly low vegetation but with strong local heterogeneity.',
-    processes: ['Local flows', 'infiltration excess', 'limited runoff generation'],
+      'Semi-arid plateau with some winter snow. Flow derives from mountain recharge and some surface flows.',
+    processes: [
+      'Seasonal snow dynamics',
+      'Deep groundwater flow-montain block recharge',
+      'Local mountain-front recharge and basin flows',
+      'Infiltration-excess flow',
+      'Channel losses'
+    ],
     image: W9
   },
   {
     province: 'C01',
-    name: 'C01-Northern Prairies',
-    characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: C1,
+    type: 'Central Domain',
+    name: 'Northern Prairies',
+    characteristics:
+      'Surface depressions fill with snowmelt, then connect and spill to generate river flows. Many areas were drained for agriculture.',
+    processes: [
+      'Dominant vertical processes (ET, recharge) in flat terrain',
+      'Recharge controlled by clay content',
+      'Drainage network controlled by glacial limits',
+      'Snow accumulation, redistribution, and melt',
+      'Depression storage and release'
+    ],
+    image: C1
   },
   {
     province: 'C02',
-    name: 'C02-Norther Great Plains',
-    characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: C2,
+    type: 'Central Domain',
+    name: 'Northern Great Plains',
+    characteristics:
+      'Dry and cold, thin soils with low vegetation, largely rangeland. Deep water tables and minor infiltration excess runoff.',
+    processes: [
+      'Dominant vertical processes (ET, recharge) in flat terrain',
+      'Recharge controlled by clay content',
+      'Snow accumulation, redistribution, and melt'
+    ],
+    image: C2
   },
   {
     province: 'C03',
-    name: 'C03-High Plains Aquifer',
-    characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: C3,
+    type: 'Central Domain',
+    name: 'High Plains Aquifer',
+    characteristics:
+      'Groundwater pumping for agriculture lowers storage and baseflow. Recharge low due to vegetation, some occurs in playas.',
+    processes: [
+      'Dominant vertical processes (ET, recharge) in flat terrain',
+      'Recharge controlled by clay content',
+      'Groundwater pumping for irrigation'
+    ],
+    image: C3
   },
   {
     province: 'C04',
-    name: 'C04-Southern Great Plains',
-    characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: C4,
+    type: 'Central Domain',
+    name: 'Southern Great Plains',
+    characteristics:
+      'Grasslands and some agriculture with groundwater pumping. Groundwater flows through karst geology.',
+    processes: [
+      'Dominant vertical processes (ET, recharge) in flat terrain',
+      'Recharge controlled by clay content',
+      'Groundwater pumping for irrigation'
+    ],
+    image: C4
   },
   {
     province: 'C05',
-    name: 'C05-Southern Coastal Plains',
-    characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: C5,
+    type: 'Central Domain',
+    name: 'Southern Coastal Plains',
+    characteristics:
+      'Deep groundwater, local agriculture and irrigation. Near the coast, clay-rich soils can generate infiltration excess.',
+    processes: [
+      'Dominant vertical processes (ET, recharge) in flat terrain',
+      'Recharge controlled by clay content',
+      'Groundwater pumping for irrigation',
+      'Infiltration excess'
+    ],
+    image: C5
   },
   {
     province: 'C06',
-    name: 'C06-Mississippi Plain',
-    characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: C6,
+    type: 'Central Domain',
+    name: 'Mississippi Plain',
+    characteristics:
+      'Very humid. Shallow groundwater pumped for flood irrigation of row-crop agriculture. Surface and subsurface storm flows.',
+    processes: [
+      'Dominant vertical processes (ET, recharge) in flat terrain',
+      'Recharge controlled by clay content',
+      'Groundwater pumping for irrigation',
+      'Shallow water tables',
+      'Flood irrigation'
+    ],
+    image: C6
   },
   {
     province: 'C07',
-    name: 'C07-Unglaciated Central Lowlands',
-    characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: C7,
+    type: 'Central Domain',
+    name: 'Unglaciated Central Lowlands',
+    characteristics:
+      'Rain-fed agriculture. Shallow water table lowered by extensive tile drains. Deep soils. Driftless area hillslope recharge/erosion.',
+    processes: [
+      'Dominant vertical processes (ET, recharge) in flat terrain',
+      'Recharge controlled by clay content',
+      'Shallow water tables',
+      'Tile drainage; Infiltration excess',
+      'Drainage network controlled by glacial limits'
+    ],
+    image: C7
   },
   {
     province: 'C08',
-    name: 'C08-Glaciated Central Lowlands',
-    characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: C8,
+    type: 'Central Domain',
+    name: 'Glaciated Central Lowlands',
+    characteristics:
+      'Rain-fed agriculture. Shallow water table lowered by extensive tile drains. Thin soil, hummocky plains, internal-drained basins.',
+    processes: [
+      'Dominant vertical processes (ET, recharge) in flat terrain',
+      'Recharge controlled by clay content',
+      'Shallow water tables',
+      'Tile drainage',
+      'Infiltration excess',
+      'Drainage network controlled by glacial limits.'
+    ],
+    image: C8
   },
   {
     province: 'E01',
-    name: 'E01-North Atlantic Coast',
-    characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: E1,
+    type: 'Eastern Domain',
+    name: 'North Atlantic Coast',
+    characteristics:
+      'High winter water tables drive surface/subsurface stormflow. Snow and soil freezing. Summer baseflow and perched flows.',
+    processes: [
+      'High soil and groundwater storage, deep weathered zone',
+      'Steady flows in perennial streams',
+      'Variable source area generates saturation excess',
+      'Perched flows over clay layers',
+      'Snow accumulation and melt, soil freezing and river ice',
+      'Human impacts through land history, urbanization, dams.'
+    ],
+    image: E1
   },
   {
     province: 'E02',
-    name: 'E02-Appalachian Mountains and Plateaus',
-    characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: E2,
+    type: 'Eastern Domain',
+    name: 'Appalachian Mountains and Plateaus',
+    characteristics:
+      'Lateral flows through bedrock fractures and along fresh bedrock surface. Springflows.',
+    processes: [
+      'High soil and groundwater storage, deep weathered zone',
+      'Steady flows in perennial streams',
+      'Variable source area generates saturation excess',
+      'Perched flows over clay layers.'
+    ],
+    image: E2
   },
   {
     province: 'E03',
-    name: 'E03-Applachian Piedmont',
-    characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: E3,
+    type: 'Eastern Domain',
+    name: 'Applachian Piedmont',
+    characteristics:
+      'Winter recharge drives groundwater flow to wide, wet valleys. Summer perched flows.',
+    processes: [
+      'High soil and groundwater storage, deep weathered zone',
+      'Variable source area generates saturation excess',
+      'Perched flows over clay layers',
+      'Wide, wet valley bottoms generate fast flow',
+      'Human impacts through land history, urbanization, dams.'
+    ],
+    image: E3
   },
   {
     province: 'E04',
-    name: 'E04-Eastern Coastal Plain',
-    characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: E4,
+    type: 'Eastern Domain',
+    name: 'Eastern Coastal Plain',
+    characteristics:
+      'Layered aquifers interact with rivers and wetlands. Groundwater flows between basins and discharges to the ocean.',
+    processes: [
+      'High soil and groundwater storage, deep weathered zone',
+      'Steady flows in perennial streams',
+      'Groundwater flow through karst geology',
+      'Surface water-aquifer connections',
+      'Submarine groundwater discharge',
+      'backwater effects',
+      'Human impacts through land history, urbanization, dams.'
+    ],
+    image: E4
   },
   {
     province: 'E05',
-    name: 'E05-Everglades',
-    characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: E5,
+    type: 'Eastern Domain',
+    name: 'Everglades',
+    characteristics:
+      'Low and very flat. Extensive surface lakes and wetlands interact with karst groundwater and ocean backwater effects.',
+    processes: [
+      'Steady flows in perennial streams',
+      'Groundwater flow through karst geology',
+      'Surface water-aquifer connections',
+      'Submarine groundwater discharge',
+      'backwater effects',
+      'Human impacts through land history, urbanization, dams.'
+    ],
+    image: E5
   },
   {
     province: 'E06',
-    name: 'E06-Eastern Plateaus',
-    characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: E6,
+    type: 'Eastern Domain',
+    name: 'Eastern Plateaus',
+    characteristics:
+      'Secondary mixed forests over karst aquifers with high baseflows and complex groundwater flows.',
+    processes: ['Groundwater flow through karst geology'],
+    image: E6
   },
   {
     province: 'I01',
-    name: 'I01-Hawaiian Islands',
-    characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: I1,
+    type: 'Islands',
+    name: 'Hawaiian Islands',
+    characteristics:
+      'Short, steep, flashy watersheds. Groundwater impounded by vertical dykes. Wind-/leeward contrast. Coastal urbanization.',
+    processes: [
+      'Cloud water and rainfall interception by cloud forests',
+      'Subsurface groundwater discharge',
+      'Subsurface stormflow though preferential flow paths',
+      'Hydrophobic soils and flashy streams',
+      'Groundwater influenced by vertical dykes, lava tubes and local release',
+      'Caprock overlays groundwater, some springs.'
+    ],
+    image: I1
   },
   {
     province: 'I02',
-    name: 'I02-Puerto Rico',
-    characteristics: 'Coming soon',
-    processes: ['Coming soon']
-    // image: I2,
+    type: 'Islands',
+    name: 'Puerto Rico',
+    characteristics:
+      'Steep terrain, intense rock weathering. Shallow saturated flow and deep baseflow. Coastal aquifers.',
+    processes: [
+      'Cloud water and rainfall interception by cloud forests',
+      'Subsurface groundwater discharge',
+      'Subsurface stormflow though preferential flow paths',
+      'Saturation excess and shallow saturated flows',
+      'Slow baseflow through deep soils',
+      'Volcaniclastic and karst aquifers.'
+    ],
+    image: I2
   }
 ]

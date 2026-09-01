@@ -2,9 +2,13 @@
   <div v-show="!isExpanded && region" class="tooltip-overlay">
     <div class="tooltip-panel">
       <button class="close-btn" type="button" @click="$emit('close')">&#x2715;</button>
-      <h3 class="tooltip-title">
-        {{ region.name }}<template v-if="LayerType === 'Domain'"> Domain</template>
-      </h3>
+      <template v-if="LayerType === 'Domain'">
+        <h3 class="tooltip-title">{{ region.name }} Domain</h3>
+      </template>
+      <template v-else>
+        <div class="province-eyebrow">{{ region.province }} &middot; {{ region.type }}</div>
+        <h3 class="tooltip-title">{{ region.name }}</h3>
+      </template>
 
       <p v-if="!isDiagramExpanded" class="description">
         {{ LayerType === 'Domain' ? region.summary : region.characteristics }}
@@ -14,27 +18,30 @@
       </div>
 
       <div class="content-panel">
-        <button
-          v-if="LayerType === 'Domain' && region.image"
-          type="button"
-          class="pill-btn full-diagram-btn"
-          @click="isDiagramExpanded = !isDiagramExpanded"
-        >
-          <span class="icon-arrow" aria-hidden="true">{{
-            isDiagramExpanded ? '&#x2197;' : '&#x26F6;'
-          }}</span>
-          {{ isDiagramExpanded ? 'Back' : 'View full diagram' }}
-        </button>
+        <div v-if="region.image" class="content-panel-header">
+          <button
+            type="button"
+            class="pill-btn full-diagram-btn"
+            @click="isDiagramExpanded = !isDiagramExpanded"
+          >
+            <span class="icon-arrow" aria-hidden="true">{{
+              isDiagramExpanded ? '&#x2197;' : '&#x26F6;'
+            }}</span>
+            {{ isDiagramExpanded ? 'Back' : 'View full diagram' }}
+          </button>
+        </div>
 
-        <img
-          v-if="region.image"
-          :src="region.image"
-          :alt="region.name"
-          :class="{
-            'domain-image': LayerType === 'Domain',
-            'province-image': LayerType === 'Province'
-          }"
-        />
+        <div class="content-panel-body">
+          <img
+            v-if="region.image"
+            :src="region.image"
+            :alt="region.name"
+            :class="{
+              'domain-image': LayerType === 'Domain',
+              'province-image': LayerType === 'Province'
+            }"
+          />
+        </div>
 
         <button
           v-if="LayerType === 'Domain' && !isDiagramExpanded"
@@ -47,12 +54,27 @@
         </button>
       </div>
 
-      <p v-if="LayerType === 'Domain'" class="citation">
-        Diagram: {{ DIAGRAM_CITATION }}<br />
-        <a :href="DIAGRAM_CITATION_URL" target="_blank" rel="noopener">{{
-          DIAGRAM_CITATION_URL
-        }}</a>
-      </p>
+      <div class="footer-row">
+        <p class="citation">
+          Diagram: {{ LayerType === 'Domain' ? DOMAIN_CITATION : PROVINCE_CITATION }}<br />
+          <a
+            :href="LayerType === 'Domain' ? DOMAIN_CITATION_URL : PROVINCE_CITATION_URL"
+            target="_blank"
+            rel="noopener"
+            >{{ LayerType === 'Domain' ? DOMAIN_CITATION_URL : PROVINCE_CITATION_URL }}
+          </a>
+        </p>
+
+        <button
+          v-if="LayerType === 'Province' && !isDiagramExpanded"
+          type="button"
+          class="details-btn details-btn-inline"
+          @click="isExpanded = true"
+        >
+          View details
+          <span class="icon-arrow" aria-hidden="true">&#x2192;</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -104,9 +126,13 @@ const props = defineProps({
 
 defineEmits(['close'])
 
-const DIAGRAM_CITATION =
+const DOMAIN_CITATION =
   'Fan, Y. (2026). Hydrological Process Illustrations of the Five Domains of North America, HydroShare'
-const DIAGRAM_CITATION_URL = 'http://www.hydroshare.org/resource/9c92f62ced274fa69ed19434447c8422'
+const DOMAIN_CITATION_URL = 'http://www.hydroshare.org/resource/9c92f62ced274fa69ed19434447c8422'
+
+const PROVINCE_CITATION =
+  'McMillan, H. (2026). Hydrological Perceptual Models of the 35 Provinces of North America, HydroShare,'
+const PROVINCE_CITATION_URL = 'http://www.hydroshare.org/resource/74f92d07ad204fa7bcc49ccf29b11510'
 
 const isExpanded = ref(false)
 const isDiagramExpanded = ref(false)
@@ -210,6 +236,16 @@ h3,
   color: #1b2a6b;
 }
 
+.province-eyebrow {
+  flex-shrink: 0;
+  margin-bottom: 4px;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #4b5563;
+}
+
 .tooltip-panel .description {
   flex-shrink: 0;
   max-height: 130px;
@@ -230,17 +266,28 @@ h3,
   min-height: 0;
   margin-top: 16px;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
   background: white;
   border-radius: 12px;
   padding: 20px;
 }
 
+.content-panel-header {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.content-panel-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .pill-btn {
-  position: absolute;
-  top: 16px;
-  right: 16px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -279,14 +326,27 @@ h3,
   background: #16215a;
 }
 
+.details-btn-inline {
+  position: static;
+  flex-shrink: 0;
+}
+
 .icon-arrow {
   font-size: 14px;
   line-height: 1;
 }
 
-.citation {
+.footer-row {
   flex-shrink: 0;
   margin-top: 12px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.citation {
+  flex-shrink: 0;
   font-size: 11px;
   line-height: 1.5;
   color: #6b7280;
