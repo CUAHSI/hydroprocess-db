@@ -171,14 +171,15 @@
           <div class="info-card">
             <h4 class="info-card-title">
               <v-icon :icon="mdiAccountGroupOutline" size="18" class="info-card-icon" />
-              Website development team
+              {{ currentProject.team.title }}
             </h4>
-            <p class="info-card-lead">
-              People who built this hub. The broader scientific project has additional contributors
-              listed in the papers above.
-            </p>
+            <p class="info-card-lead">{{ currentProject.team.description }}</p>
             <ul class="team-list">
-              <li v-for="member in members" :key="member.name" class="team-item">
+              <li
+                v-for="member in currentProject.team.members"
+                :key="member.name"
+                class="team-item"
+              >
                 <a
                   v-if="member.link"
                   :href="member.link"
@@ -231,7 +232,45 @@ import aboutHeroImage from '@/assets/landing section.png'
 import nsfLogo from '@/assets/nsf_logo.png'
 import cirohLogo from '@/assets/CIROHLogo_200x200.png'
 
-const members = [
+const databaseTeam = [
+  {
+    name: 'Hilary McMillan',
+    designation: 'Professor & Project Lead . San Diego State University',
+    link: 'https://orcid.org/0000-0002-9330-9730'
+  },
+  {
+    name: 'Ryoko Araki',
+    designation: 'PhD Student & Developer . San Diego State University',
+    link: 'http://rarakihydro.com/'
+  },
+  {
+    name: 'Anthony Castronova',
+    designation: 'Lead of Research . CUAHSI',
+    link: 'https://orcid.org/0000-0002-1341-5681'
+  },
+  {
+    name: 'Devin Cowan',
+    designation: 'Former Research Software Developer . CUAHSI',
+    link: 'https://www.linkedin.com/in/devin-cowan/'
+  },
+  {
+    name: 'Irene Garousi-Nejad',
+    designation: 'Research Scientist . CUAHSI',
+    link: 'https://orcid.org/0000-0003-2929-3946'
+  },
+  {
+    name: 'Sandesh Maddila',
+    designation: 'Former Software Engineer . CUAHSI',
+    link: 'https://www.cuahsi.org/about/our-team/sandesh-maddilia'
+  },
+  {
+    name: 'Martin Seul',
+    designation: 'Lead of Software Engineering (acting) . CUAHSI',
+    link: 'https://orcid.org/0000-0002-0260-9771'
+  }
+]
+
+const perceptualTeam = [
   {
     name: 'Hilary McMillan',
     designation: 'Professor & Project Lead . San Diego State University',
@@ -245,7 +284,7 @@ const members = [
   {
     name: 'Anthony Castronova',
     designation: 'Lead of Research . CUAHSI',
-    link: 'https://www.linkedin.com/in/anthony-castronova-900a2632/'
+    link: 'https://orcid.org/0000-0002-1341-5681'
   },
   {
     name: 'Ying Fan Reinfelder',
@@ -286,11 +325,6 @@ const members = [
     name: 'Martyn Clark',
     designation: 'Professor . University of Calgary',
     link: 'https://orcid.org/0000-0002-2186-2625'
-  },
-  {
-    name: 'Anthony Castronova',
-    designation: 'Lead of Research . CUAHSI',
-    link: 'https://orcid.org/0000-0002-1341-5681'
   },
   {
     name: 'Martin Seul',
@@ -349,6 +383,12 @@ const projects = {
       title: 'Funding',
       logo: nsfLogo,
       text: 'Supported by the National Science Foundation (NSF), Division of Earth Sciences, under Award No. 2322510: Synthesizing hydrologic process knowledge to determine global drivers of dominant processes.'
+    },
+    team: {
+      title: 'Website development team',
+      description:
+        'People who built this hub. The broader scientific project has additional contributors listed in the papers above.',
+      members: databaseTeam
     }
   },
   perceptual: {
@@ -398,6 +438,12 @@ const projects = {
       title: 'Funding',
       logo: cirohLogo,
       text: 'This research was supported by the Cooperative Institute for Research to Operations in Hydrology (CIROH) with funding under award NA22NWS4320003 from the NOAA Cooperative Institute Program. The statements, findings, conclusions, and recommendations are those of the author(s) and do not necessarily reflect the opinions of NOAA.'
+    },
+    team: {
+      title: 'Project team',
+      description:
+        'The multi-institution team behind the domain and province classification and the perceptual models.',
+      members: perceptualTeam
     }
   }
 }
