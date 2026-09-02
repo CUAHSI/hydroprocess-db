@@ -235,12 +235,12 @@ const members = [
   {
     name: 'Hilary McMillan',
     designation: 'Professor & Project Lead . San Diego State University',
-    link: 'http://www.mcmillanhydrology.org/'
+    link: 'https://orcid.org/0000-0002-9330-9730'
   },
   {
-    name: 'Ryoko Araki',
-    designation: 'PhD Student & Developer . San Diego State University',
-    link: 'http://rarakihydro.com/'
+    name: 'Wouter Knoben',
+    designation: 'Senior Research Associate & Project Lead',
+    link: 'https://orcid.org/0000-0001-8301-3787'
   },
   {
     name: 'Anthony Castronova',
@@ -248,23 +248,58 @@ const members = [
     link: 'https://www.linkedin.com/in/anthony-castronova-900a2632/'
   },
   {
-    name: 'Devin Cowan',
-    designation: 'Former Research Software Developer . CUAHSI',
-    link: 'https://www.linkedin.com/in/devin-cowan/'
+    name: 'Ying Fan Reinfelder',
+    designation: 'Professor . Rutgers University',
+    link: 'https://orcid.org/0000-0002-0024-7965'
+  },
+  {
+    name: 'Shaun Carney',
+    designation: 'Senior Research Environmental Engineer . RTI International',
+    link: null
+  },
+  {
+    name: 'Katie van Werkhoven',
+    designation: 'Senior Water Resources Scientist . RTI International',
+    link: 'https://orcid.org/0000-0001-5735-422X'
+  },
+  {
+    name: 'Peter Wagener',
+    designation: 'PhD Candidate . University of Calgary',
+    link: 'https://orcid.org/0009-0005-5560-3698'
   },
   {
     name: 'Irene Garousi-Nejad',
     designation: 'Research Scientist . CUAHSI',
-    link: 'https://www.linkedin.com/in/irene-garousi-nejad-phd-0809a047/'
+    link: 'https://orcid.org/0000-0003-2929-3946'
   },
   {
-    name: 'Sandesh Maddila',
-    designation: 'Former Software Engineer . CUAHSI',
-    link: 'https://www.cuahsi.org/about/our-team/sandesh-maddilia'
+    name: 'Julia Masterman',
+    designation: 'Community Relations & Training Coordinator . CUAHSI',
+    link: 'https://orcid.org/0000-0002-1613-7090'
+  },
+  {
+    name: 'Jordan Read',
+    designation: 'Chief Executive Officer . CUAHSI',
+    link: 'https://orcid.org/0000-0002-3888-6631'
+  },
+  {
+    name: 'Martyn Clark',
+    designation: 'Professor . University of Calgary',
+    link: 'https://orcid.org/0000-0002-2186-2625'
+  },
+  {
+    name: 'Anthony Castronova',
+    designation: 'Lead of Research . CUAHSI',
+    link: 'https://orcid.org/0000-0002-1341-5681'
   },
   {
     name: 'Martin Seul',
     designation: 'Lead of Software Engineering (acting) . CUAHSI',
+    link: 'https://orcid.org/0000-0002-0260-9771'
+  },
+  {
+    name: 'Zahraa Alhmood',
+    designation: 'Research Software Engineer . CUAHSI',
     link: null
   }
 ]
