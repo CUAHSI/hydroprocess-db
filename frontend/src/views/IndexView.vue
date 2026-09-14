@@ -312,7 +312,6 @@ const section4AudienceCards = [
 
 .section-1 {
   position: relative;
-  aspect-ratio: 3556 / 2000;
   min-height: 0;
   overflow: hidden;
   padding: 2.25rem 1.75rem;
@@ -322,8 +321,8 @@ const section4AudienceCards = [
   position: absolute;
   inset: 0;
   background-repeat: no-repeat;
-  background-size: 100% auto;
-  background-position: right top;
+  background-size: cover;
+  background-position: right center;
   opacity: 0.5;
   z-index: 0;
 }
@@ -810,14 +809,13 @@ const section4AudienceCards = [
 
 @media (max-width: 960px) {
   .section-1 {
-    aspect-ratio: auto;
     min-height: 620px;
     padding: 1.35rem 1rem;
   }
 
   .section-1-bg {
     background-position: center top;
-    background-size: contain;
+    background-size: cover;
   }
 
   .section-1::before {

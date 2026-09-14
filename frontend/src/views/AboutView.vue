@@ -4,6 +4,13 @@
 
     <div class="about-shell">
       <section class="about-hero">
+        <v-img
+          :src="aboutHeroImage"
+          alt="Hydrologic Process Knowledge Hub overview"
+          class="about-hero-image"
+          cover
+        />
+
         <div class="about-hero-text">
           <p class="about-eyebrow">PROJECTS, PEOPLE, &amp; PUBLICATIONS</p>
           <h1 class="about-title">About the Hydrological Process Knowledge Hub</h1>
@@ -13,13 +20,6 @@
             data citations behind each project.
           </p>
         </div>
-
-        <v-img
-          :src="aboutHeroImage"
-          alt="Hydrologic Process Knowledge Hub overview"
-          class="about-hero-image"
-          cover
-        />
       </section>
 
       <section class="about-citation">
@@ -468,18 +468,16 @@ const currentProject = computed(() => projects[activeProject.value])
 }
 
 .about-hero {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: stretch;
-  min-height: 260px;
   position: relative;
+  min-height: 260px;
+  overflow: hidden;
   background: #ffffff;
 }
 
 .about-hero-text {
-  padding: 40px 32px 32px 40px;
   position: relative;
   z-index: 2;
+  padding: 40px 40px 32px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -507,11 +505,18 @@ const currentProject = computed(() => projects[activeProject.value])
   color: #1f2329;
   line-height: 1.5;
   font-size: 1rem;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 .about-hero-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
   height: 100%;
   min-height: 260px;
+  z-index: 0;
+  opacity: 0.5;
 }
 
 .about-citation {
@@ -804,22 +809,11 @@ const currentProject = computed(() => projects[activeProject.value])
 
 @media (max-width: 900px) {
   .about-hero {
-    display: block;
-    position: relative;
     min-height: 220px;
-    overflow: hidden;
   }
 
   .about-hero-text {
     padding: 24px 20px;
-  }
-
-  .about-hero-image {
-    position: absolute;
-    inset: 0;
-    height: 100%;
-    z-index: 1;
-    opacity: 0.15;
   }
 
   .about-citation {
