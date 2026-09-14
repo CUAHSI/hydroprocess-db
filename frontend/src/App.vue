@@ -45,12 +45,20 @@ let showMobileNavigation = ref(false)
 const paths = [
   {
     attrs: { to: '/' },
-    label: 'Map'
+    label: 'Home'
+  },
+  {
+    attrs: { to: '/map' },
+    label: 'Hydrologic Processes'
   },
   // {
   //   attrs: { to: "/api" },
   //   label: "API",
   // },
+  {
+    attrs: { to: '/perceptual_models' },
+    label: 'Perceptual Models'
+  },
   {
     attrs: { to: '/about' },
     label: 'About'

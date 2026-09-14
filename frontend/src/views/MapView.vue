@@ -33,6 +33,12 @@
       <v-col class="map-container pa-0">
         <TheLeafletMap />
 
+        <HydrologicProcessModal
+          v-model="showHydrologicModal"
+          :records-count="currentFilteredData.length"
+          @dismiss="handleHydrologicModalDismiss"
+        />
+
         <div class="bottom-right-container d-flex flex-column align-end ga-2">
           <v-btn
             v-if="mdAndDown"
@@ -56,24 +62,209 @@ import { ref, nextTick, onMounted, watch } from 'vue'
 import FilterDrawer from '@/components/FilterDrawer.vue'
 import DataViewDrawer from '@/components/DataViewDrawer.vue'
 import TheLeafletMap from '@/components/TheLeafletMap.vue'
+import HydrologicProcessModal from '@/components/HydrologicProcessModal.vue'
 import { mdiChevronRight, mdiChevronLeft, mdiInformationOutline } from '@mdi/js'
 import { useMapStore } from '@/stores/map'
 import { useDisplay } from 'vuetify'
+import { storeToRefs } from 'pinia'
+import L from 'leaflet'
+
+const emit = defineEmits(['onFilter'])
+const mapStore = useMapStore()
+const {
+  mapLoaded,
+  userTouchedFilter,
+  currentFilteredData,
+  selectedSpatialZones,
+  selectedTemporalZones,
+  selectedProcesses,
+  searchTerm
+} = storeToRefs(mapStore)
 
 const { mdAndDown } = useDisplay()
-const mapStore = useMapStore()
+const HYDROLOGIC_MODAL_PREF_KEY = 'hideHydrologicProcessTooltip'
 
 const showFilterDrawer = ref(true)
 const dataDrawerRef = ref(null)
 const showDataDrawer = ref(!mdAndDown.value)
+const showHydrologicModal = ref(false)
 
 watch(mdAndDown, (val) => {
   showFilterDrawer.value = !val ? true : false
   showDataDrawer.value = !val
 })
 
-onMounted(() => {
-  showFilterDrawer.value = !mdAndDown.value
+showFilterDrawer.value = !mdAndDown.value
+
+onMounted(async () => {
+  const hideHydrologicTooltip = localStorage.getItem(HYDROLOGIC_MODAL_PREF_KEY) === 'true'
+  showHydrologicModal.value = !hideHydrologicTooltip
+
+  await mapStore.fetchPerceptualModelsGeojson()
+  const bounds = L.latLngBounds(mapStore.allAvailableCoordinates)
+  mapStore.leaflet.setMaxBounds(bounds)
+
+  const drawnItems = new L.FeatureGroup()
+  mapStore.drawnItems = drawnItems
+  mapStore.leaflet.addLayer(drawnItems)
+  drawnItems.setZIndex(1000)
+
+  let currentRectangle = null
+
+  L.Control.RectangleToggle = L.Control.extend({
+    options: { position: 'topleft' },
+    onAdd: function () {
+      const container = L.DomUtil.create(
+        'div',
+        'leaflet-bar leaflet-control leaflet-control-custom draw-toggle-btn'
+      )
+      updateDrawButton(container)
+      let drawer = null
+      L.DomEvent.on(container, 'click', () => {
+        if (currentRectangle || drawer) {
+          drawnItems.clearLayers()
+          currentRectangle = null
+          mapStore.filterFeatures(
+            (feature) => {
+              if (feature.geometry.type === 'Point') {
+                const [lng, lat] = feature.geometry.coordinates
+                return currentRectangle.getBounds().contains([lat, lng])
+              }
+              return false
+            },
+            'remove',
+            'rectangle'
+          )
+          userTouchedFilter.value = false
+          emit('onFilter', {
+            selectedSpatialZones,
+            selectedTemporalZones,
+            selectedProcesses,
+            searchTerm,
+            filteredFeatures: currentFilteredData.value
+          })
+          updateDrawButton(container)
+        } else {
+          const drawer = new L.Draw.Rectangle(mapStore.leaflet, {
+            shapeOptions: {
+              color: '#3388ff',
+              weight: 2,
+              opacity: 0.8,
+              fillOpacity: 0.3
+            },
+            showArea: false
+          })
+          drawer.enable()
+          currentRectangle = {}
+          updateDrawButton(container)
+
+          const drawHandler = (e) => {
+            mapStore.leaflet.off(L.Draw.Event.CREATED, drawHandler)
+            drawnItems.clearLayers()
+            currentRectangle = e.layer
+            currentRectangle.feature = {
+              type: 'Feature',
+              geometry: {
+                type: 'Polygon',
+                coordinates: [
+                  currentRectangle.getLatLngs()[0].map((latLng) => [latLng.lng, latLng.lat])
+                ]
+              },
+              properties: {}
+            }
+            drawnItems.addLayer(currentRectangle)
+            mapStore.leaflet.fitBounds(currentRectangle.getBounds())
+
+            mapStore.filterFeatures(
+              (feature) => {
+                if (feature.geometry.type === 'Point') {
+                  const [lng, lat] = feature.geometry.coordinates
+                  return currentRectangle.getBounds().contains([lat, lng])
+                }
+                return false
+              },
+              'add',
+              'rectangle'
+            )
+
+            userTouchedFilter.value = true
+            emit('onFilter', {
+              selectedSpatialZones,
+              selectedTemporalZones,
+              selectedProcesses,
+              searchTerm,
+              filteredFeatures: currentFilteredData.value
+            })
+
+            updateDrawButton(container)
+          }
+
+          mapStore.leaflet.on(L.Draw.Event.CREATED, drawHandler)
+          mapStore.leaflet.once('draw:drawstop', () => {
+            // If no rectangle was drawn, reset the toggle state
+            if (!drawnItems.getLayers().length) {
+              currentRectangle = null
+              updateDrawButton(container)
+              mapStore.leaflet.off(L.Draw.Event.CREATED, drawHandler)
+            }
+          })
+        }
+      })
+
+      return container
+    }
+  })
+  mapStore.leaflet.addControl(new L.Control.RectangleToggle())
+
+  async function mapClick() {
+    return
+  }
+  function updateDrawButton(container) {
+    if (currentRectangle) {
+      container.classList.add('draw-btn--active')
+      container.classList.remove('draw-btn--inactive')
+      container.innerHTML = '<span class="material-icons">close</span>'
+      container.title = 'Clear box'
+    } else {
+      container.classList.add('draw-btn--inactive')
+      container.classList.remove('draw-btn--active')
+      container.innerHTML = ''
+      container.title = 'Draw a box'
+    }
+  }
+  L.drawLocal.draw.handlers.rectangle.tooltip.start = 'Click and drag to draw a box'
+  L.Control.ClearFilters = L.Control.extend({
+    options: { position: 'topleft' },
+    onAdd: function () {
+      const container = L.DomUtil.create(
+        'div',
+        'leaflet-bar leaflet-control leaflet-control-custom'
+      )
+      container.title = 'Reset Filters'
+
+      container.classList.add('clear-filters-btn')
+
+      L.DomEvent.on(container, 'click', () => {
+        mapStore.clearAllFilters()
+        emit('onFilter', {
+          selectedSpatialZones,
+          selectedTemporalZones,
+          selectedProcesses,
+          searchTerm,
+          filteredFeatures: currentFilteredData.value
+        })
+      })
+
+      return container
+    }
+  })
+  mapStore.leaflet.addControl(new L.Control.ClearFilters())
+
+  mapStore.leaflet.on('click', function (e) {
+    mapClick(e)
+  })
+
+  mapLoaded.value = true
 })
 
 const onFilter = (data) => {
@@ -105,6 +296,10 @@ const toggleFilterDrawer = async () => {
 
 const toggleDataDrawer = () => {
   showDataDrawer.value = !showDataDrawer.value
+}
+
+const handleHydrologicModalDismiss = (doNotShowAgain) => {
+  localStorage.setItem(HYDROLOGIC_MODAL_PREF_KEY, String(Boolean(doNotShowAgain)))
 }
 </script>
 

@@ -29,7 +29,7 @@ const light = {
     error: colors.red.accent3,
     success: colors.teal.accent4,
     info: colors.blueGrey.base,
-    navbar: colors.blueGrey.lighten1
+    navbar: '#9CC2DF'
   }
 }
 

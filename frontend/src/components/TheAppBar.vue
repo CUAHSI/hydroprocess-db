@@ -9,9 +9,9 @@
     app
   >
     <div class="d-flex align-end full-height pa-2 align-center w-100 position-relative">
-      <v-app-bar-title
-        >Perceptual Models Around the World
-        <div class="text-subtitle-1">McMillan Hydrology Lab</div>
+      <v-app-bar-title class="app-bar-title">
+        <v-img class="logo" :src="hydroprocessLogo" />
+        <span class="title"> Hydroprocess Hub </span>
       </v-app-bar-title>
 
       <v-spacer></v-spacer>
@@ -31,15 +31,16 @@
           </v-btn>
         </nav>
       </v-card>
-      <v-spacer></v-spacer>
+      <v-spacer v-if="!mdAndDown"></v-spacer>
       <!-- <UserLogin @logged-in="login" v-if="!mdAndDown" :mobile="false" /> -->
 
-      <!-- <v-app-bar-nav-icon @click="$emit('toggleMobileNav')" v-else /> -->
+      <v-app-bar-nav-icon @click="$emit('toggleMobileNav')" v-if="mdAndDown" />
     </div>
   </v-app-bar>
 </template>
 <script setup>
 import { useDisplay } from 'vuetify'
+import hydroprocessLogo from '@/assets/hydroprocess-logo-v11.png'
 defineProps(['paths'])
 defineEmits(['toggleMobileNav'])
 
@@ -54,11 +55,50 @@ const { mdAndDown } = useDisplay()
   padding-bottom: 0;
 }
 
+.app-bar-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: #26176f;
+  font-weight: bolder;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.app-bar-title :deep(.v-toolbar-title__placeholder) {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo {
+  width: 50px;
+  flex: 0 0 auto;
+}
+
+.title {
+  white-space: nowrap;
+}
+
+@media (max-width: 960px) {
+  .app-bar-title :deep(.v-toolbar-title__placeholder) {
+    font-size: 1rem;
+    line-height: 1.2;
+    white-space: normal;
+  }
+
+  .app-bar-title .text-subtitle-1 {
+    font-size: 0.75rem;
+    line-height: 1.1;
+  }
+}
+
 .nav-items {
   border-radius: 2rem !important;
   overflow: hidden;
   position: absolute;
-  left: 43%;
+  left: 50%;
+  transform: translateX(-50%);
 
   & > a.v-btn:first-child {
     border-top-left-radius: 2rem !important;
