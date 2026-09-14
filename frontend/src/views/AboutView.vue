@@ -52,7 +52,7 @@
     <section class="projects-shell">
       <div class="projects-header">
         <p class="projects-eyebrow">THE PROJECTS</p>
-        <h2 class="projects-title">Two efforts, one hub</h2>
+        <h2 class="projects-title">One hub to consolidate efforts</h2>
         <p class="projects-subhead">
           Each project has its own team, funding, and publications. Select a project to explore its
           details.
@@ -278,7 +278,7 @@ const perceptualTeam = [
   },
   {
     name: 'Wouter Knoben',
-    designation: 'Senior Research Associate & Project Lead',
+    designation: 'Senior Research Associate. University of Calgary',
     link: 'https://orcid.org/0000-0001-8301-3787'
   },
   {
@@ -394,7 +394,7 @@ const projects = {
   perceptual: {
     title: 'Perceptual Models',
     paragraphs: [
-      'This effort takes a top-down view: North America is delineated into five hydrologic domains and 34 provinces based on climate, topography, soils, and geology. Domain-level illustrations summarize the drivers and controls that define landscape hierarchy and guided province delineation.',
+      'This effort takes a top-down view: North America is delineated into five hydrologic domains and 35 provinces based on climate, topography, soils, and geology. Domain-level illustrations summarize the drivers and controls that define landscape hierarchy and guided province delineation.',
       'Each province is paired with a perceptual model and a regional factsheet, so regionally applicable process understanding can be explored directly on the map.'
     ],
     papers: {
@@ -819,7 +819,7 @@ const currentProject = computed(() => projects[activeProject.value])
     inset: 0;
     height: 100%;
     z-index: 1;
-    opacity: 0.25;
+    opacity: 0.15;
   }
 
   .about-citation {

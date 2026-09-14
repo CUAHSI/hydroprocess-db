@@ -1,7 +1,8 @@
 <template>
   <v-container fluid class="pa-0 index-page">
     <!-- Section 1 (Top) -->
-    <section class="page-section section-1" :style="{ backgroundImage: `url(${landingBg})` }">
+    <section class="page-section section-1">
+      <div class="section-1-bg" :style="{ backgroundImage: `url(${landingBg})` }"></div>
       <div class="hero-content">
         <div class="hero-text">
           <h1>Hydrological Process Knowledge Hub</h1>
@@ -256,7 +257,7 @@ const section3Resources = [
     summary:
       'Explore dominant hydrologic processes across North America through regional synthesis and hydrologic landscape units.',
     description:
-      'A large-scale synthesis of dominant hydrologic processes across North America organized across five domains and 35 hydrologic provinces. Built from the hydrologic mosaic framework and informed by expert knowledge, data analysis, and community input.',
+      'A large-scale synthesis of dominant hydrologic processes across North America informed by expert knowledge, data analysis, and community input and organized across five domains and 35 hydrologic provinces.',
     bullets: [
       'Explore regional process patterns',
       'Understand hydrologic differences across landscapes',
@@ -314,10 +315,17 @@ const section4AudienceCards = [
   aspect-ratio: 3556 / 2000;
   min-height: 0;
   overflow: hidden;
+  padding: 2.25rem 1.75rem;
+}
+
+.section-1-bg {
+  position: absolute;
+  inset: 0;
   background-repeat: no-repeat;
   background-size: 100% auto;
   background-position: right top;
-  padding: 2.25rem 1.75rem;
+  opacity: 0.5;
+  z-index: 0;
 }
 
 .section-1::before {
@@ -338,14 +346,14 @@ const section4AudienceCards = [
 .hero-content {
   position: relative;
   z-index: 2;
-  max-width: 860px;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   gap: 1.4rem;
 }
 
 .hero-text {
-  max-width: 620px;
+  max-width: 100%;
   color: #111;
 }
 
@@ -805,6 +813,9 @@ const section4AudienceCards = [
     aspect-ratio: auto;
     min-height: 620px;
     padding: 1.35rem 1rem;
+  }
+
+  .section-1-bg {
     background-position: center top;
     background-size: contain;
   }
