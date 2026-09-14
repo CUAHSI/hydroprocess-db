@@ -105,11 +105,11 @@
               </figcaption>
             </figure>
           </template>
-          <div class="footer">
-            <button @click="window.open(region.pdf, '_blank')" class="download-link">
-              Download Content
-            </button>
-          </div>
+          <!--          <div class="footer">-->
+          <!--            <button @click="window.open(region.pdf, '_blank')" class="download-link">-->
+          <!--              Download Content-->
+          <!--            </button>-->
+          <!--          </div>-->
         </div>
       </div>
     </div>

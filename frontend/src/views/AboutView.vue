@@ -4,6 +4,13 @@
 
     <div class="about-shell">
       <section class="about-hero">
+        <v-img
+          :src="aboutHeroImage"
+          alt="Hydrologic Process Knowledge Hub overview"
+          class="about-hero-image"
+          cover
+        />
+
         <div class="about-hero-text">
           <p class="about-eyebrow">PROJECTS, PEOPLE, &amp; PUBLICATIONS</p>
           <h1 class="about-title">About the Hydrological Process Knowledge Hub</h1>
@@ -13,13 +20,6 @@
             data citations behind each project.
           </p>
         </div>
-
-        <v-img
-          :src="aboutHeroImage"
-          alt="Hydrologic Process Knowledge Hub overview"
-          class="about-hero-image"
-          cover
-        />
       </section>
 
       <section class="about-citation">
@@ -52,7 +52,7 @@
     <section class="projects-shell">
       <div class="projects-header">
         <p class="projects-eyebrow">THE PROJECTS</p>
-        <h2 class="projects-title">Two efforts, one hub</h2>
+        <h2 class="projects-title">One hub to consolidate efforts</h2>
         <p class="projects-subhead">
           Each project has its own team, funding, and publications. Select a project to explore its
           details.
@@ -278,7 +278,7 @@ const perceptualTeam = [
   },
   {
     name: 'Wouter Knoben',
-    designation: 'Senior Research Associate & Project Lead',
+    designation: 'Senior Research Associate. University of Calgary',
     link: 'https://orcid.org/0000-0001-8301-3787'
   },
   {
@@ -394,7 +394,7 @@ const projects = {
   perceptual: {
     title: 'Perceptual Models',
     paragraphs: [
-      'This effort takes a top-down view: North America is delineated into five hydrologic domains and 34 provinces based on climate, topography, soils, and geology. Domain-level illustrations summarize the drivers and controls that define landscape hierarchy and guided province delineation.',
+      'This effort takes a top-down view: North America is delineated into five hydrologic domains and 35 provinces based on climate, topography, soils, and geology. Domain-level illustrations summarize the drivers and controls that define landscape hierarchy and guided province delineation.',
       'Each province is paired with a perceptual model and a regional factsheet, so regionally applicable process understanding can be explored directly on the map.'
     ],
     papers: {
@@ -468,18 +468,16 @@ const currentProject = computed(() => projects[activeProject.value])
 }
 
 .about-hero {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: stretch;
-  min-height: 260px;
   position: relative;
+  min-height: 260px;
+  overflow: hidden;
   background: #ffffff;
 }
 
 .about-hero-text {
-  padding: 40px 32px 32px 40px;
   position: relative;
   z-index: 2;
+  padding: 40px 40px 32px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -507,11 +505,18 @@ const currentProject = computed(() => projects[activeProject.value])
   color: #1f2329;
   line-height: 1.5;
   font-size: 1rem;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 .about-hero-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
   height: 100%;
   min-height: 260px;
+  z-index: 0;
+  opacity: 0.5;
 }
 
 .about-citation {
@@ -804,22 +809,11 @@ const currentProject = computed(() => projects[activeProject.value])
 
 @media (max-width: 900px) {
   .about-hero {
-    display: block;
-    position: relative;
     min-height: 220px;
-    overflow: hidden;
   }
 
   .about-hero-text {
     padding: 24px 20px;
-  }
-
-  .about-hero-image {
-    position: absolute;
-    inset: 0;
-    height: 100%;
-    z-index: 1;
-    opacity: 0.25;
   }
 
   .about-citation {
