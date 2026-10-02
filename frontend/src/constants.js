@@ -124,7 +124,6 @@ export const provinceRegions = [
     province: 'N01',
     type: 'North Domain',
     name: 'Tundra',
-    color: '#0047ab',
     characteristics:
       'Continuous permafrost with flow in seasonally thawed upper layers. Snow accumulation and melt. Low vegetation.',
     processes: [
@@ -146,7 +145,6 @@ export const provinceRegions = [
     province: 'N02',
     type: 'North Domain',
     name: 'Alaska Lowlands',
-    color: '#7df9ff',
     characteristics:
       'Discontinuous permafrost and taliks, lakes and wetlands with complex connectivity of lakes-rivers-groundwater.',
     processes: [
@@ -171,7 +169,6 @@ export const provinceRegions = [
     province: 'N03',
     type: 'North Domain',
     name: 'Northern High Mountains',
-    color: '#000080',
     characteristics:
       'Discontinuous permafrost, glaciers and very high precipitation (rain and flow) with rapid runoff during the warm season.',
     processes: [
@@ -194,7 +191,6 @@ export const provinceRegions = [
     province: 'N04',
     type: 'North Domain',
     name: 'Northern Low Mountains',
-    color: '#b0e0e6',
     characteristics:
       'Variable permafrost with aspect creating subsurface flow paths, shallow soils, lower precipitation and taller vegetation than N03.',
     processes: [
@@ -216,7 +212,6 @@ export const provinceRegions = [
     province: 'N05',
     type: 'North Domain',
     name: 'Mackenzie Plain',
-    color: '#007fff',
     characteristics:
       'Discontinuous permafrost. Large lakes, wetland systems, bogs and channel fens on organic soils.',
     processes: [
@@ -239,7 +234,6 @@ export const provinceRegions = [
     province: 'N06',
     type: 'North Domain',
     name: 'Taiga Shield',
-    color: '#6495ed',
     characteristics:
       'Discontinuous permafrost, shallow flow over thin soils and exposed bedrock, lakes.',
     processes: [
@@ -261,7 +255,6 @@ export const provinceRegions = [
     province: 'N07',
     type: 'North Domain',
     name: 'Hudson Plain',
-    color: '#4682b4',
     characteristics:
       'Discontinuous permafrost and taliks. Low and flat with deep organic soils. Extensive slow-draining wetlands store water.',
     processes: [
@@ -283,7 +276,6 @@ export const provinceRegions = [
     province: 'N08',
     type: 'North Domain',
     name: 'Boreal Shield',
-    color: '#4169e1',
     characteristics:
       'Sporadic permafrost, lateral flow over thin soils and exposed bedrock, wetlands and lakes. Denser vegetation than N06.',
     processes: [
@@ -304,7 +296,6 @@ export const provinceRegions = [
     province: 'N09',
     type: 'North Domain',
     name: 'Boreal Plain',
-    color: '#87ceeb',
     characteristics:
       'Seasonally frozen ground supports groundwater flow and recharge. Lower elevation, deeper soils, dry, some agriculture.',
     processes: [
@@ -325,7 +316,6 @@ export const provinceRegions = [
     province: 'N10',
     type: 'North Domain',
     name: 'Great Lakes Forests',
-    color: '#4169e1',
     characteristics: 'Seasonally frozen ground, dense forest cover, lake-groundwater interaction.',
     processes: [
       'Canopy interception and sublimation/ET',
@@ -345,7 +335,6 @@ export const provinceRegions = [
     province: 'W01',
     type: ' West Domain',
     name: 'British Columbia Coastal Mountains',
-    color: '#E60073',
     characteristics:
       'Icy peaks and steep, forested valleys. Very high precipitation drives shallow groundwater and flow systems, bogs, seeps.',
     processes: [
@@ -363,7 +352,6 @@ export const provinceRegions = [
     province: 'W02',
     type: ' West Domain',
     name: 'Pacific Forests',
-    color: '#e34234',
     characteristics:
       'Extensive forest, seasonally very high precipitation feeds groundwater and subsurface flows in weathered bedrock.',
     processes: [
@@ -380,7 +368,6 @@ export const provinceRegions = [
     province: 'W03',
     type: ' West Domain',
     name: 'Western Interior Plateaus',
-    color: '#cb4154',
     characteristics:
       'Drier. Groundwater storage in major volcanic/sedimentary aquifers supports sustained flows and irrigation.',
     processes: [
@@ -398,7 +385,6 @@ export const provinceRegions = [
     province: 'W04',
     type: ' West Domain',
     name: 'Western Mountains',
-    color: '#ff6347',
     characteristics:
       'High elevation, cold, seasonal snow. Snow accumulation and melt recharges groundwater. Rapid runoff.',
     processes: [
@@ -417,7 +403,6 @@ export const provinceRegions = [
     province: 'W05',
     type: ' West Domain',
     name: 'Pacific Mountains',
-    color: '#591f1f',
     characteristics:
       'Forested mountains. Snowmelt drives flow, subsurface storage, groundwater flow and mountain block recharge.',
     processes: [
@@ -437,7 +422,6 @@ export const provinceRegions = [
     province: 'W06',
     type: ' West Domain',
     name: 'Basin and Range',
-    color: '#ff2400',
     characteristics:
       'Dry. Internal-draining basins. Mountain block recharge supports groundwater flow and pumping.',
     processes: [
@@ -456,7 +440,6 @@ export const provinceRegions = [
     province: 'W07',
     type: ' West Domain',
     name: 'California Coast',
-    color: '#de3163',
     characteristics:
       'Mediterranean climate. Some groundwater baseflow and some surface flows. Large cities. Wildfire impacts.',
     processes: ['Local mountain-front recharge and basin flows'],
@@ -468,7 +451,6 @@ export const provinceRegions = [
     province: 'W08',
     type: ' West Domain',
     name: 'Southern Deserts',
-    color: '#dc143c',
     characteristics:
       'Arid climate with little runoff. Deep groundwater recharge in isolated mountains. Infiltration-excess flow, channel losses.',
     processes: [
@@ -484,7 +466,6 @@ export const provinceRegions = [
     province: 'W09',
     type: 'West Domain',
     name: 'Colorado Plateau',
-    color: '#b22222',
     characteristics:
       'Semi-arid plateau with some winter snow. Flow derives from mountain recharge and some surface flows.',
     processes: [
@@ -502,7 +483,6 @@ export const provinceRegions = [
     province: 'C01',
     type: 'Central Domain',
     name: 'Northern Prairies',
-    color: '#FFF4B5',
     characteristics:
       'Surface depressions fill with snowmelt, then connect and spill to generate river flows. Many areas were drained for agriculture.',
     processes: [
@@ -521,7 +501,6 @@ export const provinceRegions = [
     province: 'C02',
     type: 'Central Domain',
     name: 'Northern Great Plains',
-    color: '#C97A00',
     characteristics:
       'Dry and cold, thin soils with low vegetation, largely rangeland. Deep water tables and minor infiltration excess runoff.',
     processes: [
@@ -538,7 +517,6 @@ export const provinceRegions = [
     province: 'C03',
     type: 'Central Domain',
     name: 'High Plains Aquifer',
-    color: '#F9E531',
     characteristics:
       'Groundwater pumping for agriculture lowers storage and baseflow. Recharge low due to vegetation, some occurs in playas.',
     processes: [
@@ -554,7 +532,6 @@ export const provinceRegions = [
     province: 'C04',
     type: 'Central Domain',
     name: 'Southern Great Plains',
-    color: '#FFC107',
     characteristics:
       'Grasslands and some agriculture with groundwater pumping. Groundwater flows through karst geology.',
     processes: [
@@ -570,7 +547,6 @@ export const provinceRegions = [
     province: 'C05',
     type: 'Central Domain',
     name: 'Southern Coastal Plains',
-    color: '#FFF176',
     characteristics:
       'Deep groundwater, local agriculture and irrigation. Near the coast, clay-rich soils can generate infiltration excess.',
     processes: [
@@ -587,7 +563,6 @@ export const provinceRegions = [
     province: 'C06',
     type: 'Central Domain',
     name: 'Mississippi Plain',
-    color: '#D4A017',
     characteristics:
       'Very humid. Shallow groundwater pumped for flood irrigation of row-crop agriculture. Surface and subsurface storm flows.',
     processes: [
@@ -605,7 +580,6 @@ export const provinceRegions = [
     province: 'C07',
     type: 'Central Domain',
     name: 'Unglaciated Central Lowlands',
-    color: '#FFD60A',
     characteristics:
       'Rain-fed agriculture. Shallow water table lowered by extensive tile drains. Deep soils. Driftless area hillslope recharge/erosion.',
     processes: [
@@ -623,7 +597,6 @@ export const provinceRegions = [
     province: 'C08',
     type: 'Central Domain',
     name: 'Glaciated Central Lowlands',
-    color: '#E6AC00',
     characteristics:
       'Rain-fed agriculture. Shallow water table lowered by extensive tile drains. Thin soil, hummocky plains, internal-drained basins.',
     processes: [
@@ -642,7 +615,6 @@ export const provinceRegions = [
     province: 'E01',
     type: 'Eastern Domain',
     name: 'North Atlantic Coast',
-    color: '#006400',
     characteristics:
       'High winter water tables drive surface/subsurface stormflow. Snow and soil freezing. Summer baseflow and perched flows.',
     processes: [
@@ -661,7 +633,6 @@ export const provinceRegions = [
     province: 'E02',
     type: 'Eastern Domain',
     name: 'Appalachian Mountains and Plateaus',
-    color: '#98ff98',
     characteristics:
       'Lateral flows through bedrock fractures and along fresh bedrock surface. Springflows.',
     processes: [
@@ -678,7 +649,6 @@ export const provinceRegions = [
     province: 'E03',
     type: 'Eastern Domain',
     name: 'Applachian Piedmont',
-    color: '#2e8b57',
     characteristics:
       'Winter recharge drives groundwater flow to wide, wet valleys. Summer perched flows.',
     processes: [
@@ -696,7 +666,6 @@ export const provinceRegions = [
     province: 'E04',
     type: 'Eastern Domain',
     name: 'Eastern Coastal Plain',
-    color: '#32cd32',
     characteristics:
       'Layered aquifers interact with rivers and wetlands. Groundwater flows between basins and discharges to the ocean.',
     processes: [
@@ -716,7 +685,6 @@ export const provinceRegions = [
     province: 'E05',
     type: 'Eastern Domain',
     name: 'Everglades',
-    color: '#3A6F0A',
     characteristics:
       'Low and very flat. Extensive surface lakes and wetlands interact with karst groundwater and ocean backwater effects.',
     processes: [
@@ -735,7 +703,6 @@ export const provinceRegions = [
     province: 'E06',
     type: 'Eastern Domain',
     name: 'Eastern Plateaus',
-    color: '#7cd483',
     characteristics:
       'Secondary mixed forests over karst aquifers with high baseflows and complex groundwater flows.',
     processes: ['Groundwater flow through karst geology'],
@@ -747,7 +714,6 @@ export const provinceRegions = [
     province: 'I01',
     type: 'Islands',
     name: 'Hawaiian Islands',
-    color: '#ec75ec',
     characteristics:
       'Short, steep, flashy watersheds. Groundwater impounded by vertical dykes. Wind-/leeward contrast. Coastal urbanization.',
     processes: [
@@ -766,7 +732,6 @@ export const provinceRegions = [
     province: 'I02',
     type: 'Islands',
     name: 'Puerto Rico',
-    color: '#b10fac',
     characteristics:
       'Steep terrain, intense rock weathering. Shallow saturated flow and deep baseflow. Coastal aquifers.',
     processes: [

@@ -132,10 +132,7 @@
             <v-window v-model="activeTab">
               <template v-if="isProvince">
                 <v-window-item value="model">
-                  <div
-                    class="perceptual-card"
-                    :style="{ backgroundColor: cardColor.background, color: cardColor.text }"
-                  >
+                  <div class="perceptual-card">
                     <p
                       v-for="(paragraph, index) in contentParagraphs"
                       :key="index"
@@ -254,15 +251,6 @@ const contentParagraphs = computed(() => {
         { text: paragraph.slice(at + name.length), bold: false }
       ]
     })
-})
-
-// province colors range from navy to pale yellow, so pick a readable text color for the card
-const cardColor = computed(() => {
-  const hex = /^#*([0-9a-f]{6})$/i.exec(props.region.color || '')?.[1]
-  if (!hex) return { background: '#1b2a6b', text: 'white' }
-  const [r, g, b] = [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
-  const luminance = 0.299 * r + 0.587 * g + 0.114 * b
-  return { background: `#${hex}`, text: luminance > 0.6 ? '#1b2a6b' : 'white' }
 })
 
 function closeSidebar() {
@@ -449,6 +437,7 @@ watch(
 
 .perceptual-card {
   display: flex;
+  color: black;
   flex-direction: column;
   gap: 16px;
   padding: 24px 20px;
