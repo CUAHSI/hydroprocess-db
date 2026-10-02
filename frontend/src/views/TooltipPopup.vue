@@ -78,53 +78,84 @@
     </div>
   </div>
 
-  <!-- pop up appears when user clicks to learn more about the region -->
+  <!-- sidebar opens when the user selects View details from the domain tooltip -->
   <Teleport to="body">
-    <div v-show="isExpanded" class="popup-overlay" @click.self="$emit('close')">
-      <div class="popup-panel">
-        <button class="close-btn" type="button" @click="((isExpanded = false), $emit('close'))">
-          &#x2715;
-        </button>
-        <h3>{{ region.name }} Domain</h3>
+    <Transition name="sidebar-fade">
+      <div v-if="isExpanded" class="sidebar-overlay" @click.self="closeSidebar">
+        <aside class="sidebar-panel" role="dialog" aria-modal="true" :aria-label="sidebarTitle">
+          <header class="sidebar-header">
+            <div class="sidebar-header-actions">
+              <button type="button" class="preview-download-btn" @click="showComingSoon = true">
+                <v-icon :icon="mdiTrayArrowDown" size="20" />
+                Preview &amp; Download Content
+              </button>
+              <button
+                type="button"
+                class="sidebar-close-btn"
+                aria-label="Close"
+                @click="closeSidebar"
+              >
+                &#x2715;
+              </button>
+            </div>
+            <h2 class="sidebar-title">{{ sidebarTitle }}</h2>
+            <p class="sidebar-description">{{ region.content }}</p>
+          </header>
 
-        <div class="rich-content">
-          <template v-for="(block, index) in region.content" :key="index">
-            <p v-if="block.type === 'text'" class="description expanded">
-              {{ block.text }}
-            </p>
+          <v-tabs
+            v-model="activeTab"
+            grow
+            height="64"
+            color="#1b2a6b"
+            base-color="#b4b8bf"
+            slider-color="#1b2a6b"
+            class="sidebar-tabs"
+          >
+            <v-tab value="drivers" class="sidebar-tab">Domain Drivers</v-tab>
+            <v-tab value="landscape" class="sidebar-tab">Hydrologic Landscape</v-tab>
+          </v-tabs>
 
-            <h4 v-else-if="block.type === 'heading'" class="section-heading">
-              {{ block.text }}
-            </h4>
+          <div class="sidebar-body">
+            <v-window v-model="activeTab">
+              <v-window-item value="drivers">
+                <div v-if="region.image" class="sidebar-image-card">
+                  <img :src="region.image" :alt="sidebarTitle" class="sidebar-image" />
+                </div>
+                <p class="citation">
+                  Diagram: {{ DIAGRAM_CITATION }}<br />
+                  <a :href="DIAGRAM_CITATION_URL" target="_blank" rel="noopener">{{
+                    DIAGRAM_CITATION_URL
+                  }}</a>
+                </p>
+              </v-window-item>
 
-            <figure v-else-if="block.type === 'image'" class="content-image-wrapper">
-              <img :src="block.src" class="content-image" />
-
-              <figcaption v-if="block.caption">
-                {{ block.caption }}
-              </figcaption>
-            </figure>
-          </template>
-          <!--          <div class="footer">-->
-          <!--            <button @click="window.open(region.pdf, '_blank')" class="download-link">-->
-          <!--              Download Content-->
-          <!--            </button>-->
-          <!--          </div>-->
-        </div>
+              <v-window-item value="landscape">
+                <div class="rich-content">
+                  <h4 class="section-heading">coming soon</h4>
+                </div>
+              </v-window-item>
+            </v-window>
+          </div>
+        </aside>
       </div>
-    </div>
+    </Transition>
+
+    <v-snackbar v-model="showComingSoon" :timeout="3000" location="bottom right" :z-index="2100">
+      Preview &amp; Download Content is coming soon.
+    </v-snackbar>
   </Teleport>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { mdiTrayArrowDown } from '@mdi/js'
 
 const props = defineProps({
   LayerType: { type: String, required: true },
   region: { type: Object, required: true }
 })
 
-defineEmits(['close'])
+const emit = defineEmits(['close'])
 
 const DOMAIN_CITATION =
   'Fan, Y. (2026). Hydrological Process Illustrations of the Five Domains of North America, HydroShare'
@@ -136,6 +167,26 @@ const PROVINCE_CITATION_URL = 'http://www.hydroshare.org/resource/74f92d07ad204f
 
 const isExpanded = ref(false)
 const isDiagramExpanded = ref(false)
+const activeTab = ref('drivers')
+const showComingSoon = ref(false)
+
+const sidebarTitle = computed(() => props.region.title || `${props.region.name} Domain`)
+
+function closeSidebar() {
+  isExpanded.value = false
+  emit('close')
+}
+
+function onKeydown(event) {
+  if (event.key === 'Escape' && isExpanded.value) closeSidebar()
+}
+
+onMounted(() => window.addEventListener('keydown', onKeydown))
+onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
+
+watch(isExpanded, (expanded) => {
+  if (expanded) activeTab.value = 'drivers'
+})
 
 watch(
   () => props.region,
@@ -173,34 +224,151 @@ watch(
   line-height: 1.4;
 }
 
-.popup-overlay {
+.sidebar-overlay {
   position: fixed;
   inset: 0;
   z-index: 2000;
   display: flex;
-  align-items: center;
   justify-content: flex-end;
-  animation: slideInFromRight 0.5s ease-out forwards;
+  background: rgba(15, 23, 42, 0.55);
 }
 
-.popup-panel {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  padding: 28px;
-  width: 560px;
-  max-width: 90vw;
-  height: calc(100vh - 130px);
-  overflow-y: auto;
-  line-height: 1.4;
-  position: relative;
+.sidebar-panel {
+  display: flex;
+  flex-direction: column;
+  width: 640px;
+  max-width: 100vw;
+  height: 100%;
+  background: #eff4f8;
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
 }
-@keyframes slideInFromRight {
-  from {
-    transform: translateX(100%); /* Start off-screen to the right */
+
+.sidebar-header {
+  flex-shrink: 0;
+  padding: 16px 28px 28px;
+  color: black;
+}
+
+.sidebar-header-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-title {
+  margin: 0 0 12px;
+  font-size: 24px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.sidebar-description {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.45;
+}
+
+.preview-download-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border: 1px solid #c7d2e0;
+  border-radius: 999px;
+  background: #eff4f8;
+  color: #1b2a6b;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.preview-download-btn:hover {
+  background: #dfe8f2;
+}
+
+.sidebar-close-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.sidebar-close-btn:hover {
+  color: white;
+}
+
+.sidebar-tabs {
+  flex: 0 0 auto;
+  margin: 24px 24px 0;
+  background: #e6e8eb;
+  border-radius: 8px 8px 0 0;
+}
+
+.sidebar-tab {
+  text-transform: none;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: normal;
+}
+
+.sidebar-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 24px 32px;
+}
+
+.sidebar-image-card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.sidebar-image {
+  display: block;
+  width: 100%;
+  object-fit: contain;
+}
+
+.sidebar-fade-enter-active .sidebar-panel,
+.sidebar-fade-leave-active .sidebar-panel {
+  transition: transform 0.3s ease-out;
+}
+
+.sidebar-fade-enter-from .sidebar-panel,
+.sidebar-fade-leave-to .sidebar-panel {
+  transform: translateX(100%);
+}
+
+@media (max-width: 600px) {
+  .sidebar-header {
+    padding: 12px 16px 20px;
   }
-  to {
-    transform: translateX(0); /* End off-screen to the left */
+
+  .sidebar-header-actions {
+    justify-content: space-between;
+  }
+
+  .preview-download-btn {
+    font-size: 13px;
+    padding: 6px 14px;
+  }
+
+  .sidebar-tabs {
+    margin: 16px 16px 0;
+  }
+
+  .sidebar-tab {
+    font-size: 14px;
+  }
+
+  .sidebar-body {
+    padding: 16px;
   }
 }
 
@@ -219,14 +387,9 @@ watch(
   color: #222;
 }
 
-h3,
-.popup-title {
+h3 {
   margin: 0 0 12px;
   font-weight: 600;
-}
-
-.popup-title {
-  font-size: 24px;
 }
 
 .tooltip-title {
@@ -385,40 +548,16 @@ h3,
   border-radius: 4px;
 }
 
-.download-link {
-  font-weight: 500;
-  padding: 5px;
-  background-color: darkgray;
-  border-radius: 8px;
-}
-
 .rich-content {
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
 
-.popup-text {
-  font-size: 15px;
-  line-height: 1.8;
-  color: #222;
-  margin: 0;
-}
-
 .section-heading {
   margin: 12px 0 0;
   font-size: 18px;
   font-weight: 600;
-}
-
-.content-image-wrapper {
-  margin: 0;
-}
-
-.content-image {
-  width: 100%;
-  border-radius: 8px;
-  display: block;
 }
 
 figcaption {
