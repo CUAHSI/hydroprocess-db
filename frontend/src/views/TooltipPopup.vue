@@ -83,7 +83,7 @@
     <Transition name="sidebar-fade">
       <div v-if="isExpanded" class="sidebar-overlay" @click.self="closeSidebar">
         <aside class="sidebar-panel" role="dialog" aria-modal="true" :aria-label="sidebarTitle">
-          <header class="sidebar-header" :style="{ backgroundColor: region.color || '#1b2a6b' }">
+          <header class="sidebar-header">
             <div class="sidebar-header-actions">
               <button type="button" class="preview-download-btn" @click="showComingSoon = true">
                 <v-icon :icon="mdiTrayArrowDown" size="20" />
@@ -247,7 +247,7 @@ watch(
 .sidebar-header {
   flex-shrink: 0;
   padding: 16px 28px 28px;
-  color: white;
+  color: black;
 }
 
 .sidebar-header-actions {
