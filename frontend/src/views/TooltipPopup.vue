@@ -121,11 +121,14 @@
                 <div v-if="region.image" class="sidebar-image-card">
                   <img :src="region.image" :alt="sidebarTitle" class="sidebar-image" />
                 </div>
-                <p class="citation">
-                  Diagram: {{ DIAGRAM_CITATION }}<br />
-                  <a :href="DIAGRAM_CITATION_URL" target="_blank" rel="noopener">{{
-                    DIAGRAM_CITATION_URL
-                  }}</a>
+                <p class="citation sidebar-citation">
+                  Diagram: {{ LayerType === 'Domain' ? DOMAIN_CITATION : PROVINCE_CITATION }}<br />
+                  <a
+                    :href="LayerType === 'Domain' ? DOMAIN_CITATION_URL : PROVINCE_CITATION_URL"
+                    target="_blank"
+                    rel="noopener"
+                    >{{ LayerType === 'Domain' ? DOMAIN_CITATION_URL : PROVINCE_CITATION_URL }}
+                  </a>
                 </p>
               </v-window-item>
 
@@ -292,14 +295,13 @@ watch(
 .sidebar-close-btn {
   background: none;
   border: none;
-  color: rgba(255, 255, 255, 0.85);
   font-size: 22px;
   line-height: 1;
   cursor: pointer;
 }
 
 .sidebar-close-btn:hover {
-  color: white;
+  color: gray;
 }
 
 .sidebar-tabs {
