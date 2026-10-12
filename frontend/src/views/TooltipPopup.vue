@@ -227,7 +227,7 @@ const sidebarTabs = computed(() =>
   isProvince.value
     ? [
         { value: 'model', label: 'Perceptual Model' },
-        { value: 'characteristics', label: 'Regional Characteristics' }
+        { value: 'characteristics', label: 'Physical Characteristics' }
       ]
     : [
         { value: 'drivers', label: 'Domain Drivers' },
