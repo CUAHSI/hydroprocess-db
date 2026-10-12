@@ -118,7 +118,7 @@
           <div class="sidebar-body">
             <v-window v-model="activeTab">
               <v-window-item value="drivers">
-                <div v-if="region.image" class="sidebar-image-card">
+                <div v-if="region.image" class="domain-card">
                   <img :src="region.image" :alt="sidebarTitle" class="sidebar-image" />
                 </div>
                 <p class="citation sidebar-citation">
@@ -325,10 +325,13 @@ watch(
   padding: 24px 32px;
 }
 
-.sidebar-image-card {
-  background: white;
+.domain-card {
+  display: flex;
+  color: black;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px 20px;
   border-radius: 16px;
-  padding: 20px;
 }
 
 .sidebar-image {
