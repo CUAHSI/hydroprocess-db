@@ -78,16 +78,12 @@
     </div>
   </div>
 
-  <!-- sidebar opens when the user selects View details from the tooltip -->
+  <!-- sidebar opens when the user selects View details from the domain tooltip -->
   <Teleport to="body">
     <Transition name="sidebar-fade">
       <div v-if="isExpanded" class="sidebar-overlay" @click.self="closeSidebar">
         <aside class="sidebar-panel" role="dialog" aria-modal="true" :aria-label="sidebarTitle">
-          <header
-            class="sidebar-header"
-            :class="{ 'sidebar-header--province': isProvince }"
-            :style="isProvince ? null : { backgroundColor: region.color || '#1b2a6b' }"
-          >
+          <header class="sidebar-header">
             <div class="sidebar-header-actions">
               <div v-if="isProvince" class="sidebar-eyebrow">
                 {{ region.province }} &middot; {{ region.type }}
@@ -130,6 +126,20 @@
 
           <div class="sidebar-body">
             <v-window v-model="activeTab">
+              <v-window-item value="drivers">
+                <div v-if="region.image" class="domain-card">
+                  <img :src="region.image" :alt="sidebarTitle" class="sidebar-image" />
+                </div>
+                <p class="citation sidebar-citation">
+                  Diagram: {{ LayerType === 'Domain' ? DOMAIN_CITATION : PROVINCE_CITATION }}<br />
+                  <a
+                    :href="LayerType === 'Domain' ? DOMAIN_CITATION_URL : PROVINCE_CITATION_URL"
+                    target="_blank"
+                    rel="noopener"
+                    >{{ LayerType === 'Domain' ? DOMAIN_CITATION_URL : PROVINCE_CITATION_URL }}
+                  </a>
+                </p>
+              </v-window-item>
               <template v-if="isProvince">
                 <v-window-item value="model">
                   <div class="perceptual-card">
@@ -327,8 +337,8 @@ watch(
 
 .sidebar-header {
   flex-shrink: 0;
-  padding: 16px 8px 28px;
-  color: white;
+  padding: 16px 28px 28px;
+  color: black;
 }
 
 .sidebar-header-actions {
@@ -336,11 +346,6 @@ watch(
   justify-content: flex-end;
   align-items: center;
   gap: 12px;
-}
-
-.sidebar-header--province {
-  color: #1b2a6b;
-  background: #eff4f8;
 }
 
 .sidebar-eyebrow {
@@ -353,14 +358,6 @@ watch(
 
 .sidebar-header--province .sidebar-title {
   margin: 12px 0 0;
-}
-
-.sidebar-header--province .sidebar-close-btn {
-  color: #6b7280;
-}
-
-.sidebar-header--province .sidebar-close-btn:hover {
-  color: #1b2a6b;
 }
 
 .sidebar-title {
@@ -398,14 +395,13 @@ watch(
 .sidebar-close-btn {
   background: none;
   border: none;
-  color: rgba(255, 255, 255, 0.85);
   font-size: 22px;
   line-height: 1;
   cursor: pointer;
 }
 
 .sidebar-close-btn:hover {
-  color: white;
+  color: gray;
 }
 
 .sidebar-tabs {
@@ -429,10 +425,13 @@ watch(
   padding: 24px 32px;
 }
 
-.sidebar-image-card {
-  background: white;
+.domain-card {
+  display: flex;
+  color: black;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px 20px;
   border-radius: 16px;
-  padding: 20px;
 }
 
 .perceptual-card {
