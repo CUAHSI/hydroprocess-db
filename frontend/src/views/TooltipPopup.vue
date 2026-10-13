@@ -85,6 +85,9 @@
         <aside class="sidebar-panel" role="dialog" aria-modal="true" :aria-label="sidebarTitle">
           <header class="sidebar-header">
             <div class="sidebar-header-actions">
+              <div v-if="isProvince" class="sidebar-eyebrow">
+                {{ region.province }} &middot; {{ region.type }}
+              </div>
               <button type="button" class="preview-download-btn" @click="showComingSoon = true">
                 <v-icon :icon="mdiTrayArrowDown" size="20" />
                 Preview &amp; Download Content
@@ -99,7 +102,7 @@
               </button>
             </div>
             <h2 class="sidebar-title">{{ sidebarTitle }}</h2>
-            <p class="sidebar-description">{{ region.content }}</p>
+            <p v-if="!isProvince" class="sidebar-description">{{ region.content }}</p>
           </header>
 
           <v-tabs
@@ -111,8 +114,14 @@
             slider-color="#1b2a6b"
             class="sidebar-tabs"
           >
-            <v-tab value="drivers" class="sidebar-tab">Domain Drivers</v-tab>
-            <v-tab value="landscape" class="sidebar-tab">Hydrologic Landscape</v-tab>
+            <v-tab
+              v-for="tab in sidebarTabs"
+              :key="tab.value"
+              :value="tab.value"
+              class="sidebar-tab"
+            >
+              {{ tab.label }}
+            </v-tab>
           </v-tabs>
 
           <div class="sidebar-body">
@@ -131,12 +140,57 @@
                   </a>
                 </p>
               </v-window-item>
+              <template v-if="isProvince">
+                <v-window-item value="model">
+                  <div class="perceptual-card">
+                    <p
+                      v-for="(paragraph, index) in contentParagraphs"
+                      :key="index"
+                      class="perceptual-text"
+                    >
+                      <template v-for="(segment, i) in paragraph" :key="i">
+                        <strong v-if="segment.bold">{{ segment.text }}</strong>
+                        <template v-else>{{ segment.text }}</template>
+                      </template>
+                    </p>
+                    <div v-if="region.image" class="sidebar-image-card">
+                      <img :src="region.image" :alt="sidebarTitle" class="sidebar-image" />
+                    </div>
+                  </div>
+                  <p class="citation sidebar-citation">
+                    Diagram: {{ PROVINCE_CITATION }}<br />
+                    <a :href="PROVINCE_CITATION_URL" target="_blank" rel="noopener">{{
+                      PROVINCE_CITATION_URL
+                    }}</a>
+                  </p>
+                </v-window-item>
 
-              <v-window-item value="landscape">
-                <div class="rich-content">
-                  <h4 class="section-heading">coming soon</h4>
-                </div>
-              </v-window-item>
+                <v-window-item value="characteristics">
+                  <div class="rich-content">
+                    <h4 class="section-heading">coming soon</h4>
+                  </div>
+                </v-window-item>
+              </template>
+
+              <template v-else>
+                <v-window-item value="drivers">
+                  <div v-if="region.image" class="sidebar-image-card">
+                    <img :src="region.image" :alt="sidebarTitle" class="sidebar-image" />
+                  </div>
+                  <p class="citation sidebar-citation">
+                    Diagram: {{ DOMAIN_CITATION }}<br />
+                    <a :href="DOMAIN_CITATION_URL" target="_blank" rel="noopener">{{
+                      DOMAIN_CITATION_URL
+                    }}</a>
+                  </p>
+                </v-window-item>
+
+                <v-window-item value="landscape">
+                  <div class="rich-content">
+                    <h4 class="section-heading">coming soon</h4>
+                  </div>
+                </v-window-item>
+              </template>
             </v-window>
           </div>
         </aside>
@@ -173,7 +227,41 @@ const isDiagramExpanded = ref(false)
 const activeTab = ref('drivers')
 const showComingSoon = ref(false)
 
-const sidebarTitle = computed(() => props.region.title || `${props.region.name} Domain`)
+const isProvince = computed(() => props.LayerType === 'Province')
+
+const sidebarTitle = computed(
+  () => props.region.title || (isProvince.value ? props.region.name : `${props.region.name} Domain`)
+)
+
+const sidebarTabs = computed(() =>
+  isProvince.value
+    ? [
+        { value: 'model', label: 'Perceptual Model' },
+        { value: 'characteristics', label: 'Physical Characteristics' }
+      ]
+    : [
+        { value: 'drivers', label: 'Domain Drivers' },
+        { value: 'landscape', label: 'Hydrologic Landscape' }
+      ]
+)
+
+// split the perceptual model text into paragraphs, bolding the first mention of the province name
+const contentParagraphs = computed(() => {
+  const name = props.region.name
+  return String(props.region.content || '')
+    .split(/\n\s*\n/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean)
+    .map((paragraph, index) => {
+      const at = index === 0 && name ? paragraph.indexOf(name) : -1
+      if (at < 0) return [{ text: paragraph, bold: false }]
+      return [
+        { text: paragraph.slice(0, at), bold: false },
+        { text: name, bold: true },
+        { text: paragraph.slice(at + name.length), bold: false }
+      ]
+    })
+})
 
 function closeSidebar() {
   isExpanded.value = false
@@ -188,7 +276,7 @@ onMounted(() => window.addEventListener('keydown', onKeydown))
 onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
 
 watch(isExpanded, (expanded) => {
-  if (expanded) activeTab.value = 'drivers'
+  if (expanded) activeTab.value = sidebarTabs.value[0].value
 })
 
 watch(
@@ -258,6 +346,18 @@ watch(
   justify-content: flex-end;
   align-items: center;
   gap: 12px;
+}
+
+.sidebar-eyebrow {
+  margin-right: auto;
+  font-size: 17px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+.sidebar-header--province .sidebar-title {
+  margin: 12px 0 0;
 }
 
 .sidebar-title {
@@ -332,6 +432,32 @@ watch(
   gap: 16px;
   padding: 24px 20px;
   border-radius: 16px;
+}
+
+.perceptual-card {
+  display: flex;
+  color: black;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px 20px;
+  border-radius: 16px;
+}
+
+.perceptual-text {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.sidebar-text {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #222;
+}
+
+.sidebar-citation {
+  margin-top: 12px;
 }
 
 .sidebar-image {
