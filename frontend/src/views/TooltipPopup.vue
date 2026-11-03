@@ -166,8 +166,20 @@
                 </v-window-item>
 
                 <v-window-item value="characteristics">
-                  <div class="rich-content">
-                    <h4 class="section-heading">coming soon</h4>
+                  <div class="characteristics-blurb">
+                    <p class="characteristics-text">
+                      The following section presents complementary regional characteristics derived
+                      from the processing and synthesis of multiple geospatial datasets. For a
+                      complete list of the data sources and references used to generate these maps,
+                      please consult the README in the McMillan (2026) HydroShare resource.
+                    </p>
+                    <p class="citation characteristics-citation">
+                      {{ PROVINCE_CITATION }}
+                      <a :href="PROVINCE_CITATION_URL" target="_blank" rel="noopener">{{
+                        PROVINCE_CITATION_URL
+                      }}</a
+                      ><br />
+                    </p>
                   </div>
                 </v-window-item>
               </template>
@@ -447,6 +459,26 @@ watch(
   margin: 0;
   font-size: 16px;
   line-height: 1.6;
+}
+
+.characteristics-blurb {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px 28px;
+  border-radius: 16px;
+  background: #e6e7e9;
+}
+
+.characteristics-text {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #222;
+}
+
+.characteristics-citation {
+  margin: 0;
 }
 
 .sidebar-text {
