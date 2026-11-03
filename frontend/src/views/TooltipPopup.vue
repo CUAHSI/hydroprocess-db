@@ -181,6 +181,20 @@
                       ><br />
                     </p>
                   </div>
+                  <div v-if="region.layout1" class="layout-image-card">
+                    <img
+                      :src="region.layout1"
+                      :alt="`${sidebarTitle} layout 1`"
+                      class="sidebar-image"
+                    />
+                  </div>
+                  <div v-if="region.layout2" class="layout-image-card">
+                    <img
+                      :src="region.layout2"
+                      :alt="`${sidebarTitle} layout 2`"
+                      class="sidebar-image"
+                    />
+                  </div>
                 </v-window-item>
               </template>
 
@@ -490,6 +504,12 @@ watch(
 
 .sidebar-citation {
   margin-top: 12px;
+}
+
+.layout-image-card {
+  margin-top: 24px;
+  padding: 16px;
+  background: #fff;
 }
 
 .sidebar-image {
