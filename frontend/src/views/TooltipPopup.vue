@@ -124,7 +124,7 @@
             </v-tab>
           </v-tabs>
 
-          <div class="sidebar-body">
+          <div ref="sidebarBody" class="sidebar-body">
             <v-window v-model="activeTab">
               <v-window-item value="drivers">
                 <div v-if="region.image" class="domain-card">
@@ -362,6 +362,13 @@ function onKeydown(event) {
 
 onMounted(() => window.addEventListener('keydown', onKeydown))
 onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
+
+const sidebarBody = ref(null)
+
+// start each tab at the top instead of keeping the previous tab's scroll position
+watch(activeTab, () => {
+  if (sidebarBody.value) sidebarBody.value.scrollTop = 0
+})
 
 watch(isExpanded, (expanded) => {
   if (expanded) activeTab.value = sidebarTabs.value[0].value
