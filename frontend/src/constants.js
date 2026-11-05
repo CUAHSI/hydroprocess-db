@@ -156,6 +156,20 @@ export const domainRegions = [
         heading: 'Variable soils over frozen ground',
         text: 'Soil depth and bedrock conditions vary across the domain, but frozen ground, seasonal thaw, and taliks are the main controls on subsurface water movement and connectivity.'
       }
+    },
+    hydrologicLandscape: {
+      waterStorage: {
+        heading: 'Snow, ice, lakes, and wetlands',
+        text: 'Seasonal snowpacks, glaciers, frozen ground, lakes, wetlands, and peatlands provide the domain’s major forms of water storage.'
+      },
+      flowpathNDrainage: {
+        heading: 'Frozen-ground-controlled flows',
+        text: 'Permafrost, seasonal thaw, active layers, taliks, soil depth, and shallow bedrock control infiltration, lateral flow, drainage, and hydrologic connectivity.'
+      },
+      landCoverNHumanInfluence: {
+        heading: 'Tundra-to-forest transition',
+        text: 'Vegetation shifts from tundra to boreal forest, while agriculture is concentrated in the warmer south. Warming, wildfire, hydropower, and river regulation increasingly alter regional hydrology.'
+      }
     }
   },
   {
@@ -179,6 +193,20 @@ export const domainRegions = [
       GeologyNSoilDepth: {
         heading: 'Shallow mountain soils and deep basin deposits',
         text: 'Mountain areas commonly have shallow soils over fractured or volcanic rock, while adjoining basins contain thick sedimentary deposits and deeper aquifers.'
+      }
+    },
+    hydrologicLandscape: {
+      waterStorage: {
+        heading: 'Snowpack, reservoirs, and basin aquifers',
+        text: 'Seasonal snow, reservoirs, groundwater, playas, and salt lakes provide important but unevenly distributed water storage.'
+      },
+      flowpathNDrainage: {
+        heading: 'Rapid mountain runoff and basin recharge',
+        text: 'Rain and snowmelt generate rapid mountain runoff, while infiltration supports fractured-rock flow, mountain-block recharge, and internal drainage toward basin floors.'
+      },
+      landCoverNHumanInfluence: {
+        heading: 'Forested mountains and managed valleys',
+        text: 'Forested uplands transition to arid basins and irrigated valleys, where reservoirs, groundwater pumping, water conveyance, urbanization, and wildfire strongly affect hydrology.'
       }
     }
   },
@@ -204,6 +232,20 @@ export const domainRegions = [
         heading: 'Deep soils and glacial deposits',
         text: 'Generally deep soils, glacial materials, clay-rich layers, and regional aquifers regulate infiltration, shallow groundwater, and subsurface flow.'
       }
+    },
+    hydrologicLandscape: {
+      waterStorage: {
+        heading: 'Soil water, shallow groundwater, and surface depressions',
+        text: 'Water is stored in deep soils, shallow aquifers, prairie potholes, reservoirs, rivers, and the Great Lakes.'
+      },
+      flowpathNDrainage: {
+        heading: 'Recharge, drainage, and regional groundwater flow',
+        text: 'Water moves through infiltration, recharge, baseflow, tile drainage, and regional groundwater systems connected to the Mississippi River network.'
+      },
+      landCoverNHumanInfluence: {
+        heading: 'Agriculture-dominated and heavily managed',
+        text: 'Cropland, pasture, and grassland dominate, while irrigation, pumping, drainage infrastructure, reservoirs, and river regulation substantially modify natural pathways.'
+      }
     }
   },
   {
@@ -228,6 +270,20 @@ export const domainRegions = [
         heading: 'Deep weathering and thick coastal sediments',
         text: 'Deep weathered material beneath uplands transitions to shallower valley deposits, carbonate aquifers in some areas, and thick sediments near the coast.'
       }
+    },
+    hydrologicLandscape: {
+      waterStorage: {
+        heading: 'Regolith, groundwater, wetlands, and estuaries',
+        text: 'Water is stored in weathered subsurface materials, groundwater systems, wetlands, floodplains, estuaries, and coastal sediments.'
+      },
+      flowpathNDrainage: {
+        heading: 'Hillslope-to-coastal flow connections',
+        text: 'Local hillslope flow and deeper regional groundwater discharge to rivers and estuaries, while backwater and coastal processes influence lowland drainage.'
+      },
+      landCoverNHumanInfluence: {
+        heading: 'Forested, cultivated, and densely developed',
+        text: 'Forests and rain-fed agriculture coexist with major urban corridors, while historic land-use change, erosion, dams, flooding, and coastal hazards strongly affect hydrology.'
+      }
     }
   },
   {
@@ -251,6 +307,20 @@ export const domainRegions = [
       GeologyNSoilDepth: {
         heading: 'Permeable volcanic rock and thin soils',
         text: 'Thin soils and weathered volcanic materials over permeable rock strongly influence infiltration, groundwater recharge, and subsurface storage.'
+      }
+    },
+    hydrologicLandscape: {
+      waterStorage: {
+        heading: 'Volcanic aquifers and limited surface storage',
+        text: 'Fresh water is stored mainly in volcanic groundwater systems, with comparatively limited storage in rivers, wetlands, and other surface-water features.'
+      },
+      flowpathNDrainage: {
+        heading: 'Flashy streams and rapid coastal discharge',
+        text: 'Steep basins produce rapid runoff and intermittent or flashy streams, while groundwater discharges toward the coast and interacts with seawater.'
+      },
+      landCoverNHumanInfluence: {
+        heading: 'Cloud forests, drylands, and coastal development',
+        text: 'Cloud forests and wet windward vegetation contrast with dry leeward landscapes, while pumping, urbanization, wildfire, saltwater intrusion, and coastal change affect freshwater resources.'
       }
     }
   }

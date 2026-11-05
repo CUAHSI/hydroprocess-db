@@ -124,7 +124,7 @@
             </v-tab>
           </v-tabs>
 
-          <div class="sidebar-body">
+          <div ref="sidebarBody" class="sidebar-body">
             <v-window v-model="activeTab">
               <v-window-item value="drivers">
                 <div v-if="region.image" class="domain-card">
@@ -222,7 +222,19 @@
 
                 <v-window-item value="landscape">
                   <div class="rich-content">
-                    <h4 class="section-heading">coming soon</h4>
+                    <div v-if="!isProvince && region.hydrologicLandscape" class="driver-cards">
+                      <section
+                        v-for="landscape in hydrologicLandscape"
+                        :key="landscape.key"
+                        class="driver-card"
+                      >
+                        <div class="driver-label">{{ landscape.label }}</div>
+                        <div class="driver-body">
+                          <h4 class="driver-heading">{{ landscape.heading }}</h4>
+                          <p class="driver-text">{{ landscape.text }}</p>
+                        </div>
+                      </section>
+                    </div>
                   </div>
                 </v-window-item>
               </template>
@@ -280,6 +292,19 @@ const sidebarTabs = computed(() =>
       ]
 )
 
+// look up a label ignoring the case of the first letter; otherwise turn
+// e.g. "FlowpathNDrainage" into "Flowpath and Drainage"
+function labelFor(labels, key) {
+  const lower = key.charAt(0).toLowerCase() + key.slice(1)
+  const upper = key.charAt(0).toUpperCase() + key.slice(1)
+  return (
+    labels[key] ||
+    labels[lower] ||
+    labels[upper] ||
+    upper.replace(/N(?=[A-Z])/g, ' and ').replace(/([a-z])([A-Z])/g, '$1 $2')
+  )
+}
+
 const DRIVER_LABELS = {
   ClimateNEnergy: 'Climate & Energy',
   TopographyNElevation: 'Topography & Relief',
@@ -289,7 +314,21 @@ const DRIVER_LABELS = {
 const domainDrivers = computed(() =>
   Object.entries(props.region.domainDrivers || {}).map(([key, value]) => ({
     key,
-    label: DRIVER_LABELS[key] || key,
+    label: labelFor(DRIVER_LABELS, key),
+    ...value
+  }))
+)
+
+const LANDSCAPE_LABELS = {
+  waterStorage: 'Water Storage',
+  flowpathNDrainage: 'Flow path and Drainage',
+  landCoverNHumanInfluence: 'Land Cover and Human Influence'
+}
+
+const hydrologicLandscape = computed(() =>
+  Object.entries(props.region.hydrologicLandscape || {}).map(([key, value]) => ({
+    key,
+    label: labelFor(LANDSCAPE_LABELS, key),
     ...value
   }))
 )
@@ -323,6 +362,13 @@ function onKeydown(event) {
 
 onMounted(() => window.addEventListener('keydown', onKeydown))
 onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
+
+const sidebarBody = ref(null)
+
+// start each tab at the top instead of keeping the previous tab's scroll position
+watch(activeTab, () => {
+  if (sidebarBody.value) sidebarBody.value.scrollTop = 0
+})
 
 watch(isExpanded, (expanded) => {
   if (expanded) activeTab.value = sidebarTabs.value[0].value
