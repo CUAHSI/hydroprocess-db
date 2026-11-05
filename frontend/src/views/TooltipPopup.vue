@@ -139,6 +139,15 @@
                     >{{ LayerType === 'Domain' ? DOMAIN_CITATION_URL : PROVINCE_CITATION_URL }}
                   </a>
                 </p>
+                <div v-if="!isProvince && region.domainDrivers" class="driver-cards">
+                  <section v-for="driver in domainDrivers" :key="driver.key" class="driver-card">
+                    <div class="driver-label">{{ driver.label }}</div>
+                    <div class="driver-body">
+                      <h4 class="driver-heading">{{ driver.heading }}</h4>
+                      <p class="driver-text">{{ driver.text }}</p>
+                    </div>
+                  </section>
+                </div>
               </v-window-item>
               <template v-if="isProvince">
                 <v-window-item value="model">
@@ -166,8 +175,34 @@
                 </v-window-item>
 
                 <v-window-item value="characteristics">
-                  <div class="rich-content">
-                    <h4 class="section-heading">coming soon</h4>
+                  <div class="characteristics-blurb">
+                    <p class="characteristics-text">
+                      The following section presents complementary regional characteristics derived
+                      from the processing and synthesis of multiple geospatial datasets. For a
+                      complete list of the data sources and references used to generate these maps,
+                      please consult the README in the McMillan (2026) HydroShare resource.
+                    </p>
+                    <p class="citation characteristics-citation">
+                      {{ PROVINCE_CITATION }}
+                      <a :href="PROVINCE_CITATION_URL" target="_blank" rel="noopener">{{
+                        PROVINCE_CITATION_URL
+                      }}</a
+                      ><br />
+                    </p>
+                  </div>
+                  <div v-if="region.layout1" class="layout-image-card">
+                    <img
+                      :src="region.layout1"
+                      :alt="`${sidebarTitle} layout 1`"
+                      class="sidebar-image"
+                    />
+                  </div>
+                  <div v-if="region.layout2" class="layout-image-card">
+                    <img
+                      :src="region.layout2"
+                      :alt="`${sidebarTitle} layout 2`"
+                      class="sidebar-image"
+                    />
                   </div>
                 </v-window-item>
               </template>
@@ -243,6 +278,20 @@ const sidebarTabs = computed(() =>
         { value: 'drivers', label: 'Domain Drivers' },
         { value: 'landscape', label: 'Hydrologic Landscape' }
       ]
+)
+
+const DRIVER_LABELS = {
+  ClimateNEnergy: 'Climate & Energy',
+  TopographyNElevation: 'Topography & Relief',
+  GeologyNSoilDepth: 'Geology & Soils'
+}
+
+const domainDrivers = computed(() =>
+  Object.entries(props.region.domainDrivers || {}).map(([key, value]) => ({
+    key,
+    label: DRIVER_LABELS[key] || key,
+    ...value
+  }))
 )
 
 // split the perceptual model text into paragraphs, bolding the first mention of the province name
@@ -449,6 +498,26 @@ watch(
   line-height: 1.6;
 }
 
+.characteristics-blurb {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px 28px;
+  border-radius: 16px;
+  background: #e6e7e9;
+}
+
+.characteristics-text {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #222;
+}
+
+.characteristics-citation {
+  margin: 0;
+}
+
 .sidebar-text {
   margin: 0;
   font-size: 16px;
@@ -458,6 +527,53 @@ watch(
 
 .sidebar-citation {
   margin-top: 12px;
+}
+
+.layout-image-card {
+  margin-top: 24px;
+  padding: 16px;
+  background: #fff;
+}
+
+.driver-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.driver-card {
+  overflow: hidden;
+  border-radius: 4px;
+  background: #e3effa;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.35);
+}
+
+.driver-label {
+  padding: 10px 14px;
+  background: white;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #4b5563;
+}
+
+.driver-body {
+  padding: 12px 14px 28px;
+}
+
+.driver-heading {
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1b2a6b;
+}
+
+.driver-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #4b5563;
 }
 
 .sidebar-image {
