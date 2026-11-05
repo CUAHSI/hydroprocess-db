@@ -159,16 +159,16 @@ export const domainRegions = [
     },
     hydrologicLandscape: {
       waterStorage: {
-        heading: '',
-        text: ''
+        heading: 'Snow, ice, lakes, and wetlands',
+        text: 'Seasonal snowpacks, glaciers, frozen ground, lakes, wetlands, and peatlands provide the domain’s major forms of water storage.'
       },
       FlowpathNDrainage: {
-        heading: '',
-        text: ''
+        heading: 'Frozen-ground-controlled flows',
+        text: 'Permafrost, seasonal thaw, active layers, taliks, soil depth, and shallow bedrock control infiltration, lateral flow, drainage, and hydrologic connectivity.'
       },
       landCoverNHumanInfluence: {
-        heading: '',
-        text: ''
+        heading: 'Tundra-to-forest transition',
+        text: 'Vegetation shifts from tundra to boreal forest, while agriculture is concentrated in the warmer south. Warming, wildfire, hydropower, and river regulation increasingly alter regional hydrology.'
       }
     }
   },
@@ -197,16 +197,16 @@ export const domainRegions = [
     },
     hydrologicLandscape: {
       waterStorage: {
-        heading: '',
-        text: ''
+        heading: 'Snowpack, reservoirs, and basin aquifers',
+        text: 'Seasonal snow, reservoirs, groundwater, playas, and salt lakes provide important but unevenly distributed water storage.'
       },
       FlowpathNDrainage: {
-        heading: '',
-        text: ''
+        heading: 'Rapid mountain runoff and basin recharge',
+        text: 'Rain and snowmelt generate rapid mountain runoff, while infiltration supports fractured-rock flow, mountain-block recharge, and internal drainage toward basin floors.'
       },
       landCoverNHumanInfluence: {
-        heading: '',
-        text: ''
+        heading: 'Forested mountains and managed valleys',
+        text: 'Forested uplands transition to arid basins and irrigated valleys, where reservoirs, groundwater pumping, water conveyance, urbanization, and wildfire strongly affect hydrology.'
       }
     }
   },
