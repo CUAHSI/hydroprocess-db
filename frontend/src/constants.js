@@ -162,7 +162,7 @@ export const domainRegions = [
         heading: 'Snow, ice, lakes, and wetlands',
         text: 'Seasonal snowpacks, glaciers, frozen ground, lakes, wetlands, and peatlands provide the domain’s major forms of water storage.'
       },
-      FlowpathNDrainage: {
+      flowpathNDrainage: {
         heading: 'Frozen-ground-controlled flows',
         text: 'Permafrost, seasonal thaw, active layers, taliks, soil depth, and shallow bedrock control infiltration, lateral flow, drainage, and hydrologic connectivity.'
       },
@@ -200,7 +200,7 @@ export const domainRegions = [
         heading: 'Snowpack, reservoirs, and basin aquifers',
         text: 'Seasonal snow, reservoirs, groundwater, playas, and salt lakes provide important but unevenly distributed water storage.'
       },
-      FlowpathNDrainage: {
+      flowpathNDrainage: {
         heading: 'Rapid mountain runoff and basin recharge',
         text: 'Rain and snowmelt generate rapid mountain runoff, while infiltration supports fractured-rock flow, mountain-block recharge, and internal drainage toward basin floors.'
       },
@@ -238,7 +238,7 @@ export const domainRegions = [
         heading: 'Soil water, shallow groundwater, and surface depressions',
         text: 'Water is stored in deep soils, shallow aquifers, prairie potholes, reservoirs, rivers, and the Great Lakes.'
       },
-      FlowpathNDrainage: {
+      flowpathNDrainage: {
         heading: 'Recharge, drainage, and regional groundwater flow',
         text: 'Water moves through infiltration, recharge, baseflow, tile drainage, and regional groundwater systems connected to the Mississippi River network.'
       },
@@ -276,7 +276,7 @@ export const domainRegions = [
         heading: 'Regolith, groundwater, wetlands, and estuaries',
         text: 'Water is stored in weathered subsurface materials, groundwater systems, wetlands, floodplains, estuaries, and coastal sediments.'
       },
-      FlowpathNDrainage: {
+      flowpathNDrainage: {
         heading: 'Hillslope-to-coastal flow connections',
         text: 'Local hillslope flow and deeper regional groundwater discharge to rivers and estuaries, while backwater and coastal processes influence lowland drainage.'
       },
@@ -314,7 +314,7 @@ export const domainRegions = [
         heading: 'Volcanic aquifers and limited surface storage',
         text: 'Fresh water is stored mainly in volcanic groundwater systems, with comparatively limited storage in rivers, wetlands, and other surface-water features.'
       },
-      FlowpathNDrainage: {
+      flowpathNDrainage: {
         heading: 'Flashy streams and rapid coastal discharge',
         text: 'Steep basins produce rapid runoff and intermittent or flashy streams, while groundwater discharges toward the coast and interacts with seawater.'
       },
