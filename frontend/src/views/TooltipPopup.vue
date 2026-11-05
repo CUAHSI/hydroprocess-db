@@ -139,6 +139,15 @@
                     >{{ LayerType === 'Domain' ? DOMAIN_CITATION_URL : PROVINCE_CITATION_URL }}
                   </a>
                 </p>
+                <div v-if="!isProvince && region.domainDrivers" class="driver-cards">
+                  <section v-for="driver in domainDrivers" :key="driver.key" class="driver-card">
+                    <div class="driver-label">{{ driver.label }}</div>
+                    <div class="driver-body">
+                      <h4 class="driver-heading">{{ driver.heading }}</h4>
+                      <p class="driver-text">{{ driver.text }}</p>
+                    </div>
+                  </section>
+                </div>
               </v-window-item>
               <template v-if="isProvince">
                 <v-window-item value="model">
@@ -269,6 +278,20 @@ const sidebarTabs = computed(() =>
         { value: 'drivers', label: 'Domain Drivers' },
         { value: 'landscape', label: 'Hydrologic Landscape' }
       ]
+)
+
+const DRIVER_LABELS = {
+  ClimateNEnergy: 'Climate & Energy',
+  TopographyNElevation: 'Topography & Relief',
+  GeologyNSoilDepth: 'Geology & Soils'
+}
+
+const domainDrivers = computed(() =>
+  Object.entries(props.region.domainDrivers || {}).map(([key, value]) => ({
+    key,
+    label: DRIVER_LABELS[key] || key,
+    ...value
+  }))
 )
 
 // split the perceptual model text into paragraphs, bolding the first mention of the province name
@@ -510,6 +533,47 @@ watch(
   margin-top: 24px;
   padding: 16px;
   background: #fff;
+}
+
+.driver-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.driver-card {
+  overflow: hidden;
+  border-radius: 4px;
+  background: #e3effa;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.35);
+}
+
+.driver-label {
+  padding: 10px 14px;
+  background: white;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #4b5563;
+}
+
+.driver-body {
+  padding: 12px 14px 28px;
+}
+
+.driver-heading {
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1b2a6b;
+}
+
+.driver-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #4b5563;
 }
 
 .sidebar-image {

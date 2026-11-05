@@ -142,7 +142,21 @@ export const domainRegions = [
     pdf: '/pdfs/north.pdf',
     //for the expanded panel metadata
     content:
-      'The Northern Domain comprises ten hydrologic provinces defined by cold climate and limited energy availability. Snow, glaciers, river ice, frozen soils, and permafrost strongly influence how water is stored, transported, and released across the mountainous terrain, broad lowlands, lakes, and wetlands.'
+      'The Northern Domain comprises ten hydrologic provinces defined by cold climate and limited energy availability. Snow, glaciers, river ice, frozen soils, and permafrost strongly influence how water is stored, transported, and released across the mountainous terrain, broad lowlands, lakes, and wetlands.',
+    domainDrivers: {
+      ClimateNEnergy: {
+        heading: 'Cold and snow-dominated',
+        text: 'Low energy availability creates long winters, prolonged snow cover, and widespread frozen ground, transitioning from continuous permafrost in the north to seasonal freezing in the south.'
+      },
+      TopographyNElevation: {
+        heading: 'Mountains, uplands, and broad lowlands',
+        text: 'Elevation and slope aspect influence snow accumulation, glaciers, precipitation, and permafrost, while broad low-relief plains dominate much of the domain.'
+      },
+      GeologyNSoilDepth: {
+        heading: 'Variable soils over frozen ground',
+        text: 'Soil depth and bedrock conditions vary across the domain, but frozen ground, seasonal thaw, and taliks are the main controls on subsurface water movement and connectivity.'
+      }
+    }
   },
   {
     name: 'West',
@@ -152,7 +166,21 @@ export const domainRegions = [
     image: WesternDomain,
     pdf: '/pdfs/west.pdf',
     content:
-      'The Western Domain comprises nine hydrologic provinces defined by complex topography, geology, and strong elevation and precipitation gradients. High mountain ranges, seasonal snowpacks, fractured rock, deep sedimentary basins, and arid interior landscapes strongly control drainage, groundwater recharge, and seasonal water availability.'
+      'The Western Domain comprises nine hydrologic provinces defined by complex topography, geology, and strong elevation and precipitation gradients. High mountain ranges, seasonal snowpacks, fractured rock, deep sedimentary basins, and arid interior landscapes strongly control drainage, groundwater recharge, and seasonal water availability.',
+    domainDrivers: {
+      ClimateNEnergy: {
+        heading: 'Orographic and snow-dominated contrasts',
+        text: 'Coastal storms and atmospheric rivers interact with elevation to produce strong precipitation gradients, seasonal snowpacks, and shifting rain–snow boundaries.'
+      },
+      TopographyNElevation: {
+        heading: 'High mountains and enclosed basins',
+        text: 'Steep mountain ranges alternate with broad valleys and internally drained basins, creating strong local contrasts in climate, runoff, and recharge.'
+      },
+      GeologyNSoilDepth: {
+        heading: 'Shallow mountain soils and deep basin deposits',
+        text: 'Mountain areas commonly have shallow soils over fractured or volcanic rock, while adjoining basins contain thick sedimentary deposits and deeper aquifers.'
+      }
+    }
   },
   {
     name: 'Central',
@@ -162,7 +190,21 @@ export const domainRegions = [
     image: CentralDomain,
     pdf: '/pdfs/west.pdf',
     content:
-      'The Central Domain comprises eight hydrologic provinces defined by broad plains and prairies, gentle topography, generally deep soils, and  extensive agriculture land use. North-south temperature and west-east precipitation gradients interact with glacial landscapes, shallow groundwater, prairie potholes, the Great Lakes, and the Mississippi River system to shape regional hydrology.'
+      'The Central Domain comprises eight hydrologic provinces defined by broad plains and prairies, gentle topography, generally deep soils, and  extensive agriculture land use. North-south temperature and west-east precipitation gradients interact with glacial landscapes, shallow groundwater, prairie potholes, the Great Lakes, and the Mississippi River system to shape regional hydrology.',
+    domainDrivers: {
+      ClimateNEnergy: {
+        heading: 'Broad temperature and rainfall gradients',
+        text: 'Climate varies from cooler north to warmer south and from drier west to wetter east, influencing evapotranspiration, recharge, and runoff.'
+      },
+      TopographyNElevation: {
+        heading: 'Extensive plains and gentle relief',
+        text: 'Broad plains, prairies, and shallow slopes promote slow drainage, extensive river networks, and widespread agricultural development.'
+      },
+      GeologyNSoilDepth: {
+        heading: 'Deep soils and glacial deposits',
+        text: 'Generally deep soils, glacial materials, clay-rich layers, and regional aquifers regulate infiltration, shallow groundwater, and subsurface flow.'
+      }
+    }
   },
   {
     name: 'East',
@@ -172,7 +214,21 @@ export const domainRegions = [
     image: EasternDomain,
     pdf: '/pdfs/west.pdf',
     content:
-      'The Eastern Domain comprises six hydrologic provinces defined by a humid climate, relatively consistent precipitation, and an old landscape organized around the Appalachian Mountains, Piedmont, and Coastal Plain. Deep weathering, thick coastal sediments, extensive stream networks, wetlands, estuaries, and local and regional groundwater pathways control water movement across the region.'
+      'The Eastern Domain comprises six hydrologic provinces defined by a humid climate, relatively consistent precipitation, and an old landscape organized around the Appalachian Mountains, Piedmont, and Coastal Plain. Deep weathering, thick coastal sediments, extensive stream networks, wetlands, estuaries, and local and regional groundwater pathways control water movement across the region.',
+    domainDrivers: {
+      ClimateNEnergy: {
+        heading: 'Humid with modest precipitation seasonality',
+        text: 'Relatively high year-round precipitation supports dense vegetation and extensive streamflow, with seasonal energy and water limitations affecting runoff generation.'
+      },
+      TopographyNElevation: {
+        heading: 'Mountains-to-coast landscape transition',
+        text: 'The landscape descends from the Appalachian Mountains through the Piedmont and Fall Line to the low-relief Coastal Plain.'
+      },
+      GeologyNSoilDepth: {
+        heading: 'Deep weathering and thick coastal sediments',
+        text: 'Deep weathered material beneath uplands transitions to shallower valley deposits, carbonate aquifers in some areas, and thick sediments near the coast.'
+      }
+    }
   },
   {
     name: 'Islands',
@@ -182,7 +238,21 @@ export const domainRegions = [
     image: IslandDomain,
     pdf: '/pdfs/west.pdf',
     content:
-      'The Island Domain comprises two hydrologic provinces defined by steep volcanic terrain and rapid changes in climate, elevation, and land cover over short distances. Strong windward-leeward contrasts, flashy rivers, thin soils, volcanic aquifers, and freshwater-saltwater interactions closely connect upland hydrology with coastal waters and coral reef ecosystems.'
+      'The Island Domain comprises two hydrologic provinces defined by steep volcanic terrain and rapid changes in climate, elevation, and land cover over short distances. Strong windward-leeward contrasts, flashy rivers, thin soils, volcanic aquifers, and freshwater-saltwater interactions closely connect upland hydrology with coastal waters and coral reef ecosystems.',
+    domainDrivers: {
+      ClimateNEnergy: {
+        heading: 'Strong windward-leeward contrasts',
+        text: 'Moist oceanic air produces cool, wet windward conditions and pronounced rain shadows on warmer, drier leeward slopes.'
+      },
+      TopographyNElevation: {
+        heading: 'Steep volcanic terrain and short basins',
+        text: 'Rapid elevation changes create steep rivers, strong vegetation gradients, and large climatic differences over short distances.'
+      },
+      GeologyNSoilDepth: {
+        heading: 'Permeable volcanic rock and thin soils',
+        text: 'Thin soils and weathered volcanic materials over permeable rock strongly influence infiltration, groundwater recharge, and subsurface storage.'
+      }
+    }
   }
 ]
 
