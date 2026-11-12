@@ -1,0 +1,28 @@
+name: Database Update Request
+description: Request an update to the hydroprocess database.
+title: "[DB Update]: "
+labels: ["database-update"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to request changes to the hydroprocess database. Please provide as much detail as possible.
+  - type: textarea
+    id: changes
+    attributes:
+      label: List of Changes
+      description: Describe each change to be made to the database (additions, corrections, removals).
+      placeholder: |
+        - Add new entry for ...
+        - Update field X for record Y from ... to ...
+        - Remove duplicate record ...
+    validations:
+      required: true
+  - type: input
+    id: data-link
+    attributes:
+      label: Link to Data
+      description: URL to the data supporting these changes.
+      placeholder: https://
+    validations:
+      required: true
