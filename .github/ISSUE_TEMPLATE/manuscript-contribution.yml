@@ -1,0 +1,38 @@
+name: Manuscript Contribution
+description: Contribute a manuscript to the hydroprocess database.
+title: "[Manuscript]: "
+labels: ["manuscript-contribution"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to propose a manuscript for inclusion in the Hydrologic Processes Database. Submissions will be reviewed by a database maintainer, who will manually evaluate and incorporate the relevant content.
+  - type: input
+    id: publication-name
+    attributes:
+      label: Publication Name
+      description: Full title of the publication.
+    validations:
+      required: true
+  - type: input
+    id: publication-doi
+    attributes:
+      label: Publication DOI
+      description: DOI of the publication.
+      placeholder: 10.xxxx/xxxxx
+    validations:
+      required: true
+  - type: input
+    id: figure-number
+    attributes:
+      label: Figure Number
+      description: Provide the figure number(s) in the publication that illustrate the relevant content.
+    validations:
+      required: false
+  - type: textarea
+    id: text-section
+    attributes:
+      label: Text Section
+      description: Provide the section number(s) and excerpt(s) from the publication that describe the relevant content.
+    validations:
+      required: false
