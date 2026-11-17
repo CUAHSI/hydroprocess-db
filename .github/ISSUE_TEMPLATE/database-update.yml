@@ -1,0 +1,28 @@
+name: Database Update Request
+description: Request an update to the hydroprocess database.
+title: "[DB Update]: "
+labels: ["database-update"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to submit requests for modifications to the underlying Hydrologic Processes Database, including additions, corrections, and removals. Please provide sufficient detail to clearly describe each requested change and any supporting information.
+  - type: textarea
+    id: changes
+    attributes:
+      label: List of Changes
+      description: Describe each change to be made to the database (additions, corrections, removals).
+      placeholder: |
+        - Add new entry for ...
+        - Update field X for record Y from ... to ...
+        - Remove duplicate record ...
+    validations:
+      required: true
+  - type: input
+    id: data-link
+    attributes:
+      label: Link to Data
+      description: Provide a link to the database export or other supporting files, hosted on a file-sharing platform such as HydroShare or Dropbox.
+      placeholder: https://
+    validations:
+      required: true
