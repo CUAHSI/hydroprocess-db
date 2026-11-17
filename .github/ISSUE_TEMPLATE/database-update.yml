@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Use this template to request changes to the hydroprocess database. Please provide as much detail as possible.
+        Use this template to submit requests for modifications to the underlying Hydrologic Processes Database, including additions, corrections, and removals. Please provide sufficient detail to clearly describe each requested change and any supporting information.
   - type: textarea
     id: changes
     attributes:
@@ -22,7 +22,7 @@ body:
     id: data-link
     attributes:
       label: Link to Data
-      description: URL to the data supporting these changes.
+      description: Provide a link to the database export or other supporting files, hosted on a file-sharing platform such as HydroShare or Dropbox.
       placeholder: https://
     validations:
       required: true
