@@ -1,85 +1,90 @@
 <template>
-  <v-text-field
-    @update:focused="debouncedFilter"
-    @keydown.enter.prevent="debouncedFilter"
-    @click:clear="debouncedFilter"
-    v-model="searchTerm"
-    label="Search Data..."
-    clearable
-    hide-details
-  >
-    <template #append-inner>
-      <v-icon @click="debouncedFilter" class="cursor-pointer" :icon="mdiMagnify" />
-    </template>
-  </v-text-field>
-  <v-sheet class="mx-auto" elevation="8">
-    <v-progress-linear v-if="filtering" indeterminate color="primary"></v-progress-linear>
-    <h3 class="text-h6 ma-2 text-center">Filter Map</h3>
-    <v-divider></v-divider>
-    <!-- <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
+  <v-sheet class="filter-summary rounded-xl" elevation="8">
+    <v-card class="rounded-xl filter-inner">
+      <v-card-text class="pa-4">
+        <v-text-field
+          @update:focused="debouncedFilter"
+          @keydown.enter.prevent="debouncedFilter"
+          @click:clear="debouncedFilter"
+          v-model="searchTerm"
+          label="Search Data..."
+          clearable
+          hide-details
+        >
+          <template #append-inner>
+            <v-icon @click="debouncedFilter" class="cursor-pointer" :icon="mdiMagnify" />
+          </template>
+        </v-text-field>
+        <div class="mt-3">
+          <v-progress-linear v-if="filtering" indeterminate color="primary"></v-progress-linear>
+          <h3 class="filter-title">Filter Map</h3>
+          <!-- <v-autocomplete v-model="selectedProcesses" :items="process_taxonomies" item-title="process" item-value="id"
       label="Process Taxonomies" @update:modelValue="filter" clearable chips multiple
       :loading="filtering"></v-autocomplete> -->
-    <v-expansion-panels class="mx-0 mb-4" eager>
-      <v-expansion-panel class="px-0 py-0" style="max-height: 400px; overflow-y: auto">
-        <v-expansion-panel-title>Process Taxonomies</v-expansion-panel-title>
-        <v-expansion-panel-text class="pa-0">
-          <v-text-field
-            v-model="searchTreeText"
-            label="Search Process Taxonomies"
-            :clear-icon="mdiCloseCircleOutline"
-            clearable
-            dark
-            flat
-            hide-details
-            solo-inverted
-          >
-          </v-text-field>
-          <v-treeview
-            v-if="filteredTreeData.length > 0"
-            v-model:selected="selectedTreeItems"
-            :items="treeViewData"
-            select-strategy="classic"
-            item-value="id"
-            selectable
-            :search="searchTreeText"
-            activatable
-            @update:modelValue="updateMap"
-          >
-            <template v-slot:prepend="{ isOpen }">
-              <v-icon>
-                {{ isOpen ? mdiFolderOpen : mdiFolder }}
-              </v-icon>
-            </template>
-          </v-treeview>
-          <p v-else class="text-center text-grey-darken-1">No process taxonomies found</p>
-        </v-expansion-panel-text>
-      </v-expansion-panel>
-    </v-expansion-panels>
+          <v-expansion-panels class="mx-0 mb-4" eager>
+            <v-expansion-panel class="px-0 py-0" style="max-height: 400px; overflow-y: auto">
+              <v-expansion-panel-title>Process Taxonomies</v-expansion-panel-title>
+              <v-expansion-panel-text class="pa-0">
+                <v-text-field
+                  v-model="searchTreeText"
+                  label="Search Process Taxonomies"
+                  :clear-icon="mdiCloseCircleOutline"
+                  clearable
+                  dark
+                  flat
+                  hide-details
+                  solo-inverted
+                >
+                </v-text-field>
+                <v-treeview
+                  v-if="filteredTreeData.length > 0"
+                  v-model:selected="selectedTreeItems"
+                  :items="treeViewData"
+                  select-strategy="classic"
+                  item-value="id"
+                  selectable
+                  :search="searchTreeText"
+                  activatable
+                  @update:modelValue="updateMap"
+                >
+                  <template v-slot:prepend="{ isOpen }">
+                    <v-icon>
+                      {{ isOpen ? mdiFolderOpen : mdiFolder }}
+                    </v-icon>
+                  </template>
+                </v-treeview>
+                <p v-else class="text-center text-grey-darken-1">No process taxonomies found</p>
+              </v-expansion-panel-text>
+            </v-expansion-panel>
+          </v-expansion-panels>
 
-    <v-autocomplete
-      v-model="selectedSpatialZones"
-      :items="spatialZones"
-      item-title="spatial_property"
-      item-value="id"
-      label="Spatial Zones"
-      @update:modelValue="filter"
-      clearable
-      chips
-      multiple
-      :loading="filtering"
-    ></v-autocomplete>
-    <v-autocomplete
-      v-model="selectedTemporalZones"
-      :items="temporalZones"
-      item-title="temporal_property"
-      item-value="id"
-      label="Temporal Zones"
-      @update:modelValue="filter"
-      clearable
-      chips
-      multiple
-      :loading="filtering"
-    ></v-autocomplete>
+          <v-autocomplete
+            v-model="selectedSpatialZones"
+            :items="spatialZones"
+            item-title="spatial_property"
+            item-value="id"
+            label="Spatial Zones"
+            @update:modelValue="filter"
+            clearable
+            chips
+            multiple
+            :loading="filtering"
+          ></v-autocomplete>
+          <v-autocomplete
+            v-model="selectedTemporalZones"
+            :items="temporalZones"
+            item-title="temporal_property"
+            item-value="id"
+            label="Temporal Zones"
+            @update:modelValue="filter"
+            clearable
+            chips
+            multiple
+            :loading="filtering"
+          ></v-autocomplete>
+        </div>
+      </v-card-text>
+    </v-card>
   </v-sheet>
 </template>
 
@@ -379,6 +384,24 @@ watch(
   position: absolute;
   bottom: 30%;
   left: 110%;
+}
+
+.filter-summary {
+  border: 1.5px solid #444;
+  background-color: #f9f7f2;
+}
+
+.filter-inner {
+  background-color: #f9f7f2;
+}
+
+.filter-title {
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  padding-bottom: 6px;
+  margin-bottom: 12px;
+  border-bottom: 1.4px solid #444;
 }
 
 :deep(.v-expansion-panel-text__wrapper) {

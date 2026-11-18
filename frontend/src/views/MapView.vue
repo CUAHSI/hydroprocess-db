@@ -4,34 +4,22 @@
   </v-overlay>
 
   <v-container fluid class="pa-0 fill-height position-relative">
-    <div
-      v-show="showFilterDrawer"
-      ref="filterDrawerRef"
-      class="filter-drawer-overlay pa-2"
-      :class="{ 'drawer-overlay-absolute': mdAndDown }"
-    >
-      <FilterDrawer @onFilter="onFilter" />
-      <v-btn
-        @click="toggleFilterDrawer"
-        color="secondary"
-        :icon="mdiChevronLeft"
-        size="small"
-        class="filter-toggle-btn-inside"
-      />
-    </div>
-
-    <v-btn
-      v-show="!showFilterDrawer"
-      @click="toggleFilterDrawer"
-      color="secondary"
-      :icon="mdiChevronRight"
-      size="small"
-      class="filter-toggle-btn-outside"
-    />
-
     <v-row class="fill-height ma-0">
       <v-col class="map-container pa-0">
         <TheLeafletMap />
+
+        <div class="top-left-container d-flex flex-column align-start ga-2">
+          <v-btn
+            @click="toggleFilterDrawer"
+            color="secondary"
+            :icon="showFilterDrawer ? mdiClose : mdiFilterVariant"
+            size="small"
+            title="Toggle filters"
+          />
+          <div v-show="showFilterDrawer" class="filter-card">
+            <FilterDrawer @onFilter="onFilter" />
+          </div>
+        </div>
 
         <HydrologicProcessModal
           v-model="showHydrologicModal"
@@ -58,12 +46,12 @@
 </template>
 
 <script setup>
-import { ref, nextTick, onMounted, watch } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import FilterDrawer from '@/components/FilterDrawer.vue'
 import DataViewDrawer from '@/components/DataViewDrawer.vue'
 import TheLeafletMap from '@/components/TheLeafletMap.vue'
 import HydrologicProcessModal from '@/components/HydrologicProcessModal.vue'
-import { mdiChevronRight, mdiChevronLeft, mdiInformationOutline } from '@mdi/js'
+import { mdiClose, mdiFilterVariant, mdiInformationOutline } from '@mdi/js'
 import { useMapStore } from '@/stores/map'
 import { useDisplay } from 'vuetify'
 import { storeToRefs } from 'pinia'
@@ -286,12 +274,8 @@ const onFilter = (data) => {
   }
 }
 
-const toggleFilterDrawer = async () => {
-  const center = mapStore.leaflet.getCenter()
+const toggleFilterDrawer = () => {
   showFilterDrawer.value = !showFilterDrawer.value
-  await nextTick()
-  mapStore.leaflet.invalidateSize(true)
-  mapStore.leaflet.setView(center)
 }
 
 const toggleDataDrawer = () => {
@@ -315,30 +299,20 @@ const handleHydrologicModalDismiss = (doNotShowAgain) => {
   position: relative;
 }
 
-.filter-drawer-overlay {
-  top: 0;
-  left: 0;
-  height: 100%;
-  background-color: white;
-  z-index: 1000;
-  overflow-y: auto;
-  transition: transform 0.3s ease;
-}
-
-.drawer-overlay-absolute {
+.top-left-container {
   position: absolute;
-  width: 100vw;
-  max-width: none;
+  top: 12px;
+  left: 56px;
   z-index: 1001;
+  max-height: calc(100% - 24px);
 }
 
-@media (min-width: 960px) {
-  .filter-drawer-overlay {
-    position: relative;
-    /* width: 25%; */
-    min-width: 25%;
-    max-width: var(--drawer-max-width);
-  }
+.filter-card {
+  width: 360px;
+  max-width: calc(100vw - 72px);
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+  border-radius: 24px;
 }
 
 .filter-toggle-btn {
@@ -367,22 +341,5 @@ const handleHydrologicModalDismiss = (doNotShowAgain) => {
 
 .info-icon {
   flex-shrink: 0;
-}
-
-.filter-toggle-btn-inside {
-  position: absolute;
-  top: 50%;
-  right: 0px;
-  transform: translateY(-50%);
-  z-index: 1002;
-  transition: right 0.3s ease;
-}
-
-.filter-toggle-btn-outside {
-  position: absolute;
-  top: 50%;
-  left: 8px;
-  transform: translateY(-50%);
-  z-index: 1002;
 }
 </style>
